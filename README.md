@@ -29,7 +29,7 @@ To `dependencies` array in `Package.swift`.
 
 ## Usage
 
-For information about PrivMX Platform and documentation, go [HERE](https://docs.privmx.cloud).
+Go to our [documentation](https://docs.privmx.cloud/) to learn more about PrivMX.
 
 —————————————————
 
