@@ -9,6 +9,7 @@ This package implements:
 2. [`PrivmxEndpointWrapper`](https://docs.privmx.cloud/swift/api-reference/privmx-endpoint-swift-extra/classes/privmx-endpoint-wrapper) for managing connection and event loop.
 3. [`PrivmxEndpointContainer`](https://docs.privmx.cloud/swift/api-reference/privmx-endpoint-swift-extra/classes/privmx-endpoint-container) for managing global sessions.
 4. Classes to simplify reading/writing to files using byte arrays and Swift [`FileHandle`](https://developer.apple.com/documentation/foundation/filehandle).
+
 —————————————————
 
 ## Installation
