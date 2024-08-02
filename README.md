@@ -25,6 +25,7 @@ When you want to add it to a Swift Package of yours, add
 	),
 ```
 To `dependencies` array in `Package.swift`. 
+
 —————————————————
 
 ## Usage
