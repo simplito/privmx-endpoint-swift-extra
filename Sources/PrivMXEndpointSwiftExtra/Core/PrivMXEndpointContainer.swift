@@ -20,17 +20,6 @@ import PrivMXEndpointSwiftNative
 /// This class operates in a concurrent environment with support for handling cryptographic operations, managing
 /// secure communication endpoints, and listening for events. It also supports asynchronous endpoint creation,
 /// disconnection, and event processing.
-///
-/// ## Key Features:
-///
-/// - **Cryptographic Operations:** The container provides access to `PrivMXCrypto`, allowing cryptographic
-///   operations to be performed via the `cryptoApi` property.
-/// - **Endpoint Management:** The container manages a collection of `PrivMXEndpoint` instances, allowing you to
-///   create, retrieve, and remove endpoints as needed.
-/// - **Asynchronous Endpoint Creation:** New endpoints can be created asynchronously with specific user
-///   credentials and platform details.
-/// - **Event Listening:** The container can listen for and handle events from PrivMX system, such as updates
-///   or notifications related to endpoints and their statuses.
 public class PrivMXEndpointContainer{
 	var eventLoop: PrivMXEventLoop?
 	

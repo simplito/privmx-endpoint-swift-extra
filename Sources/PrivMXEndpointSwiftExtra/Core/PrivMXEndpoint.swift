@@ -18,39 +18,6 @@ import PrivMXEndpointSwift
 /// The `PrivMXEndpoint` class is designed to encapsulate and manage a single connection to PrivMX. It provides
 /// access to different APIs for handling Threads, Stores, and Inboxes, based on the modules that are enabled during initialization.
 /// It also supports asynchronous operations like uploading and downloading files, and allows for managing callbacks for events.
-///
-/// ## Key Features:
-///
-/// - **Connection Management:** Manages the connection to PrivMX Bridge via the `PrivMXConnection` instance.
-/// - **APIs for Threads, Stores, and Inboxes:** Provides access to different APIs for managing threads (`PrivMXThread`), stores (`PrivMXStore`), and inboxes (`PrivMXInbox`).
-/// - **File Upload and Download:** Supports uploading new files and updating existing files to/from a store, either from a file or in-memory buffer, with progress tracking.
-/// - **Callback Management:** Allows registering, deleting, and clearing event callbacks from various channels (such as Threads, Stores, and Inboxes).
-/// - **Event Handling:** Manages event subscriptions and dispatches events to registered callbacks.
-///
-/// ## Initialization:
-///
-/// The `PrivMXEndpoint` class is initialized with a connection to PrivMX Bridge using user credentials, Solution ID, and platform URL.
-/// Based on the provided modules, it sets up the APIs for handling Threads, Stores, and Inboxes.
-///
-/// - Parameters:
-///   - modules: A set of `PrivMXModule` instances to enable various APIs.
-///   - userPrivKey: The user's private key in WIF format.
-///   - solutionId: The unique identifier for PrivMX solution.
-///   - platformUrl: The URL of PrivMX Bridge instance.
-///
-/// - Throws: An error if the connection or module initialization fails.
-///
-/// ## File Operations:
-///
-/// - Supports uploading and downloading files to/from a Store, either from a file (swift-nio) or in-memory buffer.
-/// - Provides progress tracking for file upload/download operations.
-/// - Supports chunked file transfers to handle large files efficiently.
-///
-/// ## Callback and Event Management:
-///
-/// - Registers callbacks for various events from different channels, such as Threads, Stores, or Inboxes.
-/// - Provides methods for removing callbacks for specific events or channels.
-/// - Automatically manages subscribing and unsubscribing from events, based on the registered callbacks.
 public class PrivMXEndpoint: Identifiable{
 	
 	public let id:Int64
