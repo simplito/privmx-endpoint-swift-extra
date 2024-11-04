@@ -18,27 +18,6 @@ import PrivMXEndpointSwift
 /// This protocol defines the required methods for setting up, managing, and disconnecting a connection to PrivMX platform.
 /// It provides functionality for setting up the path to SSL certificates, managing connection lifecycle (connect/disconnect),
 /// and retrieving important connection details such as the connection ID. Additionally, it offers methods for connecting with public or private access.
-///
-/// ## Key Features:
-///
-/// - **Certificate Management:** Supports setting the path to a `.pem` file containing the necessary SSL certificates for establishing a secure connection.
-/// - **Connection Lifecycle:** Provides methods for connecting to and disconnecting from PrivMX Bridge.
-/// - **Connection Identification:** Retrieves the unique connection ID for identifying the connection.
-/// - **Context Access:** Lists the contexts to which the connected user has access.
-///
-/// ## Methods:
-///
-/// - `setCertsPath(_:)`: Sets the path to the `.pem` file containing the certificates needed for establishing the connection.
-/// - `disconnect()`: Disconnects the current connection, releasing all resources associated with it.
-/// - `connect(as:to:on:)`: Connects to PrivMX Bridge using the provided credentials (private key, solution ID, platform URL).
-/// - `connectPublic(to:on:)`: Connects to PrivMX Bridge with public access, mainly used for public access to `InboxAPI`.
-/// - `getConnectionId()`: Retrieves the unique connection ID for managing and identifying the current connection.
-/// - `listContexts(basedOn:)`: Lists the contexts that the connected user has access to.
-///
-/// ## Usage:
-///
-/// This protocol is implemented by classes that establish and manage connections to PrivMX system, providing a common interface for interacting
-/// with various aspects of PrivMX platform, including API access and connection management.
 public protocol PrivMXConnection{
 	
 	
