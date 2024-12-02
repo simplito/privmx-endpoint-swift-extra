@@ -36,13 +36,15 @@ extension StoreApi : PrivMXStore{
 		for users: [privmx.endpoint.core.UserWithPubKey],
 		managedBy managers: [privmx.endpoint.core.UserWithPubKey],
 		withPublicMeta publicMeta: Data,
-		withPrivateMeta privateMeta: Data
+		withPrivateMeta privateMeta: Data,
+		withPolicies policies: privmx.endpoint.core.ContainerPolicy? = nil
 	) throws -> String {
 		return try String(createStore(contextId: std.string(contextId),
 									  users: privmx.UserWithPubKeyVector(users),
 									  managers: privmx.UserWithPubKeyVector(managers),
 									  publicMeta: publicMeta.asBuffer(),
-									  privateMeta: privateMeta.asBuffer()))
+									  privateMeta: privateMeta.asBuffer(),
+									  policies:policies))
 	}
 	
 	public func updateStore(
@@ -53,7 +55,8 @@ extension StoreApi : PrivMXStore{
 		replacingPublicMeta publicMeta: Data,
 		replacingPrivateMeta privateMeta: Data,
 		force: Bool,
-		forceGenerateNewKey: Bool
+		forceGenerateNewKey: Bool,
+		replacingPolicies policies: privmx.endpoint.core.ContainerPolicy? = nil
 	) throws -> Void {
 		try updateStore(storeId:std.string(storeId),
 						version: version,
@@ -62,7 +65,8 @@ extension StoreApi : PrivMXStore{
 						publicMeta: publicMeta.asBuffer(),
 						privateMeta: privateMeta.asBuffer(),
 						force: force,
-						forceGenerateNewKey: forceGenerateNewKey)
+						forceGenerateNewKey: forceGenerateNewKey,
+						policies:policies)
 	}
 	
 	public func deleteStore(

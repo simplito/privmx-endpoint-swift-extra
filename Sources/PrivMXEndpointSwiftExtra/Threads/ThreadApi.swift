@@ -42,7 +42,8 @@ extension ThreadApi:PrivMXThread{
 		for users: [privmx.endpoint.core.UserWithPubKey],
 		managedBy managers: [privmx.endpoint.core.UserWithPubKey],
 		withPublicMeta publicMeta: Data,
-		withPrivateMeta privateMeta: Data
+		withPrivateMeta privateMeta: Data,
+		withPolicies policies:privmx.endpoint.core.ContainerPolicy? = nil
 	) throws -> String {
 		
 		var v = privmx.UserWithPubKeyVector()
@@ -60,7 +61,8 @@ extension ThreadApi:PrivMXThread{
 									   users: v,
 									   managers: m,
 									   publicMeta: publicMeta.asBuffer(),
-									   privateMeta: privateMeta.asBuffer()))
+									   privateMeta: privateMeta.asBuffer(),
+									   policies: policies))
 	}
 	
 	public func listMessages(
@@ -115,7 +117,8 @@ extension ThreadApi:PrivMXThread{
 		replacingPublicMeta publicMeta:Data,
 		replacingPrivateMeta privateMeta:Data,
 		force: Bool,
-		forceGenerateNewKey: Bool
+		forceGenerateNewKey: Bool,
+		replacingPolicies policies: privmx.endpoint.core.ContainerPolicy? = nil
 	) throws -> Void {
 		var v = privmx.UserWithPubKeyVector()
 		for u in users{
@@ -134,7 +137,8 @@ extension ThreadApi:PrivMXThread{
 							  publicMeta: publicMeta.asBuffer(),
 							  privateMeta: privateMeta.asBuffer(),
 							  force: force,
-							  forceGenerateNewKey: forceGenerateNewKey)
+							  forceGenerateNewKey: forceGenerateNewKey,
+							  policies:policies)
 	}
 	
 	public func subscribeForMessageEvents(
