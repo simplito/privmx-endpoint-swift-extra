@@ -59,6 +59,7 @@ public protocol PrivMXThread{
 	///
 	/// This method creates a new Thread with specified users, managers, and metadata in the given context.
 	/// Note: Managers do not automatically have access to the thread unless explicitly added as users.
+	/// Note: when no policies are supplied, the default ones inherited from the context will be used instead.
 	///
 	/// - Parameters:
 	///   - contextId: The unique identifier of the context in which to create the Thread.
@@ -66,6 +67,8 @@ public protocol PrivMXThread{
 	///   - managers: A list of `UserWithPubKey` objects representing managers responsible for the Thread.
 	///   - publicMeta: The public metadata associated with the Thread, which will not be encrypted.
 	///   - privateMeta: The private metadata associated with the Thread, which will be encrypted.
+	///   - policies: The policies governing the Container, as well as the items within.
+	///
 	///
 	/// - Returns: A `String` representing the ID of the newly created Thread.
 	///
@@ -75,7 +78,8 @@ public protocol PrivMXThread{
 		for users: [privmx.endpoint.core.UserWithPubKey],
 		managedBy managers: [privmx.endpoint.core.UserWithPubKey],
 		withPublicMeta pubMeta: Data,
-		withPrivateMeta privMeta: Data
+		withPrivateMeta privMeta: Data,
+		withPolicies policies: privmx.endpoint.core.ContainerPolicy?
 	) throws -> String
 	
 	/// Updates an existing Thread with new users, managers, and metadata.
@@ -92,6 +96,7 @@ public protocol PrivMXThread{
 	///   - privateMeta: The new private metadata of the Thread, which will be encrypted.
 	///   - force: A boolean indicating whether to force the update, bypassing version control.
 	///   - forceGenerateNewKey: A boolean indicating whether a new key should be generated for the Thread.
+	///   - policies: The new policies for the Container.
 	///
 	/// - Throws: `PrivMXEndpointError.failedUpdatingThread` if the operation fails.
 	func updateThread(
@@ -102,7 +107,8 @@ public protocol PrivMXThread{
 		replacingPublicMeta pubMeta: Data,
 		replacingPrivateMeta privMeta: Data,
 		force: Bool,
-		forceGenerateNewKey: Bool
+		forceGenerateNewKey: Bool,
+		replacingPolicies policies: privmx.endpoint.core.ContainerPolicy?
 	) throws -> Void
 	
 	/// Lists Messages from a specific Thread.

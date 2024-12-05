@@ -27,6 +27,7 @@ public protocol PrivMXInbox{
 	///   - publicMeta: Public metadata to be associated with the inbox, provided as `Data`.
 	///   - privateMeta: Private metadata to be associated with the inbox, provided as `Data`.
 	///   - filesConfig: Optional configuration for managing files in the inbox, provided as `FilesConfig`.
+	///   - policies: The policies governing the Container.
 	///
 	/// - Throws: Throws an error if the inbox creation process fails.
 	///
@@ -37,7 +38,8 @@ public protocol PrivMXInbox{
 		managedBy managaers: [privmx.endpoint.core.UserWithPubKey],
 		withPublicMeta publicMeta: Data,
 		withPrivateMeta privateMeta: Data,
-		withFilesConfig filesConfig: privmx.endpoint.inbox.FilesConfig?
+		withFilesConfig filesConfig: privmx.endpoint.inbox.FilesConfig?,
+		withPolicies policies: privmx.endpoint.core.ContainerPolicyWithoutItem?
 	) throws -> String
 	
 	/// Updates an existing inbox by replacing its users, managers, metadata, and configuration with new values.
@@ -56,6 +58,7 @@ public protocol PrivMXInbox{
 	///   - version: The current version of the inbox, provided as an `Int64`. This is used for version control to ensure updates are applied correctly.
 	///   - force: A `Bool` indicating whether the update should be forced, even if there are version conflicts.
 	///   - forceGenerateNewKey: A `Bool` indicating whether a new key should be generated for the inbox during the update.
+	///   - policies: The policies governing the Container.
 	///
 	/// - Throws: Throws an error if the update fails or if any of the data conversion processes fail.
 	///
@@ -69,7 +72,8 @@ public protocol PrivMXInbox{
 		replacingFilesConfig filesConfig: privmx.endpoint.inbox.FilesConfig?,
 		atVersion version: Int64,
 		force: Bool,
-		forceGenerateNewKey: Bool
+		forceGenerateNewKey: Bool,
+		replacingPolicies policies: privmx.endpoint.core.ContainerPolicyWithoutItem?
 	) throws -> Void
 	
 	/// Retrieves the inbox associated with the given inbox ID.
