@@ -11,13 +11,31 @@
 
 import Foundation
 
+/// FileDataSource using an internal `Data` buffer
 public struct BufferDataSource:FileDataSource{
+	
+	public init(buffer: Data,
+				privateMeta: Data,
+				publicMeta: Data,
+				size: Int64,
+				id: ObjectIdentifier) {
+		self.buffer = buffer
+		self.privateMeta = privateMeta
+		self.publicMeta = publicMeta
+		self.size = size
+		self.id = id
+	}
 	
 	private var buffer: Data
 	
+	/// Advances the internal buffer by `chunkSize` bytes
+	///
+	/// - Parameter chunkSize: amount of bytes to be retrieved
+	///
+	/// - Returns: First `chunkSize` bytes of the Internal buffer
 	public mutating func getNextChunk(
 		ofSize chunkSize: Int64
-	) throws -> Data {
+	) -> Data {
 		let buf = buffer.prefix(Int(chunkSize))
 		if buf.count < chunkSize{
 			buffer = Data()
@@ -27,7 +45,8 @@ public struct BufferDataSource:FileDataSource{
 		return buf
 	}
 	
-	public mutating func close() throws {}
+	/// This method does nothing
+	public func close() throws {}
 	
 	public let privateMeta: Data
 	

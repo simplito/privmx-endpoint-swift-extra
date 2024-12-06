@@ -13,6 +13,7 @@ import Foundation
 import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 
+///FileSoure getting data using a Swift FileHandle.
 public struct FileHandleDataSource:FileDataSource{
 	var file:FileHandle
 	
