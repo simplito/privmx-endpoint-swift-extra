@@ -14,7 +14,7 @@ import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 
 /// Extension of `InboxApi`, providing conformance for protocol using Swift types.
-extension InboxApi: PrivMXInbox{
+extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 	
 	public func createInbox(
 		in contextId: String,
