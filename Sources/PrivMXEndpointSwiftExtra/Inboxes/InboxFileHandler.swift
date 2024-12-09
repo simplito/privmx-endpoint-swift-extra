@@ -22,7 +22,8 @@ public class InboxFileHandler{
 	
 	private let chunkSize :Int64
 	
-	public let handle:privmx.InboxFileHandle
+	/// InboxFileHandle
+	public let fileHandle:privmx.InboxFileHandle
 	private var inboxApi:PrivMXInbox
 	private var inboxHandle: privmx.InboxHandle?
 	private var dataSource: (any FileDataSource)?
@@ -41,7 +42,7 @@ public class InboxFileHandler{
 		chunkSize:Int64
 	) throws {
 		self.inboxApi = inboxApi
-		self.handle = try inboxApi.openFile(fileId)
+		self.fileHandle = try inboxApi.openFile(fileId)
 		self.mode = mode
 		self.localFile = localFile
 		self.chunkSize = chunkSize
@@ -62,7 +63,7 @@ public class InboxFileHandler{
 		chunkSize: Int64
 	) throws {
 		self.inboxApi = inboxApi
-		self.handle = try inboxApi.createFileHandle(withPublicMeta: dataSource.publicMeta,
+		self.fileHandle = try inboxApi.createFileHandle(withPublicMeta: dataSource.publicMeta,
 													withPrivateMeta: dataSource.publicMeta,
 													forSize: dataSource.size)
 		self.mode = mode
@@ -84,7 +85,7 @@ public class InboxFileHandler{
 		return buffer
 	}
 	
-	/// Closes both local and remote files.
+	/// Closes local `FileDataSource`.
 	///
 	/// - Throws: An error if closing the source fails.
 	public func closeSource(
@@ -92,10 +93,12 @@ public class InboxFileHandler{
 		try dataSource!.close()
 	}
 	
-	
+	/// Closes remote File.
+	/// - Throws: An error if closing the remote File fails.
+	/// - Returns: Id of the remote File.
 	public func closeRemote(
 	) throws -> String {
-		try inboxApi.closeFile(withHandle: handle)
+		try inboxApi.closeFile(withHandle: fileHandle)
 	}
 	
 	/// Downloads the next chunk and adds it to either the local file or the internal buffer, depending on the mode.
@@ -106,7 +109,7 @@ public class InboxFileHandler{
 		onChunkDownloaded: @escaping ((Int)->Void) = {byteCount in}
 	) throws -> Void{
 		if mode == .readToFile{
-			let buf = try inboxApi.readFromFile(withHandle: handle,
+			let buf = try inboxApi.readFromFile(withHandle: fileHandle,
 												 length: chunkSize)
 			if let localFile{
 				try localFile.write(contentsOf: buf)
@@ -116,7 +119,7 @@ public class InboxFileHandler{
 			}
 			onChunkDownloaded(buf.count)
 		} else if mode == .readToBuffer {
-			let buf = try inboxApi.readFromFile(withHandle: handle,
+			let buf = try inboxApi.readFromFile(withHandle: fileHandle,
 												 length: chunkSize)
 			if nil != buffer {
 				buffer = Data()
@@ -148,7 +151,7 @@ public class InboxFileHandler{
 																										   message: "Inbox Handle was nil",
 																										   description: "Error",
 																										   code: nil))}
-			try inboxApi.writeToFile(handle,
+			try inboxApi.writeToFile(fileHandle,
 									 in: inboxHandle,
 									 uploading: buf)
 			

@@ -57,7 +57,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 		var handles = [privmx.InboxFileHandle]()
 		
 		for h in fileHandlers{
-			handles.append(h.handle)
+			handles.append(h.fileHandle)
 		}
 		
 		let inboxHandle = try inboxApi.prepareEntry(in: inboxId,
