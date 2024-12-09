@@ -37,11 +37,13 @@ public class InboxFileHandler{
 		fileId:String,
 		inboxApi: any PrivMXInbox,
 		mode: InboxFileHandlerMode,
+		localFile:FileHandle? = nil,
 		chunkSize:Int64
 	) throws {
 		self.inboxApi = inboxApi
 		self.handle = try inboxApi.openFile(fileId)
 		self.mode = mode
+		self.localFile = localFile
 		self.chunkSize = chunkSize
 	}
 	
@@ -180,6 +182,31 @@ public class InboxFileHandler{
 		return try InboxFileHandler(fileId: fileId,
 									inboxApi: inboxApi,
 									mode: .readToBuffer,
+									chunkSize: chunkSize)
+	}
+	
+	/// Creates a new handler for downloading a file to a local File.
+	///
+	/// This method allows downloading a file from the `PrivMXStore` directly into memory (a buffer).
+	/// To retrieve the buffer after the download, call `getBuffer()`.
+	///
+	/// - Parameters:
+	///   - fileId: The ID of the file to be downloaded from the `PrivMXStore`.
+	///   - storesApi: The API for interacting with the `PrivMXStore`.
+	///   - localFile: SwiftNIO handle to a file on the device
+	///   - chunkSize: The size of the chunks for downloading. Defaults to the recommended chunk size.
+	/// - Returns: A new `PrivMXStoreFileHandler` instance configured for downloading the File into the local file.
+	/// - Throws: An error if the file cannot be opened or the download process fails.
+	public static func getInboxFileReaderToFile(
+		readFrom fileId:String,
+		with inboxApi:any PrivMXInbox,
+		to localFile:FileHandle,
+		chunkSize: Int64 = InboxFileHandler.RecommendedChunkSize
+	) throws -> InboxFileHandler{
+		return try InboxFileHandler(fileId: fileId,
+									inboxApi: inboxApi,
+									mode: .readToFile,
+									localFile: localFile,
 									chunkSize: chunkSize)
 	}
 }
