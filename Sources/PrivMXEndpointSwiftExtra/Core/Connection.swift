@@ -54,7 +54,7 @@ extension Connection: PrivMXConnection {
 		try Self.connect(
 			userPrivKey: std.string(userPrivKey),
 			solutionId: std.string(solutionID),
-			platformUrl: std.string(bridgeUrl))
+			bridgeUrl: std.string(bridgeUrl))
 	}
 
 	/// Establishes a public connection to PrivMX Bridge.
@@ -74,7 +74,7 @@ extension Connection: PrivMXConnection {
 	) throws -> any PrivMXConnection {
 		try Self.connectPublic(
 			solutionId: std.string(solutionID),
-			platformUrl: std.string(bridgeUrl))
+			bridgeUrl: std.string(bridgeUrl))
 	}
 
 	/// Sets the path to the `.pem` file containing certificates required for establishing a connection.
