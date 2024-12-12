@@ -47,8 +47,4 @@ public struct FileHandleDataSource:FileDataSource{
 	public var size: Int64
 	
 	public private(set) var hasDataLeft: Bool = true
-	
-	public var id: ObjectIdentifier
-	
-	
 }
