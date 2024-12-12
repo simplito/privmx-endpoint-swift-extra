@@ -25,7 +25,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 	
 	public private(set) var state : InboxEntryHandlerState
 	
-	init(
+	internal init(
 		inboxApi:any PrivMXInbox,
 		inboxHandle:privmx.InboxHandle,
 		data:Data,
@@ -111,8 +111,8 @@ public class InboxEntryHandler:@unchecked Sendable{
 			case .sent,.error,.aborted:
 				throw PrivMXEndpointError.otherFailure(privmx.InternalError(name: "Invalid State Error",
 																			message: "Error",
-																			description: std.string("Sending cannot be aborted in \"\(self.state)\" state.")
-																			, code: nil))
+																			description: std.string("Sending cannot be aborted in \"\(self.state)\" state."),
+																			code: nil))
 			case .filesSent,.prepared:
 				self.state = .aborted
 		}
