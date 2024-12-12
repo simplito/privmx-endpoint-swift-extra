@@ -63,7 +63,7 @@ public class PrivMXEndpointContainer{
 	///   - modules: A set of modules to be initialized with the new endpoint.
 	///   - userPrivKey: The user's private key in WIF format.
 	///   - solutionId: The unique identifier of PrivMX solution.
-	///   - platformUrl: The URL of PrivMX Bridge.
+	///   - bridgeUrl: The URL of PrivMX Bridge.
 	///
 	/// - Throws: An error if creating the new endpoint fails.
 	///
@@ -72,12 +72,12 @@ public class PrivMXEndpointContainer{
 		enabling modules:Set<PrivMXModule>,
 		connectingAs userPrivKey:String,
 		to solutionId:String,
-		on platformUrl:String
+		on bridgeUrl:String
 	) async throws -> PrivMXEndpoint {
 		let ne = try PrivMXEndpoint(modules: modules,
 									   userPrivKey: userPrivKey,
 									   solutionId: solutionId,
-									   platformUrl: platformUrl)
+									   bridgeUrl: bridgeUrl)
 		endpoints[try ne.connection.getConnectionId()] = ne
 		return ne
 	}
@@ -92,7 +92,7 @@ public class PrivMXEndpointContainer{
 	///   - modules: A set of modules to be initialized with the new endpoint.
 	///   - userPrivKey: The user's private key in WIF format.
 	///   - solutionId: The unique identifier of the PrivMX solution.
-	///   - platformUrl: The URL of the PrivMX Bridge.
+	///   - bridgeUrl: The URL of the PrivMX Bridge.
 	///
 	/// - Throws: An error if creating the new endpoint fails.
 	///
@@ -100,11 +100,11 @@ public class PrivMXEndpointContainer{
 	public func newPublicEndpoint(
 		enabling modules:Set<PrivMXModule>,
 		to solutionId:String,
-		on platformUrl:String
+		on bridgeUrl:String
 	) async throws -> PrivMXEndpoint {
 		let ne = try PrivMXEndpoint(modules: modules,
 									solutionId: solutionId,
-									platformUrl: platformUrl)
+									bridgeUrl: bridgeUrl)
 		endpoints[try ne.connection.getConnectionId()] = ne
 		return ne
 	}
