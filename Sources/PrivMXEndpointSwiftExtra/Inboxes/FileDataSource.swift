@@ -11,7 +11,7 @@
 
 import Foundation
 
-public protocol FileDataSource: Sendable,Identifiable{
+public protocol FileDataSource: Sendable{
 	
 	/// Retrieves up to `chunkSize`bytes from the data source.
 	///
@@ -35,4 +35,5 @@ public protocol FileDataSource: Sendable,Identifiable{
 	
 	/// Signifies that there are still bytes that have not been retrieved
 	var hasDataLeft:Bool { get }
+	
 }

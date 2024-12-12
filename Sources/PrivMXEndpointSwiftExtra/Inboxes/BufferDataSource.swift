@@ -18,7 +18,7 @@ public struct BufferDataSource:FileDataSource{
 				privateMeta: Data,
 				publicMeta: Data,
 				size: Int64,
-				id: ObjectIdentifier) {
+				id: String) {
 		self.buffer = buffer
 		self.privateMeta = privateMeta
 		self.publicMeta = publicMeta
@@ -57,6 +57,4 @@ public struct BufferDataSource:FileDataSource{
 	public var hasDataLeft: Bool{
 		return !buffer.isEmpty
 	}
-	
-	public let id: ObjectIdentifier
 }
