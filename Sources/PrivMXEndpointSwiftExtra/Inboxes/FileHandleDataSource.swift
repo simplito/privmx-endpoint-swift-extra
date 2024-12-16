@@ -15,6 +15,21 @@ import PrivMXEndpointSwift
 
 ///FileSoure getting data using a Swift FileHandle.
 public struct FileHandleDataSource:FileDataSource{
+	
+	public init(
+		file: FileHandle,
+		privateMeta: Data,
+		publicMeta: Data,
+		size: Int64,
+		hasDataLeft: Bool
+	) {
+		self.file = file
+		self.privateMeta = privateMeta
+		self.publicMeta = publicMeta
+		self.size = size
+		self.hasDataLeft = hasDataLeft
+	}
+	
 	var file:FileHandle
 	
 	public mutating func getNextChunk(
