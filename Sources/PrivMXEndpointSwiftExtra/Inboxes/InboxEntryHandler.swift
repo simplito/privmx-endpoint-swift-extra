@@ -79,7 +79,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 	
 	public func startSending(
 		
-	) async throws -> InboxEntryHandlerState{
+	) throws -> InboxEntryHandlerState{
 		DispatchQueue.concurrentPerform(iterations: fileHandlers.count){
 			hId in
 			let handler = self.fileHandlers[hId]
