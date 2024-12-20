@@ -144,7 +144,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 }
 
 ///State of the `InboxEntryHandler`
-public enum InboxEntryHandlerState{
+public enum InboxEntryHandlerState:Sendable{
 	/// Ready to start sending
 	case prepared
 	/// All Files have been uploaded and the Entry can be sent

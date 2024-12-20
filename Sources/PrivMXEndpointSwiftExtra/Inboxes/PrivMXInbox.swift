@@ -13,7 +13,7 @@ import Foundation
 import PrivMXEndpointSwift
 import PrivMXEndpointSwiftNative
 
-public protocol PrivMXInbox{
+public protocol PrivMXInbox:Sendable{
 	
 	/// Creates an inbox in a specified context for a group of users, managed by a set of managers.
 	///
