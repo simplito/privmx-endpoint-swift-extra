@@ -28,7 +28,7 @@ public struct BufferDataSource:FileDataSource{
 	
 	private var buffer: Data
 	
-	/// Advances the internal buffer by `chunkSize` bytes
+	/// Advances the internal buffer by `chunkSize` bytes.
 	///
 	/// - Parameter chunkSize: amount of bytes to be retrieved
 	///

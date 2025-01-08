@@ -15,7 +15,7 @@ public protocol FileDataSource: Sendable{
 	
 	/// Retrieves up to `chunkSize`bytes from the data source.
 	///
-	/// - Parameter chunkSize:
+	/// - Parameter chunkSize: the size of a chunk to retrieve from the source
 	mutating func getNextChunk(
 		ofSize chunkSize:Int64
 	) throws -> Data

@@ -23,6 +23,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 	private var fileHandlers: [InboxFileHandler]
 	private var err: PrivMXEndpointError?
 	
+	/// The current state
 	public private(set) var state : InboxEntryHandlerState
 	
 	internal init(
@@ -34,11 +35,26 @@ public class InboxEntryHandler:@unchecked Sendable{
 		self.inboxApi = inboxApi
 		self.inboxHandle = inboxHandle
 		self.fileHandlers = fileHandlers
-		self.state = .prepared
+		if fileHandlers.isEmpty{
+			self.state = .filesSent
+		}else{
+			self.state = .prepared
+		}
 	}
 	
-	
-	
+
+	/// Creates a new `InboxEntryHandler` for sending an entry to an Inbox.
+	///
+	/// If fileSources is an empty array, the created handler will be in `.filesSent`, otherwise it will be in `.prepared`.
+	///
+	/// - Parameters:
+	///   - inboxApi: provider of `PrivMXInbox` API
+	///   - inboxId: Id of the Inbox in which the Entry is supposed to appear
+	///   - data: arbitrary data that will appear as a mesasage in the Inbox
+	///   - fileSources: list of sources of data for Files attached to the Entry
+	///   - userPrivateKey: Optional identity of the Sender.
+	///
+	/// - Returns: an instance of `InboxEntryHandler`
 	public static func prepareInboxEntryHandler(
 		using inboxApi: any PrivMXInbox,
 		in inboxId:String,
@@ -77,8 +93,10 @@ public class InboxEntryHandler:@unchecked Sendable{
 		
 	}
 	
-	public func startSending(
-		
+	/// Uploads the files associated with the Entry.
+	///
+	/// - Returns: the state of the Handler
+	public func sendFiles(
 	) throws -> InboxEntryHandlerState{
 		DispatchQueue.concurrentPerform(iterations: fileHandlers.count){
 			hId in
@@ -108,16 +126,18 @@ public class InboxEntryHandler:@unchecked Sendable{
 	public func cancel(
 	) throws -> Void {
 		switch self.state{
-			case .sent,.error,.aborted:
+			case .sent,.error,.aborted,.filesSent:
 				throw PrivMXEndpointError.otherFailure(privmx.InternalError(name: "Invalid State Error",
 																			message: "Error",
 																			description: std.string("Sending cannot be aborted in \"\(self.state)\" state."),
 																			code: nil))
-			case .filesSent,.prepared:
+			case .prepared:
 				self.state = .aborted
+				try inboxApi.sendEntry(to: inboxHandle)
 		}
 	}
 	
+	/// Sends the entry, completing the process and adding it to the Inbox.
 	public func sendEntry(
 	) throws {
 		var error = privmx.InternalError(name: "Invalid State Error",
@@ -145,7 +165,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 
 ///State of the `InboxEntryHandler`
 public enum InboxEntryHandlerState:Sendable{
-	/// Ready to start sending
+	/// Ready to start uploading files
 	case prepared
 	/// All Files have been uploaded and the Entry can be sent
 	case filesSent
