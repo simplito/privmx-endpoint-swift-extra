@@ -548,6 +548,21 @@ public class PrivMXEndpoint: Identifiable{
 		}
 	}
 	
+	@available(*,deprecated)
+	public func startDownloadingToBuffer(
+		_ file:FileHandle,
+		from fileId:String,
+		withChunksOf chunkSize: Int64 = PrivMXStoreFileHandler.RecommendedChunkSize,
+		onChunkDownloaded: (@escaping @Sendable (Int) -> Void) = {_ in}
+	) async throws -> Data{
+		try await startDownloadingToBuffer(
+			from:fileId,
+			withChunksOf:PrivMXStoreFileHandler.RecommendedChunkSize,
+			onChunkDownloaded: onChunkDownloaded
+		)
+	}
+	
+	
 	/// Begins downloading a file to in-memory buffer.
     ///
     /// This method downloads a file from a store to the local in-memory buffer. It supports downloading files in chunks and provides a callback for progress tracking.
@@ -560,7 +575,6 @@ public class PrivMXEndpoint: Identifiable{
     ///
     /// - Throws: An error if the download process fails.
     public func startDownloadingToBuffer(
-		_ file:FileHandle,
 		from fileId:String,
 		withChunksOf chunkSize: Int64 = PrivMXStoreFileHandler.RecommendedChunkSize,
 		onChunkDownloaded: (@escaping @Sendable (Int) -> Void) = {_ in}
