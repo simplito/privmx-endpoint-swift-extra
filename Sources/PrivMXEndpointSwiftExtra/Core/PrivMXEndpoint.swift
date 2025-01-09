@@ -458,6 +458,96 @@ public class PrivMXEndpoint: Identifiable{
 		}
 	}
 	
+	/// Begins downloading a file to the local filesystem using `InboxFileHandler`.
+    ///
+    /// This method downloads a file from an Inbox to the local filesystem using a `FileHandle`. It supports downloading files in chunks and provides a callback for progress tracking.
+    ///
+    /// - Parameters:
+    ///   - file: A local `FileHandle` representing the destination file.
+    ///   - fileId: The identifier of the file to be downloaded.
+	///   - chunkSize: The size of a chunk to be used
+    ///   - onChunkDownloaded: A callback that is called after each chunk download is completed.
+    ///
+    /// - Returns: The identifier of the downloaded file as a `String`.
+    ///
+    /// - Throws: An error if the download process fails.
+    public func startDownloadingToFileFromInbox(
+		_ file:FileHandle,
+		from fileId:String,
+		withChunksOf chunkSize: Int64 = InboxFileHandler.RecommendedChunkSize,
+		onChunkDownloaded: (@escaping @Sendable (Int) -> Void) = {_ in}
+	) async throws -> String{
+		var isCancelled = false
+		if let api = self.inboxApi{
+			let sfhandler = try InboxFileHandler.getInboxFileReaderToFile(readFrom: fileId,
+																		  with: api,
+																		  to: file,
+																		  chunkSize: chunkSize)
+			while sfhandler.hasDataLeft && !isCancelled{
+				try sfhandler.readChunk(onChunkDownloaded: onChunkDownloaded)
+				
+				withUnsafeCurrentTask(){
+					task in
+					isCancelled = task?.isCancelled ?? false
+				}
+			}
+			try file.close()
+			return try sfhandler.closeRemote()
+		} else {
+			var err = privmx.InternalError()
+			err.message = "StoresApi not initialised"
+			err.name = "Api Error"
+			throw PrivMXEndpointError.otherFailure(err)
+		}
+	}
+	
+	/// Begins downloading a file to in-memory buffer.
+    ///
+    /// This method downloads a file from a store to the local in-memory buffer. It supports downloading files in chunks and provides a callback for progress tracking.
+    ///
+    /// - Parameters:
+    ///   - fileId: The identifier of the file to be downloaded.
+    ///   - onChunkDownloaded: A callback that is called after each chunk download is completed.
+    ///
+    /// - Returns: The identifier of the downloaded file as a `String`.
+    ///
+    /// - Throws: An error if the download process fails.
+    public func startDownloadingToBufferFromInbox(
+		from fileId:String,
+		withChunksOf chunkSize: Int64 = PrivMXStoreFileHandler.RecommendedChunkSize,
+		onChunkDownloaded: (@escaping @Sendable (Int) -> Void) = {_ in}
+	) async throws -> Data{
+		var isCancelled = false
+		if let api = self.inboxApi{
+			let sfhandler = try InboxFileHandler.getInboxFileReaderToBuffer(readFrom: fileId,
+																			with: api,
+																			chunkSize: chunkSize)
+			while sfhandler.hasDataLeft && !isCancelled{
+				try sfhandler.readChunk(onChunkDownloaded: onChunkDownloaded)
+				
+				withUnsafeCurrentTask(){
+					task in
+					isCancelled = task?.isCancelled ?? false
+				}
+			}
+			_ = try sfhandler.closeRemote()
+			if let b = sfhandler.getBuffer(){
+				return b
+			} else {
+				var err = privmx.InternalError()
+				err.message = "StoresApi not initialised"
+				err.name = "Buffer Error"
+				throw PrivMXEndpointError.otherFailure(err)
+			}
+			
+		} else {
+			var err = privmx.InternalError()
+			err.message = "InboxApi not initialised"
+			err.name = "Api Error"
+			throw PrivMXEndpointError.otherFailure(err)
+		}
+	}
+	
 	/// Begins downloading a file to in-memory buffer.
     ///
     /// This method downloads a file from a store to the local in-memory buffer. It supports downloading files in chunks and provides a callback for progress tracking.
