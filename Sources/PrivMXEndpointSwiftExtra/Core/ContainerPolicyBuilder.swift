@@ -21,6 +21,8 @@ public class ContainerPolicyBuilder{
 	public init(){}
 	
 	/// Initalises the builder with existing policies.
+	///
+	/// - parameter policy: preexisting policy object.
 	public init(
 		from policy: privmx.endpoint.core.ContainerPolicy
 	) {
@@ -34,7 +36,11 @@ public class ContainerPolicyBuilder{
 	}
 	
 	/// Initalises the builder with existing policies.
-	public init(from policy: privmx.endpoint.core.ContainerPolicyWithoutItem){
+	///
+	/// - parameter policy: preexisting policy object.
+	public init(
+		from policy: privmx.endpoint.core.ContainerPolicyWithoutItem
+	){
 		self.cpwi = policy
 		self.cp = privmx.endpoint.core.ContainerPolicy()
 		cp.get = policy.get
@@ -45,19 +51,25 @@ public class ContainerPolicyBuilder{
 		cp.ownerCanBeRemovedFromManagers = policy.ownerCanBeRemovedFromManagers
 	}
 	
-	/// Returns the configured `ContainerPolicy`
+	/// This methods returns a `ContainerPolicy` that was configured by this instance.
+	/// - Returns:  configured `ContainerPolicy`
 	public func build(
 	) -> privmx.endpoint.core.ContainerPolicy {
 		return cp
 	}
 	
-	/// Returns the configured `ContainerPolicyWithoutItem`
+	/// This methods returns a `ContainerPolicyWithoutItem` that was configured by this instance.
+	/// - Returns:  configured `ContainerPolicyWithoutItem`
 	public func buildWithoutItem(
 	) -> privmx.endpoint.core.ContainerPolicyWithoutItem {
 		return cpwi
 	}
 	
-	/// Configures the `get`policy
+	/// Configures the `get` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	/// 
+	/// - Returns: this object for further configuration
 	public func setGet(
 		_ value:ContainerPolicyValue?
 	) -> ContainerPolicyBuilder{
@@ -72,7 +84,11 @@ public class ContainerPolicyBuilder{
 		return self
 	}
 	
-	/// Configures the `update`policy
+	/// Configures the `update` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
 	public func setUpdate(
 		_ value:ContainerPolicyValue?
 	) -> ContainerPolicyBuilder{
@@ -87,7 +103,11 @@ public class ContainerPolicyBuilder{
 		return self
 	}
 	
-	/// Configures the `delete`policy
+	/// Configures the `delete` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
 	public func setDelete(
 		_ value:ContainerPolicyValue
 	) -> ContainerPolicyBuilder{
@@ -97,7 +117,11 @@ public class ContainerPolicyBuilder{
 		return self
 	}
 	
-	/// Configures the `updatePolicy`policy
+	/// Configures the `updatePolicy` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
 	public func setUpdatePolicy(
 		_ value:ContainerPolicyValue
 	) -> ContainerPolicyBuilder{
@@ -107,7 +131,11 @@ public class ContainerPolicyBuilder{
 		return self
 	}
 	
-	/// Configures the `updaterCanBeRemovedFromManagers`policy
+	/// Configures the `updaterCanBeRemovedFromManagers` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
 	public func setUpdaterCanBeRemovedFromManagers(
 		_ value: SpecialPolicyValue?
 	) -> ContainerPolicyBuilder{
@@ -122,7 +150,11 @@ public class ContainerPolicyBuilder{
 		return self
 	}
 	
-	/// Configures the `ownerCanBeRemovedFromManagers`policy
+	/// Configures the `ownerCanBeRemovedFromManagers` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
 	public func setOwnerCanBeRemovedFromManagers(
 		_ value: SpecialPolicyValue?
 	) -> ContainerPolicyBuilder{
@@ -137,7 +169,11 @@ public class ContainerPolicyBuilder{
 		return self
 	}
 	
-	/// Configures the `item`policy
+	/// Configures the `item` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
 	public func setItem(
 		_ value: privmx.endpoint.core.ItemPolicy?
 	) -> ContainerPolicyBuilder {

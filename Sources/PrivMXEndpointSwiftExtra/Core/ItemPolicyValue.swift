@@ -12,6 +12,7 @@
 import Foundation
 import PrivMXEndpointSwiftNative
 
+/// Enumeration of values available for use when configuring Policies for Items
 public enum ItemPolicyValue: RawRepresentable, Equatable{
 	public var rawValue: std.string {
 		switch self{

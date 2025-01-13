@@ -18,19 +18,27 @@ public class ItemPolicyBuilder{
 	public init(){}
 	
 	/// Initalises the builder with existing policies.
+	///
+	/// - parameter policy: preexisting Policy object.
 	public init(
 		from policy: privmx.endpoint.core.ItemPolicy
 	) {
 		self.ip = policy
 	}
 	
-	/// Returns the configured `ItemPolicy`
+	/// This methods returns a `ItemPolicy` that was configured by this instance.
+	///
+	/// - Returns:  configured `ItemPolicy`
 	public func build(
 	) -> privmx.endpoint.core.ItemPolicy {
 		return ip
 	}
 	
-	/// Configures the `get`policy
+	/// Configures the `get` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
 	public func setGet(
 		_ value:ItemPolicyValue?
 	) -> ItemPolicyBuilder{
@@ -43,7 +51,11 @@ public class ItemPolicyBuilder{
 		return self
 	}
 	
-	/// Configures the `listMy`policy
+	/// Configures the `listMy` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
 	public func setListMy(
 		_ value:ItemPolicyValue?
 	) -> ItemPolicyBuilder{
@@ -56,7 +68,9 @@ public class ItemPolicyBuilder{
 		return self
 	}
 	
-	/// Configures the `listAll`policy
+	/// Configures the `listAll` policy
+	/// - Parameter value: the policy value that will be set
+	/// - Returns: this object for further configuration
 	public func setListAll(
 		_ value:ItemPolicyValue?
 	) -> ItemPolicyBuilder{
@@ -69,9 +83,13 @@ public class ItemPolicyBuilder{
 		return self
 	}
 	
-	/// Configures the `create`policy
+	/// Configures the `create` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	/// 
+	/// - Returns: this object for further configuration
 	public func setCreate(
-		_ value:ItemPolicyValue?
+		_ value:ContainerPolicyValue?
 	) -> ItemPolicyBuilder{
 		if let value{
 			let optval = privmx.makeOptional(value.rawValue)
@@ -82,7 +100,11 @@ public class ItemPolicyBuilder{
 		return self
 	}
 	
-	/// Configures the `update`policy
+	/// Configures the `update` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	/// 
+	/// - Returns: this object for further configuration
 	public func setUpdate(
 		_ value:ItemPolicyValue?
 	) -> ItemPolicyBuilder{
@@ -95,7 +117,11 @@ public class ItemPolicyBuilder{
 		return self
 	}
 	
-	/// Configures the `delete`policy
+	/// Configures the `delete` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	/// 
+	/// - Returns: this object for further configuration
 	public func setDelete(
 		_ value:ItemPolicyValue?
 	) -> ItemPolicyBuilder{
