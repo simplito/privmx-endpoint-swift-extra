@@ -21,7 +21,7 @@ extension StoreApi : PrivMXStore{
 		basedOn query: privmx.endpoint.core.PagingQuery
 	) throws -> privmx.StoreList {
 		try listStores(contextId: std.string(contextId),
-					   query:query)
+					   pagingQuery:query)
 	}
 	
 	
@@ -86,7 +86,7 @@ extension StoreApi : PrivMXStore{
 		basedOn query: privmx.endpoint.core.PagingQuery
 	) throws -> privmx.FileList {
 		try listFiles(storeId: std.string(storeId),
-					  query: query)
+					  pagingQuery: query)
 	}
 	
 	
