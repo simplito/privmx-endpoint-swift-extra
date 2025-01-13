@@ -13,6 +13,7 @@ import Foundation
 import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 
+/// Class wrapping the process of creating and uploading an Inbox Entry.
 public class InboxEntryHandler:@unchecked Sendable{
 	
 	/// Recommended chunk size for file transfers, suggested by the endpoint library.

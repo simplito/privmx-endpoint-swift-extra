@@ -30,6 +30,7 @@ public struct FileHandleDataSource:FileDataSource{
 		self.hasDataLeft = hasDataLeft
 	}
 	
+	/// Handle to a local file
 	var file:FileHandle
 	
 	public mutating func getNextChunk(
