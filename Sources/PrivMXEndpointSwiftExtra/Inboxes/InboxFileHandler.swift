@@ -13,8 +13,8 @@ import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 import Foundation
 
-	/// A class providing a set of tools using SwiftNIO for uploading and downloading
-	/// files with the use of `PrivMXInbox` from PrivMX Endpoint.
+/// A class providing a set of tools using SwiftNIO for uploading and downloading
+/// files with the use of `PrivMXInbox` from PrivMX Endpoint.
 public final class InboxFileHandler:@unchecked Sendable{
 	
 	/// Recommended chunk size for file transfers, suggested by the endpoint library.

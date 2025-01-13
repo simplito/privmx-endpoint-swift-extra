@@ -16,11 +16,15 @@ public protocol FileDataSource: Sendable{
 	/// Retrieves up to `chunkSize`bytes from the data source.
 	///
 	/// - Parameter chunkSize: the size of a chunk to retrieve from the source
+	///
+	/// - Returns: next `chunkSize` bytes from the source
 	mutating func getNextChunk(
 		ofSize chunkSize:Int64
 	) throws -> Data
 	
-	/// Attempts to close the data source, for example when the source is a file on disc
+	/// Attempts to close the data source.
+	///
+	/// Calling this method makes sense if the source is a file on disc.
 	mutating func close(
 	) throws
 	
