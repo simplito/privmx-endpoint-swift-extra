@@ -116,7 +116,7 @@ extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 		uploading dataChunk: Data
 	) throws -> Void {
 		try self.writeToFile(inboxHandle: inboxHandle,
-							 inboxFileHandle: inboxHandle,
+							 inboxFileHandle: inboxFileHandle,
 							 dataChunk: dataChunk.asBuffer())
 	}
 	
