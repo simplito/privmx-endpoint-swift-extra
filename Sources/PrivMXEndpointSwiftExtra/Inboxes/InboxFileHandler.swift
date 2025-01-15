@@ -131,7 +131,7 @@ public final class InboxFileHandler:@unchecked Sendable{
 		} else if mode == .readToBuffer {
 			let buf = try inboxApi.readFromFile(withHandle: fileHandle,
 												 length: chunkSize)
-			if nil != buffer {
+			if nil == buffer {
 				buffer = Data()
 			}
 			buffer?.append(buf)
