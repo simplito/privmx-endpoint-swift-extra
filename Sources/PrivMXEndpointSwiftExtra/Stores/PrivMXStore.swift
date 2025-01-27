@@ -185,6 +185,18 @@ public protocol PrivMXStore{
 		replacingSize size: Int64
 	) throws -> privmx.StoreFileHandle
 	
+	/// Updates an existing File by overwriting its metadata.
+	///
+	/// - Parameters:
+	///   - fileId: The unique identifier of the File to be updated.
+	///   - publicMeta: New public metadata for the File, which will be unencrypted.
+	///   - privateMeta: New private metadata for the File, which will be encrypted.
+	func updateFileMeta(
+		of fileId: String,
+		replacingPublicMeta publicMeta: Data,
+		replacingPrivateMeta privateMeta: Data
+	) throws -> Void
+	
 	/// Opens a File for reading and returns a file handle (`StoreFileHandle`).
 	///
 	/// This method opens an existing File, identified by its file ID, and returns a handle that can be used
