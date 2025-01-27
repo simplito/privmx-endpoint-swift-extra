@@ -57,7 +57,7 @@ public class ItemPolicyBuilder{
 	///
 	/// - Returns: this object for further configuration
 	public func setListMy(
-		_ value:ItemPolicyValue?
+        _ value:ContainerPolicyValue?
 	) -> ItemPolicyBuilder{
 		if let value{
 			let optval = privmx.makeOptional(value.rawValue)
@@ -72,7 +72,7 @@ public class ItemPolicyBuilder{
 	/// - Parameter value: the policy value that will be set
 	/// - Returns: this object for further configuration
 	public func setListAll(
-		_ value:ItemPolicyValue?
+        _ value:ContainerPolicyValue?
 	) -> ItemPolicyBuilder{
 		if let value{
 			let optval = privmx.makeOptional(value.rawValue)
