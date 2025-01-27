@@ -57,7 +57,7 @@ public class ItemPolicyBuilder{
 	///
 	/// - Returns: this object for further configuration
 	public func setListMy(
-        _ value:ContainerPolicyValue?
+		_ value:ContainerPolicyValue?
 	) -> ItemPolicyBuilder{
 		if let value{
 			let optval = privmx.makeOptional(value.rawValue)
@@ -72,7 +72,7 @@ public class ItemPolicyBuilder{
 	/// - Parameter value: the policy value that will be set
 	/// - Returns: this object for further configuration
 	public func setListAll(
-        _ value:ContainerPolicyValue?
+		_ value:ContainerPolicyValue?
 	) -> ItemPolicyBuilder{
 		if let value{
 			let optval = privmx.makeOptional(value.rawValue)
@@ -86,7 +86,7 @@ public class ItemPolicyBuilder{
 	/// Configures the `create` policy
 	///
 	/// - Parameter value: the policy value that will be set
-	/// 
+	///
 	/// - Returns: this object for further configuration
 	public func setCreate(
 		_ value:ContainerPolicyValue?
@@ -103,7 +103,7 @@ public class ItemPolicyBuilder{
 	/// Configures the `update` policy
 	///
 	/// - Parameter value: the policy value that will be set
-	/// 
+	///
 	/// - Returns: this object for further configuration
 	public func setUpdate(
 		_ value:ItemPolicyValue?
@@ -120,7 +120,7 @@ public class ItemPolicyBuilder{
 	/// Configures the `delete` policy
 	///
 	/// - Parameter value: the policy value that will be set
-	/// 
+	///
 	/// - Returns: this object for further configuration
 	public func setDelete(
 		_ value:ItemPolicyValue?

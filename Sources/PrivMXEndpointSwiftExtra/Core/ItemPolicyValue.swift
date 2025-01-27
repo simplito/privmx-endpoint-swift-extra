@@ -28,8 +28,8 @@ public enum ItemPolicyValue: RawRepresentable, Equatable{
 				return "itemOwner"
 			case .user:
 				return "user"
-            case .inherit:
-                return "inherit"
+			case .inherit:
+				return "inherit"
 			case .manager:
 				return "manager"
 			case .complex(let val):
@@ -91,8 +91,8 @@ public enum ItemPolicyValue: RawRepresentable, Equatable{
 	/// No one can perform this action
 	case none
 	/// Take the default value
-    case `default`
-    /// Take the value form context
+	case `default`
+	/// Take the value form context
 	case inherit
 	/// Only Container owner can perform this action
 	case owner
