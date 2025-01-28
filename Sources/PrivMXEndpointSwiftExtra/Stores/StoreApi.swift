@@ -115,7 +115,7 @@ extension StoreApi : PrivMXStore{
 					   size: size)
 	}
 	
-public func updateFileMeta(
+	public func updateFileMeta(
 		of fileId: String,
 		replacingPublicMeta publicMeta: Data,
 		replacingPrivateMeta privateMeta: Data
