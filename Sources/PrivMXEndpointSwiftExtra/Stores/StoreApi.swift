@@ -119,7 +119,7 @@ extension StoreApi : PrivMXStore{
 		of fileId: String,
 		replacingPublicMeta publicMeta: Data,
 		replacingPrivateMeta privateMeta: Data
-	) throws -> privmx.StoreFileHandle {
+	) throws -> Void {
 		try updateFileMeta(fileId:std.string(fileId),
 						   publicMeta: publicMeta.asBuffer(),
 						   privateMeta: privateMeta.asBuffer())
