@@ -115,6 +115,16 @@ extension StoreApi : PrivMXStore{
 					   size: size)
 	}
 	
+	public func updateFileMeta(
+		of fileId: String,
+		replacingPublicMeta publicMeta: Data,
+		replacingPrivateMeta privateMeta: Data
+	) throws -> Void {
+		try updateFileMeta(fileId:std.string(fileId),
+						   publicMeta: publicMeta.asBuffer(),
+						   privateMeta: privateMeta.asBuffer())
+	}
+	
 	
 	public func openFile(
 		_ fileId: String
