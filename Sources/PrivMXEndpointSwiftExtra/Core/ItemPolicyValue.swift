@@ -12,7 +12,7 @@
 import Foundation
 import PrivMXEndpointSwiftNative
 
-/// Enumeration of values available for use when configuring Policies for Items
+/// Enumeration of values available for configuring Policies for Items
 public enum ItemPolicyValue: RawRepresentable, Equatable{
 	public var rawValue: std.string {
 		switch self{
@@ -92,7 +92,7 @@ public enum ItemPolicyValue: RawRepresentable, Equatable{
 	case none
 	/// Take the default value
 	case `default`
-	/// Take the value form context
+	/// Take the value from the Context
 	case inherit
 	/// Only Container owner can perform this action
 	case owner
