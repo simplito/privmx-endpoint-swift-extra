@@ -53,10 +53,10 @@ public enum ContainerPolicyValue: RawRepresentable{
 						flag = true
 					}
 					else{
-						cas.and(c)
+						cas.andMutating(c)
 					}
 				}
-				self.or(cas)
+				self.orMutating(cas)
 			}
 		} else {
 			switch rawValue{
@@ -106,7 +106,7 @@ public enum ContainerPolicyValue: RawRepresentable{
 	///
 	/// - Returns: modified `self`.
 	@discardableResult
-	public mutating func and(
+	public mutating func andMutating(
 		_ val:ContainerPolicyValue
 	) -> ContainerPolicyValue{
 		self = .complex("\(self.rawValue)&\(val.rawValue)")
@@ -118,10 +118,31 @@ public enum ContainerPolicyValue: RawRepresentable{
 	/// - Parameter val: Policy value to be appended with "OR" operator
 	/// - Returns: modified `self`
 	@discardableResult
-	public mutating func or(
+	public mutating func orMutating(
 		_ val:ContainerPolicyValue
 	) -> ContainerPolicyValue{
 		self = .complex("\(self.rawValue),\(val.rawValue)")
 		return self
 	}
+	
+	/// Creates a new `ContainerPolicyValue.complex` with the the associated value consisting of `self.rawValue` and `val.rawValue`connected with `&`.
+	///
+	/// - Parameter val: Policy value to be appended with "AND" operator
+	/// - Returns: new `.complex` `ContainerPolicyValue`
+	public func and(
+		_ val:ContainerPolicyValue
+	) -> ContainerPolicyValue{
+		.complex("\(self.rawValue)&\(val.rawValue)")
+	}
+	
+	/// Creates a new `ContainerPolicyValue.complex` with the the associated value consisting of `self.rawValue` and `val.rawValue`connected with `&`
+	///
+	/// - Parameter val: Policy value to be appended with "OR" operator
+	/// - Returns: modified `self`
+	public func or(
+		_ val:ContainerPolicyValue
+	) -> ContainerPolicyValue{
+		.complex("\(self.rawValue),\(val.rawValue)")
+	}
+
 }
