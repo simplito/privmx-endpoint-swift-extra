@@ -21,7 +21,7 @@ extension StoreApi : PrivMXStore{
 		basedOn query: privmx.endpoint.core.PagingQuery
 	) throws -> privmx.StoreList {
 		try listStores(contextId: std.string(contextId),
-					   query:query)
+					   pagingQuery:query)
 	}
 	
 	
@@ -86,7 +86,7 @@ extension StoreApi : PrivMXStore{
 		basedOn query: privmx.endpoint.core.PagingQuery
 	) throws -> privmx.FileList {
 		try listFiles(storeId: std.string(storeId),
-					  query: query)
+					  pagingQuery: query)
 	}
 	
 	
@@ -113,6 +113,16 @@ extension StoreApi : PrivMXStore{
 					   publicMeta: publicMeta.asBuffer(),
 					   privateMeta: privateMeta.asBuffer(),
 					   size: size)
+	}
+	
+	public func updateFileMeta(
+		of fileId: String,
+		replacingPublicMeta publicMeta: Data,
+		replacingPrivateMeta privateMeta: Data
+	) throws -> Void {
+		try updateFileMeta(fileId:std.string(fileId),
+						   publicMeta: publicMeta.asBuffer(),
+						   privateMeta: privateMeta.asBuffer())
 	}
 	
 	

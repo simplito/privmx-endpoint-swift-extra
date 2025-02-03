@@ -14,21 +14,21 @@ import Foundation
 /// FileDataSource using an internal `Data` buffer
 public struct BufferDataSource:FileDataSource{
 	
-	public init(buffer: Data,
-				privateMeta: Data,
-				publicMeta: Data,
-				size: Int64,
-				id: String) {
+	public init(
+		buffer: Data,
+		privateMeta: Data,
+		publicMeta: Data,
+		size: Int64
+	) {
 		self.buffer = buffer
 		self.privateMeta = privateMeta
 		self.publicMeta = publicMeta
 		self.size = size
-		self.id = id
 	}
 	
 	private var buffer: Data
 	
-	/// Advances the internal buffer by `chunkSize` bytes
+	/// Advances the internal buffer by `chunkSize` bytes.
 	///
 	/// - Parameter chunkSize: amount of bytes to be retrieved
 	///

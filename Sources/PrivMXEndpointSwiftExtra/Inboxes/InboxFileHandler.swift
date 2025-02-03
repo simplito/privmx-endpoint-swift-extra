@@ -13,9 +13,9 @@ import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 import Foundation
 
-	/// A class providing a set of tools using SwiftNIO for uploading and downloading
-	/// files with the use of `PrivMXInbox` from PrivMX Endpoint.
-public class InboxFileHandler{
+/// A class providing a set of tools using SwiftNIO for uploading and downloading
+/// files with the use of `PrivMXInbox` from PrivMX Endpoint.
+public final class InboxFileHandler:@unchecked Sendable{
 	
 	/// Recommended chunk size for file transfers, suggested by the endpoint library.
 	public static let RecommendedChunkSize :Int64 = 131072
@@ -30,6 +30,7 @@ public class InboxFileHandler{
 	private var buffer: Data?
 	private var localFile: FileHandle?
 	
+	/// The mode of this handler
 	public let mode:InboxFileHandlerMode
 	
 	public private(set) var hasDataLeft:Bool = true
@@ -71,6 +72,8 @@ public class InboxFileHandler{
 		self.chunkSize = chunkSize
 	}
 	
+	/// Sets the Inbox handle for uploading the file.
+	/// - Parameter handle: Inbox handle received by preparing an Inbox Entry
 	public func setInboxHandle(
 		_ handle: privmx.InboxHandle
 	) -> Void {
@@ -87,10 +90,17 @@ public class InboxFileHandler{
 	
 	/// Closes local `FileDataSource`.
 	///
-	/// - Throws: An error if closing the source fails.
+	/// - Throws: An error if closing the source fails or the mode was incorrect.
 	public func closeSource(
 	) throws -> Void{
-		try dataSource!.close()
+		if mode == .write{
+			try dataSource?.close()
+		}else{
+			throw PrivMXEndpointError.otherFailure(privmx.InternalError(name: "Invalid State Error",
+																		message: "No DataSource to close",
+																		description: "No DataSource to close",
+																		code: nil))
+		}
 	}
 	
 	/// Closes remote File.
@@ -214,7 +224,7 @@ public class InboxFileHandler{
 	}
 }
 
-public enum InboxFileHandlerMode{
+public enum InboxFileHandlerMode:Sendable{
 	case write
 	case readToBuffer, readToFile
 }

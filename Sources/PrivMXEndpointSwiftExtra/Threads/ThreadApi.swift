@@ -22,7 +22,7 @@ extension ThreadApi:PrivMXThread{
 	) throws -> privmx.ThreadList {
 		
 		try listThreads(contextId: std.string(contextId),
-						query: query)
+						pagingQuery: query)
 	}
 	
 	public func getThread(
@@ -70,7 +70,7 @@ extension ThreadApi:PrivMXThread{
 		basedOn query: privmx.endpoint.core.PagingQuery
 	) throws -> privmx.MessageList {
 		try listMessages(threadId: std.string(threadId),
-						 query: query)
+						 pagingQuery: query)
 	}
 	
 	public func getMessage(

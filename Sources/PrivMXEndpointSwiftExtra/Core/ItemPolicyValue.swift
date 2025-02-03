@@ -12,6 +12,7 @@
 import Foundation
 import PrivMXEndpointSwiftNative
 
+/// Enumeration of values available for configuring Policies for Items
 public enum ItemPolicyValue: RawRepresentable, Equatable{
 	public var rawValue: std.string {
 		switch self{
@@ -27,6 +28,8 @@ public enum ItemPolicyValue: RawRepresentable, Equatable{
 				return "itemOwner"
 			case .user:
 				return "user"
+			case .inherit:
+				return "inherit"
 			case .manager:
 				return "manager"
 			case .complex(let val):
@@ -50,14 +53,14 @@ public enum ItemPolicyValue: RawRepresentable, Equatable{
 						flag = true
 					}
 					else{
-						cas.and(c)
+						cas.andMutating(c)
 					}
 				}
 				if !flag{
 					self = cas
 					flag = true
 				}else{
-					self.or(cas)
+					self.orMutating(cas)
 				}
 			}
 		} else {
@@ -89,6 +92,8 @@ public enum ItemPolicyValue: RawRepresentable, Equatable{
 	case none
 	/// Take the default value
 	case `default`
+	/// Take the value from the Context
+	case inherit
 	/// Only Container owner can perform this action
 	case owner
 	/// Only item owner can perform this action
@@ -106,7 +111,7 @@ public enum ItemPolicyValue: RawRepresentable, Equatable{
 	/// - Parameter val: Policy value to be appended with "AND" operator
 	/// - Returns: modified `self`
 	@discardableResult
-	public mutating func and(
+	public mutating func andMutating(
 		_ val:ItemPolicyValue
 	) -> ItemPolicyValue{
 		self = .complex("\(self.rawValue)&\(val.rawValue)")
@@ -118,10 +123,30 @@ public enum ItemPolicyValue: RawRepresentable, Equatable{
 	/// - Parameter val: Policy value to be appended with "OR" operator
 	/// - Returns: modified `self`
 	@discardableResult
-	public mutating func or(
+	public mutating func orMutating(
 		_ val:ItemPolicyValue
 	) -> ItemPolicyValue{
 		self = .complex("\(self.rawValue),\(val.rawValue)")
 		return self
+	}
+	
+	/// Creates a new `ItemPolicyValue.complex` with the the associated value consisting of `self.rawValue` and `val.rawValue`connected with `&`.
+	///
+	/// - Parameter val: Policy value to be appended with "AND" operator
+	/// - Returns: new `.complex` `ItemPolicyValue`
+	public func and(
+		_ val:ItemPolicyValue
+	) -> ItemPolicyValue{
+		.complex("\(self.rawValue)&\(val.rawValue)")
+	}
+	
+	/// Creates a new `ItemPolicyValue.complex` with the the associated value consisting of `self.rawValue` and `val.rawValue`connected with `&`
+	///
+	/// - Parameter val: Policy value to be appended with "OR" operator
+	/// - Returns: modified `self`
+	public func or(
+		_ val:ItemPolicyValue
+	) -> ItemPolicyValue{
+		.complex("\(self.rawValue),\(val.rawValue)")
 	}
 }
