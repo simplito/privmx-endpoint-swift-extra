@@ -45,7 +45,8 @@ public class PrivMXEndpoint: Identifiable{
     ///   - platformUrl: The URL of PrivMX Bridge instance.
     ///
     /// - Throws: An error if the connection or module initialization fails.
-    public init(
+	@available(*, deprecated)
+	public init(
 		modules:Set<PrivMXModule>,
 		userPrivKey:String,
 		solutionId:String,
@@ -54,6 +55,48 @@ public class PrivMXEndpoint: Identifiable{
 		var con = try Connection.connect(userPrivKey: std.string(userPrivKey),
 										 solutionId: std.string(solutionId),
 										 platformUrl: std.string(platformUrl))
+		self.connection = con
+		self.anonymous = false
+		var thr:ThreadApi?
+		var sto:StoreApi?
+		if modules.contains(.thread){
+			thr = try ThreadApi.create(connection: &con)
+			self.threadApi = thr
+		}
+		if modules.contains(.store){
+			sto = try StoreApi.create(connection: &con)
+			self.storeApi = sto
+		}
+		if modules.contains(.inbox){
+			var s = try (sto ?? StoreApi.create(connection: &con))
+			var t = try (thr ?? ThreadApi.create(connection: &con))
+			self.inboxApi = try InboxApi.create(connection: &con,
+												  threadApi: &t,
+												  storeApi: &s)
+		}
+		self.id = try! con.getConnectionId()
+	}
+	
+	/// Initializes a new instance of `PrivMXEndpoint` with a connection to PrivMX Bridge and optional modules.
+    ///
+    /// This method sets up the connection and, based on the provided modules, initializes the APIs for handling Threads, Stores, and Inboxes.
+    ///
+    /// - Parameters:
+    ///   - modules: A set of modules to initialize (of type `PrivMXModule`).
+    ///   - userPrivKey: The user's private key in WIF format.
+    ///   - solutionId: The unique identifier of PrivMX Solution.
+    ///   - bridgeUrl: The URL of PrivMX Bridge instance.
+    ///
+    /// - Throws: An error if the connection or module initialization fails.
+	public init(
+		modules:Set<PrivMXModule>,
+		userPrivKey:String,
+		solutionId:String,
+		bridgeUrl:String
+	) throws {
+		var con = try Connection.connect(userPrivKey: std.string(userPrivKey),
+										 solutionId: std.string(solutionId),
+										 bridgeUrl: std.string(bridgeUrl))
 		self.connection = con
 		self.anonymous = false
 		var thr:ThreadApi?
@@ -87,6 +130,7 @@ public class PrivMXEndpoint: Identifiable{
 	///   - platformUrl: The URL of the PrivMX Bridge instance.
 	///
 	/// - Throws: An error if the connection or module initialization fails.
+	@available(*, deprecated)
 	public init(
 		modules:Set<PrivMXModule>,
 		solutionId:String,
@@ -94,6 +138,46 @@ public class PrivMXEndpoint: Identifiable{
 	) throws {
 		var con = try Connection.connectPublic(solutionId: std.string(solutionId),
 											   platformUrl: std.string(platformUrl))
+		self.connection = con
+		self.anonymous = true
+		var thr:ThreadApi?
+		var sto:StoreApi?
+		if modules.contains(.thread){
+			thr = try ThreadApi.create(connection: &con)
+			self.threadApi = thr
+		}
+		if modules.contains(.store){
+			sto = try StoreApi.create(connection: &con)
+			self.storeApi = sto
+		}
+		if modules.contains(.inbox){
+			var s = try (sto ?? StoreApi.create(connection: &con))
+			var t = try (thr ?? ThreadApi.create(connection: &con))
+			self.inboxApi = try InboxApi.create(connection: &con,
+												  threadApi: &t,
+												  storeApi: &s)
+		}
+		self.id = try! con.getConnectionId()
+	}
+	
+	/// Initializes a new instance of `PrivMXEndpoint` with a public connection to the PrivMX Bridge and optional modules.
+	///
+	/// This method sets up the connection and, based on the provided modules, initializes the APIs for handling threads, stores, and inboxes. Using a Public (anonymous) connection.
+	/// Take note that this is only useful for Inboxes
+	///
+	/// - Parameters:
+	///   - modules: A set of modules to initialize (of type `PrivMXModule`).
+	///   - solutionId: The unique identifier of the PrivMX solution.
+	///   - bridgeUrl: The URL of the PrivMX Bridge instance.
+	///
+	/// - Throws: An error if the connection or module initialization fails.
+	public init(
+		modules:Set<PrivMXModule>,
+		solutionId:String,
+		bridgeUrl:String
+	) throws {
+		var con = try Connection.connectPublic(solutionId: std.string(solutionId),
+											   bridgeUrl: std.string(bridgeUrl))
 		self.connection = con
 		self.anonymous = true
 		var thr:ThreadApi?
@@ -374,6 +458,111 @@ public class PrivMXEndpoint: Identifiable{
 		}
 	}
 	
+	/// Begins downloading a file to the local filesystem using `InboxFileHandler`.
+    ///
+    /// This method downloads a file from an Inbox to the local filesystem using a `FileHandle`. It supports downloading files in chunks and provides a callback for progress tracking.
+    ///
+    /// - Parameters:
+    ///   - file: A local `FileHandle` representing the destination file.
+    ///   - fileId: The identifier of the file to be downloaded.
+	///   - chunkSize: The size of a chunk to be used
+    ///   - onChunkDownloaded: A callback that is called after each chunk download is completed.
+    ///
+    /// - Returns: The identifier of the downloaded file as a `String`.
+    ///
+    /// - Throws: An error if the download process fails.
+    public func startDownloadingToFileFromInbox(
+		_ file:FileHandle,
+		from fileId:String,
+		withChunksOf chunkSize: Int64 = InboxFileHandler.RecommendedChunkSize,
+		onChunkDownloaded: (@escaping @Sendable (Int) -> Void) = {_ in}
+	) async throws -> String{
+		var isCancelled = false
+		if let api = self.inboxApi{
+			let sfhandler = try InboxFileHandler.getInboxFileReaderToFile(readFrom: fileId,
+																		  with: api,
+																		  to: file,
+																		  chunkSize: chunkSize)
+			while sfhandler.hasDataLeft && !isCancelled{
+				try sfhandler.readChunk(onChunkDownloaded: onChunkDownloaded)
+				
+				withUnsafeCurrentTask(){
+					task in
+					isCancelled = task?.isCancelled ?? false
+				}
+			}
+			try file.close()
+			return try sfhandler.closeRemote()
+		} else {
+			var err = privmx.InternalError()
+			err.message = "StoresApi not initialised"
+			err.name = "Api Error"
+			throw PrivMXEndpointError.otherFailure(err)
+		}
+	}
+	
+	/// Begins downloading a file to in-memory buffer.
+    ///
+    /// This method downloads a file from a store to the local in-memory buffer. It supports downloading files in chunks and provides a callback for progress tracking.
+    ///
+    /// - Parameters:
+    ///   - fileId: The identifier of the file to be downloaded.
+    ///   - onChunkDownloaded: A callback that is called after each chunk download is completed.
+    ///
+    /// - Returns: The identifier of the downloaded file as a `String`.
+    ///
+    /// - Throws: An error if the download process fails.
+    public func startDownloadingToBufferFromInbox(
+		from fileId:String,
+		withChunksOf chunkSize: Int64 = PrivMXStoreFileHandler.RecommendedChunkSize,
+		onChunkDownloaded: (@escaping @Sendable (Int) -> Void) = {_ in}
+	) async throws -> Data{
+		var isCancelled = false
+		if let api = self.inboxApi{
+			let sfhandler = try InboxFileHandler.getInboxFileReaderToBuffer(readFrom: fileId,
+																			with: api,
+																			chunkSize: chunkSize)
+			while sfhandler.hasDataLeft && !isCancelled{
+				try sfhandler.readChunk(onChunkDownloaded: onChunkDownloaded)
+				
+				withUnsafeCurrentTask(){
+					task in
+					isCancelled = task?.isCancelled ?? false
+				}
+			}
+			_ = try sfhandler.closeRemote()
+			if let b = sfhandler.getBuffer(){
+				return b
+			} else {
+				var err = privmx.InternalError()
+				err.message = "StoresApi not initialised"
+				err.name = "Buffer Error"
+				throw PrivMXEndpointError.otherFailure(err)
+			}
+			
+		} else {
+			var err = privmx.InternalError()
+			err.message = "InboxApi not initialised"
+			err.name = "Api Error"
+			throw PrivMXEndpointError.otherFailure(err)
+		}
+	}
+	
+	@available(*,deprecated)
+	public func startDownloadingToBuffer(
+		_ file:FileHandle,
+		from fileId:String,
+		withChunksOf chunkSize: Int64 = PrivMXStoreFileHandler.RecommendedChunkSize,
+		onChunkDownloaded: (@escaping @Sendable (Int) -> Void) = {_ in}
+	) async throws -> Data{
+		try await startDownloadingToBuffer(
+			from:fileId,
+			withChunksOf:PrivMXStoreFileHandler.RecommendedChunkSize,
+			onChunkDownloaded: onChunkDownloaded
+		)
+	}
+	
+	
 	/// Begins downloading a file to in-memory buffer.
     ///
     /// This method downloads a file from a store to the local in-memory buffer. It supports downloading files in chunks and provides a callback for progress tracking.
@@ -386,7 +575,6 @@ public class PrivMXEndpoint: Identifiable{
     ///
     /// - Throws: An error if the download process fails.
     public func startDownloadingToBuffer(
-		_ file:FileHandle,
 		from fileId:String,
 		withChunksOf chunkSize: Int64 = PrivMXStoreFileHandler.RecommendedChunkSize,
 		onChunkDownloaded: (@escaping @Sendable (Int) -> Void) = {_ in}

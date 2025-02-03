@@ -21,7 +21,7 @@ extension StoreApi : PrivMXStore{
 		basedOn query: privmx.endpoint.core.PagingQuery
 	) throws -> privmx.StoreList {
 		try listStores(contextId: std.string(contextId),
-					   query:query)
+					   pagingQuery:query)
 	}
 	
 	
@@ -36,13 +36,15 @@ extension StoreApi : PrivMXStore{
 		for users: [privmx.endpoint.core.UserWithPubKey],
 		managedBy managers: [privmx.endpoint.core.UserWithPubKey],
 		withPublicMeta publicMeta: Data,
-		withPrivateMeta privateMeta: Data
+		withPrivateMeta privateMeta: Data,
+		withPolicies policies: privmx.endpoint.core.ContainerPolicy? = nil
 	) throws -> String {
 		return try String(createStore(contextId: std.string(contextId),
 									  users: privmx.UserWithPubKeyVector(users),
 									  managers: privmx.UserWithPubKeyVector(managers),
 									  publicMeta: publicMeta.asBuffer(),
-									  privateMeta: privateMeta.asBuffer()))
+									  privateMeta: privateMeta.asBuffer(),
+									  policies:policies))
 	}
 	
 	public func updateStore(
@@ -53,7 +55,8 @@ extension StoreApi : PrivMXStore{
 		replacingPublicMeta publicMeta: Data,
 		replacingPrivateMeta privateMeta: Data,
 		force: Bool,
-		forceGenerateNewKey: Bool
+		forceGenerateNewKey: Bool,
+		replacingPolicies policies: privmx.endpoint.core.ContainerPolicy? = nil
 	) throws -> Void {
 		try updateStore(storeId:std.string(storeId),
 						version: version,
@@ -62,7 +65,8 @@ extension StoreApi : PrivMXStore{
 						publicMeta: publicMeta.asBuffer(),
 						privateMeta: privateMeta.asBuffer(),
 						force: force,
-						forceGenerateNewKey: forceGenerateNewKey)
+						forceGenerateNewKey: forceGenerateNewKey,
+						policies:policies)
 	}
 	
 	public func deleteStore(
@@ -82,7 +86,7 @@ extension StoreApi : PrivMXStore{
 		basedOn query: privmx.endpoint.core.PagingQuery
 	) throws -> privmx.FileList {
 		try listFiles(storeId: std.string(storeId),
-					  query: query)
+					  pagingQuery: query)
 	}
 	
 	
@@ -109,6 +113,16 @@ extension StoreApi : PrivMXStore{
 					   publicMeta: publicMeta.asBuffer(),
 					   privateMeta: privateMeta.asBuffer(),
 					   size: size)
+	}
+	
+	public func updateFileMeta(
+		of fileId: String,
+		replacingPublicMeta publicMeta: Data,
+		replacingPrivateMeta privateMeta: Data
+	) throws -> Void {
+		try updateFileMeta(fileId:std.string(fileId),
+						   publicMeta: publicMeta.asBuffer(),
+						   privateMeta: privateMeta.asBuffer())
 	}
 	
 	

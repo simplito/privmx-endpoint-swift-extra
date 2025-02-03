@@ -14,7 +14,7 @@ import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 
 /// Extension of `InboxApi`, providing conformance for protocol using Swift types.
-extension InboxApi: PrivMXInbox{
+extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 	
 	public func createInbox(
 		in contextId: String,
@@ -22,7 +22,8 @@ extension InboxApi: PrivMXInbox{
 		managedBy managaers: [privmx.endpoint.core.UserWithPubKey],
 		withPublicMeta publicMeta: Data,
 		withPrivateMeta privateMeta: Data,
-		withFilesConfig filesConfig: privmx.endpoint.inbox.FilesConfig?
+		withFilesConfig filesConfig: privmx.endpoint.inbox.FilesConfig?,
+		withPolicies policies: privmx.endpoint.core.ContainerPolicyWithoutItem? = nil
 	) throws -> String {
 		String(try self.createInbox(contextId: std.string(contextId),
 									users: privmx.UserWithPubKeyVector(users),
@@ -41,7 +42,8 @@ extension InboxApi: PrivMXInbox{
 		replacingFilesConfig filesConfig: privmx.endpoint.inbox.FilesConfig?,
 		atVersion version: Int64,
 		force: Bool,
-		forceGenerateNewKey: Bool
+		forceGenerateNewKey: Bool,
+		replacingPolicies policies: privmx.endpoint.core.ContainerPolicyWithoutItem? = nil
 	) throws -> Void {
 		try self.updateInbox(inboxId: std.string(inboxId),
 							 users: privmx.UserWithPubKeyVector(users),
@@ -114,7 +116,7 @@ extension InboxApi: PrivMXInbox{
 		uploading dataChunk: Data
 	) throws -> Void {
 		try self.writeToFile(inboxHandle: inboxHandle,
-							 inboxFileHandle: inboxHandle,
+							 inboxFileHandle: inboxFileHandle,
 							 dataChunk: dataChunk.asBuffer())
 	}
 	

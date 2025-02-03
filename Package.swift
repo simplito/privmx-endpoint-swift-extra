@@ -8,8 +8,6 @@ let package = Package(
     platforms: [
 		.macOS(.v14),
         .iOS(.v16),
-        .tvOS(.v16),
-        .watchOS(.v9)
     ],
     products: [
         .library(
@@ -19,7 +17,7 @@ let package = Package(
 	dependencies:[
 		.package(
 			url:"https://github.com/simplito/privmx-endpoint-swift",
-			.upToNextMinor(from: .init(2, 0, 0))
+			.upToNextMinor(from:.init(2, 1, 0,prereleaseIdentifiers: ["rc2"]))
 		),
 	],
     targets: [
