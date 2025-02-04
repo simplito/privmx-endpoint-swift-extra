@@ -16,6 +16,7 @@ import PrivMXEndpointSwiftNative
 /// Extension of `CryptoApi`, providing conformance for protocol using Swift types.
 extension CryptoApi: PrivMXCrypto{
 	
+	@available(*, deprecated, renamed: "generatePrivateKey(withSeed:)")
 	public func generatePrivateKey(
 		withSeed randomSeed: String?
 	) throws -> String {
@@ -23,6 +24,17 @@ extension CryptoApi: PrivMXCrypto{
 			return try String(self.generatePrivateKey(randomSeed: std.string(rS)))
 		} else {
 			return try String(self.generatePrivateKey(randomSeed: nil))
+		}
+		
+	}
+	
+	public func generatePrivateKey2(
+		withSeed randomSeed: String?
+	) throws -> String {
+		if let rS = randomSeed{
+			return try String(self.generatePrivateKey2(randomSeed: std.string(rS)))
+		} else {
+			return try String(self.generatePrivateKey2(randomSeed: nil))
 		}
 		
 	}
@@ -38,11 +50,20 @@ extension CryptoApi: PrivMXCrypto{
 		try String(derivePublicKey(privKey: std.string(keyPriv)))
 	}
 	
+	@available(*, deprecated, renamed: "derivePrivateKey(from:and:)")
 	public func derivePrivateKey(
 		from password: String,
 		and salt: String
 	) throws -> String {
 		try String(derivePrivateKey(password: std.string(password),
+									salt: std.string(salt)))
+	}
+	
+	public func derivePrivateKey2(
+		from password: String,
+		and salt: String
+	) throws -> String {
+		try String(derivePrivateKey2(password: std.string(password),
 									salt: std.string(salt)))
 	}
 	

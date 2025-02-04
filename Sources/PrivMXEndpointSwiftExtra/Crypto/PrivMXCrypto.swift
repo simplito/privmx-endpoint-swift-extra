@@ -24,7 +24,22 @@ public protocol PrivMXCrypto{
 	/// - Returns: A WIF formatted private key as a `String`.
 	///
 	/// - Throws: `PrivMXEndpointError.failedGeneratingPrivKey` if the key generation fails or an error occurs in the C++ layer.
+	@available(*, deprecated, renamed: "generatePrivateKey2(withSeed:)")
 	func generatePrivateKey(
+		withSeed randomSeed: String?
+	) throws -> String
+	
+	/// Generates a new Private Key, which can be used for accessing PrivMX Bridge.
+	///
+	/// This method generates a private key using an optional base string (seed) for added randomness.
+	/// The generated key is returned in WIF (Wallet Import Format).
+	///
+	/// - Parameter randomSeed: An optional seed string to generate the private key. If `nil`, a random seed is used.
+	///
+	/// - Returns: A WIF formatted private key as a `String`.
+	///
+	/// - Throws: `PrivMXEndpointError.failedGeneratingPrivKey` if the key generation fails or an error occurs in the C++ layer.
+	func generatePrivateKey2(
 		withSeed randomSeed: String?
 	) throws -> String
 	
@@ -66,7 +81,26 @@ public protocol PrivMXCrypto{
 	/// - Returns: The derived private key in WIF format (Wallet Import Format) as a `String`.
 	///
 	/// - Throws: `PrivMXEndpointError.failedGeneratingPrivKey` if the derivation fails.
+	@available(*, deprecated, renamed: "derivePrivateKey2(from:and:)")
 	func derivePrivateKey(
+		from password: String,
+		and salt: String
+	) throws -> String
+	
+	/// Deterministically derives a Private Key from a password and salt.
+	///
+	/// This method generates a private key using a combination of a password and salt.
+	/// The resulting private key is derived in a deterministic way, ensuring the same password and salt
+	/// will always produce the same private key.
+	///
+	/// - Parameters:
+	///   - password: The base string (password) used for private key generation.
+	///   - salt: A string used as salt for private key generation.
+	///
+	/// - Returns: The derived private key in WIF format (Wallet Import Format) as a `String`.
+	///
+	/// - Throws: `PrivMXEndpointError.failedGeneratingPrivKey` if the derivation fails.
+	func derivePrivateKey2(
 		from password: String,
 		and salt: String
 	) throws -> String
