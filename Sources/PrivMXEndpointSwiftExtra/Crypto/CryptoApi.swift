@@ -32,9 +32,9 @@ extension CryptoApi: PrivMXCrypto{
 		withSeed randomSeed: String?
 	) throws -> String {
 		if let rS = randomSeed{
-			return try String(self.generatePrivateKey(randomSeed: std.string(rS)))
+			return try String(self.generatePrivateKey2(randomSeed: std.string(rS)))
 		} else {
-			return try String(self.generatePrivateKey(randomSeed: nil))
+			return try String(self.generatePrivateKey2(randomSeed: nil))
 		}
 		
 	}
@@ -63,7 +63,7 @@ extension CryptoApi: PrivMXCrypto{
 		from password: String,
 		and salt: String
 	) throws -> String {
-		try String(derivePrivateKey(password: std.string(password),
+		try String(derivePrivateKey2(password: std.string(password),
 									salt: std.string(salt)))
 	}
 	
