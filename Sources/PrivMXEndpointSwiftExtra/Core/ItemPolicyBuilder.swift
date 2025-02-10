@@ -39,6 +39,7 @@ public class ItemPolicyBuilder{
 	/// - Parameter value: the policy value that will be set
 	///
 	/// - Returns: this object for further configuration
+	@available(*, deprecated)
 	public func setGet(
 		_ value:ItemPolicyValue?
 	) -> ItemPolicyBuilder{
@@ -56,6 +57,7 @@ public class ItemPolicyBuilder{
 	/// - Parameter value: the policy value that will be set
 	///
 	/// - Returns: this object for further configuration
+	@available(*, deprecated)
 	public func setListMy(
 		_ value:ContainerPolicyValue?
 	) -> ItemPolicyBuilder{
@@ -71,6 +73,7 @@ public class ItemPolicyBuilder{
 	/// Configures the `listAll` policy
 	/// - Parameter value: the policy value that will be set
 	/// - Returns: this object for further configuration
+	@available(*, deprecated)
 	public func setListAll(
 		_ value:ContainerPolicyValue?
 	) -> ItemPolicyBuilder{
@@ -88,6 +91,7 @@ public class ItemPolicyBuilder{
 	/// - Parameter value: the policy value that will be set
 	///
 	/// - Returns: this object for further configuration
+	@available(*, deprecated)
 	public func setCreate(
 		_ value:ContainerPolicyValue?
 	) -> ItemPolicyBuilder{
@@ -105,6 +109,7 @@ public class ItemPolicyBuilder{
 	/// - Parameter value: the policy value that will be set
 	///
 	/// - Returns: this object for further configuration
+	@available(*, deprecated)
 	public func setUpdate(
 		_ value:ItemPolicyValue?
 	) -> ItemPolicyBuilder{
@@ -122,6 +127,7 @@ public class ItemPolicyBuilder{
 	/// - Parameter value: the policy value that will be set
 	///
 	/// - Returns: this object for further configuration
+	@available(*, deprecated)
 	public func setDelete(
 		_ value:ItemPolicyValue?
 	) -> ItemPolicyBuilder{
@@ -131,6 +137,82 @@ public class ItemPolicyBuilder{
 		} else {
 			ip.delete_ = nil
 		}
+		return self
+	}
+
+	/// Configures the `get` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
+	public func setGet(
+		_ value:ItemPolicyValue
+	) -> ItemPolicyBuilder{
+		let optval = privmx.makeOptional(value.rawValue)
+		ip.get = optval
+		return self
+	}
+	
+	/// Configures the `listMy` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
+	public func setListMy(
+		_ value:ContainerPolicyValue
+	) -> ItemPolicyBuilder{
+		let optval = privmx.makeOptional(value.rawValue)
+		ip.listMy = optval
+		return self
+	}
+	
+	/// Configures the `listAll` policy
+	/// - Parameter value: the policy value that will be set
+	/// - Returns: this object for further configuration
+	public func setListAll(
+		_ value:ContainerPolicyValue
+	) -> ItemPolicyBuilder{
+		let optval = privmx.makeOptional(value.rawValue)
+		ip.listAll = optval
+		return self
+	}
+	
+	/// Configures the `create` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
+	public func setCreate(
+		_ value:ContainerPolicyValue
+	) -> ItemPolicyBuilder{
+		let optval = privmx.makeOptional(value.rawValue)
+		ip.create = optval
+		return self
+	}
+	
+	/// Configures the `update` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
+	public func setUpdate(
+		_ value:ItemPolicyValue
+	) -> ItemPolicyBuilder{
+		let optval = privmx.makeOptional(value.rawValue)
+		ip.update = optval
+		return self
+	}
+	
+	/// Configures the `delete` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
+	public func setDelete(
+		_ value:ItemPolicyValue
+	) -> ItemPolicyBuilder{
+		let optval = privmx.makeOptional(value.rawValue)
+		ip.delete_ = optval
 		return self
 	}
 }
