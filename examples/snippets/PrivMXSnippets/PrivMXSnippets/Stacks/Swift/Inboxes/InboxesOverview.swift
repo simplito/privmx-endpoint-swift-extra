@@ -36,8 +36,36 @@ extension PrivMXSnippetClass {
     public func accessingInboxAPIPublic() async{
        
         
-        guard let endpointSession = try? await endpointContainer?.newPublicEndpoint(enabling: [.inbox], to: SOLUTION_ID, on: BRIDGE_URL ) else {return}
-        endpointSession.inboxApi // instance of Public InboxApi
+        guard let publicEndpointSession = try? await endpointContainer?.newPublicEndpoint(enabling: [.inbox], to: SOLUTION_ID, on: BRIDGE_URL ) else {return}
+        publicEndpointSession.inboxApi // instance of Public InboxApi
+
+    }
+    public func accessingInboxAPIPublic2(){
+        guard var publicConnection = try? Connection.connectPublic(to: SOLUTION_ID, on: BRIDGE_URL) as? Connection
+        else {return}
+        
+        guard var publicStoreApi = try? StoreApi.create(connection: &publicConnection) else {return}
+        guard var publicThreadApi = try? ThreadApi.create(connection: &publicConnection) else {return}
+        guard let publicInboxApi = try? InboxApi.create(connection: &publicConnection,
+                                                    threadApi: &publicThreadApi,
+                                                    storeApi: &publicStoreApi) else {return}
+      
+        
+        
+    }
+    
+    
+    
+    func gettingPublicView(){
+        
+
+        let inboxID = "INBOX_ID" 
+        guard let inboxPublicView = try? publicEndpointSession?.inboxApi?.getInboxPublicView(for: inboxID) else {return}
+        guard let inboxPublicMetaData = inboxPublicView.publicMeta.getData() else {return}
+        let inboxPublicMetaDecoded = try? JSONDecoder().decode(InboxPublicMeta.self, from: inboxPublicMetaData)
+        
+
+
 
     }
     
@@ -168,19 +196,6 @@ extension PrivMXSnippetClass {
     }
     
     
-    func gettingPublicView(){
-        
-
-        let inboxID = "INBOX_ID"
-        let inboxApi = endpointSession?.inboxApi
-        guard let inboxPublicView = try? inboxApi?.getInboxPublicView(for: inboxID) else {return}
-        guard let inboxPublicMetaData = inboxPublicView.publicMeta.getData() else {return}
-        let inboxPublicMetaDecoded = try? JSONDecoder().decode(InboxPublicMeta.self, from: inboxPublicMetaData)
-        
-
-
-
-    }
     
     func renamingInbox(){
         let inboxId = "INBOX_ID"

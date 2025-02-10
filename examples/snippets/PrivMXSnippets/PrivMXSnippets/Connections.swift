@@ -17,6 +17,7 @@ import PrivMXEndpointSwiftNative
 class PrivMXSnippetClass {
     var endpointContainer: PrivMXEndpointContainer?
     var endpointSession: PrivMXEndpoint?
+    var publicEndpointSession: PrivMXEndpoint?
     var endpointId: Int64 = 0
     
     /*

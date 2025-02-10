@@ -25,17 +25,12 @@ struct InboxPublicEntry:Codable{
 
 extension PrivMXSnippetClass {
     
+    
+     
+    
     public func sendingEntriesPublicBasic(solutionId:String,platformURL:String){
         
-        guard var connection = try? Connection.connectPublic(to: solutionId, on: platformURL) as? Connection
-        else {return}
-        
-        guard var storeApi = try? StoreApi.create(connection: &connection) else {return}
-        guard var threadApi = try? ThreadApi.create(connection: &connection) else {return}
-        guard let inboxApi = try? InboxApi.create(connection: &connection,
-                                                  threadApi: &threadApi,
-                                                  storeApi: &storeApi) else {return}
-        
+         
         let inboxID = "INBOX_ID"
         
         let inboxPublicEntry = InboxPublicEntry(
@@ -46,30 +41,15 @@ extension PrivMXSnippetClass {
         
         guard let inboxPublicEntryData = try? JSONEncoder().encode(inboxPublicEntry) else {return}
         
+        guard let inboxHandle = try? publicEndpointSession?.inboxApi?.prepareEntry(in: inboxID, containing: inboxPublicEntryData, attaching: [], as: nil)  else {return}
         
-        
-        guard let inboxHandle = try? inboxApi.prepareEntry(in: inboxID, containing: inboxPublicEntryData, attaching: [], as: nil)  else {return}
-        
-        try? inboxApi.sendEntry(to: inboxHandle)
+        try? publicEndpointSession?.inboxApi?.sendEntry(to: inboxHandle)
         
     }
     
     
     public func sendingEntriesPublicFiles(solutionId:String,platformURL:String){
         
-        
-       
-        
-        guard var connection = try? Connection.connectPublic(to: solutionId, on: platformURL) as? Connection
-        else {return}
-        
-        guard var storeApi = try? StoreApi.create(connection: &connection) else {return}
-        guard var threadApi = try? ThreadApi.create(connection: &connection) else {return}
-        guard let inboxApi = try? InboxApi.create(connection: &connection,
-                                                  threadApi: &threadApi,
-                                                  storeApi: &storeApi) else {return}
-        
-
         
         //1
         let inboxID = "INBOX_ID"
@@ -86,31 +66,27 @@ extension PrivMXSnippetClass {
         guard let inboxPublicEntryData = try? JSONEncoder().encode(inboxPublicEntry) else {return}
         
         
-        
-        
-        
-        guard let inboxFileHandle = try? inboxApi.createFileHandle(
-            publicMeta: privmx.endpoint.core.Buffer(),
-            privateMeta: privmx.endpoint.core.Buffer(),
-            fileSize: fileSize) else {return}
+        guard let inboxFileHandle = try? publicEndpointSession?.inboxApi?.createFileHandle(
+            withPublicMeta: Data(),
+            withPrivateMeta: Data(),
+            forSize: fileSize) else {return}
         
         //2
         
        
 
-        guard let inboxHandle = try? inboxApi.prepareEntry(
+        guard let inboxHandle = try? publicEndpointSession?.inboxApi?.prepareEntry(
             in: inboxID,
             containing: inboxPublicEntryData, //as in Basic Example
             attaching: [inboxFileHandle],
             as: nil)  else {return}
 
         //3
-        try? inboxApi.writeToFile(inboxFileHandle, in: inboxHandle, uploading: data)
-
-        try? inboxApi.closeFile(fileHandle: inboxFileHandle)
+        try? publicEndpointSession?.inboxApi?.writeToFile(inboxFileHandle, in: inboxHandle, uploading: data)
+        try? publicEndpointSession?.inboxApi?.closeFile(withHandle: inboxFileHandle)
 
         //4
-        try? inboxApi.sendEntry(to: inboxHandle)
+        try? publicEndpointSession?.inboxApi?.sendEntry(to: inboxHandle)
 
 
         
@@ -122,10 +98,8 @@ extension PrivMXSnippetClass {
         let inboxID = "INBOX_ID"
         let startIndex:Int64 = 0
         let pageSize:Int64 = 100
-         
-        let inboxApi = endpointSession?.inboxApi
 
-        var entires = try? inboxApi?.listEntries(
+        var entires = try? endpointSession?.inboxApi?.listEntries(
             from: inboxID,
             basedOn: privmx.endpoint.core.PagingQuery(skip: startIndex, limit: pageSize, sortOrder: .desc)
         )
@@ -136,10 +110,8 @@ extension PrivMXSnippetClass {
         let inboxID = "INBOX_ID"
         let startIndex:Int64 = 0
         let pageSize:Int64 = 100
-         
-        let inboxApi = endpointSession?.inboxApi
 
-        var entires = try? inboxApi?.listEntries(
+        var entires = try? endpointSession?.inboxApi?.listEntries(
             from: inboxID,
             basedOn: privmx.endpoint.core.PagingQuery(skip: startIndex, limit: pageSize, sortOrder: .asc)
         )
@@ -151,19 +123,16 @@ extension PrivMXSnippetClass {
         let startIndex:Int64 = 0
         let pageSize:Int64 = 100
         
-        
-        let inboxApi = endpointSession?.inboxApi
-
-        let inboxEntry = try? inboxApi?.readEntry(entryID)
+        let inboxEntry = try? endpointSession?.inboxApi?.readEntry(entryID)
 
         var files =  inboxEntry?.files
         var filesContents = files.map { file in
-            try? inboxApi?.openFile("\(file[0].info.fileId)")
+            try? endpointSession?.inboxApi?.openFile("\(file[0].info.fileId)")
         }?.map{ fileHandle in
             var content = Data()
             var chunk : Data
             repeat {
-                chunk = (try? inboxApi?.readFromFile(withHandle: fileHandle, length: PrivMXStoreFileHandler.RecommendedChunkSize)) ?? Data()
+                chunk = (try? endpointSession?.inboxApi?.readFromFile(withHandle: fileHandle, length: PrivMXStoreFileHandler.RecommendedChunkSize)) ?? Data()
                 content.append(chunk)
             } while chunk.count == PrivMXStoreFileHandler.RecommendedChunkSize
             return content
