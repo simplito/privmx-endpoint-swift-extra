@@ -16,7 +16,6 @@ import PrivMXEndpointSwiftNative
 /// Extension of `CryptoApi`, providing conformance for protocol using Swift types.
 extension CryptoApi: PrivMXCrypto{
 	
-	@available(*, deprecated, renamed: "generatePrivateKey(withSeed:)")
 	public func generatePrivateKey(
 		withSeed randomSeed: String?
 	) throws -> String {
@@ -28,16 +27,6 @@ extension CryptoApi: PrivMXCrypto{
 		
 	}
 	
-	public func generatePrivateKey2(
-		withSeed randomSeed: String?
-	) throws -> String {
-		if let rS = randomSeed{
-			return try String(self.generatePrivateKey2(randomSeed: std.string(rS)))
-		} else {
-			return try String(self.generatePrivateKey2(randomSeed: nil))
-		}
-		
-	}
 	
 	public func generateKeySymmetric(
 	) throws -> Data{
