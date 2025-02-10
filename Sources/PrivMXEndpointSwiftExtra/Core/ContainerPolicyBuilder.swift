@@ -70,6 +70,7 @@ public class ContainerPolicyBuilder{
 	/// - Parameter value: the policy value that will be set
 	/// 
 	/// - Returns: this object for further configuration
+	@available(*, deprecated)
 	public func setGet(
 		_ value:ContainerPolicyValue?
 	) -> ContainerPolicyBuilder{
@@ -84,11 +85,26 @@ public class ContainerPolicyBuilder{
 		return self
 	}
 	
+	/// Configures the `get` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	/// 
+	/// - Returns: this object for further configuration
+	public func setGet(
+		_ value:ContainerPolicyValue
+	) -> ContainerPolicyBuilder{
+		let optval = privmx.makeOptional(value.rawValue)
+		cp.get = optval
+		cpwi.get = optval
+		return self
+	}
+	
 	/// Configures the `update` policy
 	///
 	/// - Parameter value: the policy value that will be set
 	///
 	/// - Returns: this object for further configuration
+	@available(*, deprecated)
 	public func setUpdate(
 		_ value:ContainerPolicyValue?
 	) -> ContainerPolicyBuilder{
@@ -100,6 +116,20 @@ public class ContainerPolicyBuilder{
 			cp.update = nil
 			cpwi.update = nil
 		}
+		return self
+	}
+	
+	/// Configures the `update` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
+	public func setUpdate(
+		_ value:ContainerPolicyValue
+	) -> ContainerPolicyBuilder{
+		let optval = privmx.makeOptional(value.rawValue)
+		cp.update = optval
+		cpwi.update = optval
 		return self
 	}
 	
@@ -136,6 +166,7 @@ public class ContainerPolicyBuilder{
 	/// - Parameter value: the policy value that will be set
 	///
 	/// - Returns: this object for further configuration
+	@available(*, deprecated)
 	public func setUpdaterCanBeRemovedFromManagers(
 		_ value: SpecialPolicyValue?
 	) -> ContainerPolicyBuilder{
@@ -155,7 +186,8 @@ public class ContainerPolicyBuilder{
 	/// - Parameter value: the policy value that will be set
 	///
 	/// - Returns: this object for further configuration
-	public func setOwnerCanBeRemovedFromManagers(
+	
+	@available(*, deprecated)public func setOwnerCanBeRemovedFromManagers(
 		_ value: SpecialPolicyValue?
 	) -> ContainerPolicyBuilder{
 		if let value{
@@ -174,6 +206,7 @@ public class ContainerPolicyBuilder{
 	/// - Parameter value: the policy value that will be set
 	///
 	/// - Returns: this object for further configuration
+	@available(*, deprecated)
 	public func setItem(
 		_ value: privmx.endpoint.core.ItemPolicy?
 	) -> ContainerPolicyBuilder {
@@ -183,6 +216,47 @@ public class ContainerPolicyBuilder{
 		} else {
 			cp.item = nil
 			}
+		return self
+	}
+	
+	/// Configures the `updaterCanBeRemovedFromManagers` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
+	public func setUpdaterCanBeRemovedFromManagers(
+		_ value: SpecialPolicyValue
+	) -> ContainerPolicyBuilder{
+		let optval = privmx.makeOptional(value.rawValue)
+		cp.updaterCanBeRemovedFromManagers = optval
+		cpwi.updaterCanBeRemovedFromManagers = optval
+		return self
+	}
+	
+	/// Configures the `ownerCanBeRemovedFromManagers` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
+	public func setOwnerCanBeRemovedFromManagers(
+		_ value: SpecialPolicyValue
+	) -> ContainerPolicyBuilder{
+		let optval = privmx.makeOptional(value.rawValue)
+		cp.ownerCanBeRemovedFromManagers = optval
+		cpwi.ownerCanBeRemovedFromManagers = optval
+		return self
+	}
+	
+	/// Configures the `item` policy
+	///
+	/// - Parameter value: the policy value that will be set
+	///
+	/// - Returns: this object for further configuration
+	public func setItem(
+		_ value: privmx.endpoint.core.ItemPolicy
+	) -> ContainerPolicyBuilder {
+		let optval = privmx.makeOptional(value)
+		cp.item = optval
 		return self
 	}
 }
