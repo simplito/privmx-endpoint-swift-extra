@@ -5,10 +5,6 @@
 .AppleDouble
 .LSOverride
 
-# Icon must end with two \r
-Icon
-
-
 # Thumbnails
 ._*
 
@@ -48,27 +44,3 @@ xcuserdata/
 !*.xcworkspace/contents.xcworkspacedata
 /*.gcno
 **/xcshareddata/WorkspaceSettings.xcsettings
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-[H[2J[?2004h[0m[4l[1;24r[0m[4l[1;1r[H[KNew File[K[7m help **[0mNew File[7m help **[0mNew File[K
