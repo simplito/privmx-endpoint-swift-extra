@@ -153,16 +153,16 @@ public protocol PrivMXCrypto{
 	
 	/// Validate a signature of data using given key.
 	///
-	/// - Parameter data: buffer containing the data signature of which is being verified.
 	/// - Parameter signature: signature to be verified.
+	/// - Parameter data: buffer containing the data signature of which is being verified.
 	/// - Parameter publicKey: public ECC key in BASE58DER format used to validate data.
 	/// - Returns: data validation result.
 	///
 	/// - Throws: `PrivMXEndpointError.failedVerifyingSignature` if an verification process fails.
 	func verifySignature(
-		data: Data,
-		signature: Data,
-		publicKey: String
+		_ signature: Data,
+		of data: Data,
+		with publicKey: String
 	) throws -> Bool
 }
 
