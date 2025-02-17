@@ -98,7 +98,7 @@ public class ContainerPolicyBuilder{
 		cpwi.get = optval
 		return self
 	}
-	
+
 	/// Configures the `update` policy
 	///
 	/// - Parameter value: the policy value that will be set
@@ -132,7 +132,7 @@ public class ContainerPolicyBuilder{
 		cpwi.update = optval
 		return self
 	}
-	
+
 	/// Configures the `delete` policy
 	///
 	/// - Parameter value: the policy value that will be set
@@ -187,7 +187,8 @@ public class ContainerPolicyBuilder{
 	///
 	/// - Returns: this object for further configuration
 	
-	@available(*, deprecated)public func setOwnerCanBeRemovedFromManagers(
+	@available(*, deprecated)
+	public func setOwnerCanBeRemovedFromManagers(
 		_ value: SpecialPolicyValue?
 	) -> ContainerPolicyBuilder{
 		if let value{
