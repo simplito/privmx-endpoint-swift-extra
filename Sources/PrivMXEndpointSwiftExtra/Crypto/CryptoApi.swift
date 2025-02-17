@@ -27,6 +27,7 @@ extension CryptoApi: PrivMXCrypto{
 		
 	}
 	
+	
 	public func generateKeySymmetric(
 	) throws -> Data{
 		try Data(from: self.generateKeySymmetric() as privmx.endpoint.core.Buffer)
@@ -38,11 +39,20 @@ extension CryptoApi: PrivMXCrypto{
 		try String(derivePublicKey(privKey: std.string(keyPriv)))
 	}
 	
+	@available(*, deprecated, renamed: "derivePrivateKey(from:and:)")
 	public func derivePrivateKey(
 		from password: String,
 		and salt: String
 	) throws -> String {
 		try String(derivePrivateKey(password: std.string(password),
+									salt: std.string(salt)))
+	}
+	
+	public func derivePrivateKey2(
+		from password: String,
+		and salt: String
+	) throws -> String {
+		try String(derivePrivateKey2(password: std.string(password),
 									salt: std.string(salt)))
 	}
 	
@@ -76,21 +86,24 @@ extension CryptoApi: PrivMXCrypto{
 		try String(self.convertPEMKeyToWIFKey(pemKey:std.string(pemKey)))
 	}
 	
-	/// Validate a signature of data using given key.
-	///
-	/// - Parameter data: buffer containing the data signature of which is being verified.
-	/// - Parameter signature: signature to be verified.
-	/// - Parameter publicKey: public ECC key in BASE58DER format used to validate data.
-	/// - Returns: data validation result.
-	///
-	/// - Throws: `PrivMXEndpointError.failedVerifyingSignature` if an verification process fails.
+	@available(*, deprecated)
 	public func verifySignature(
 		data: Data,
 		signature: Data,
 		publicKey: String
 	) throws -> Bool {
 		try self.verifySignature(data: data.asBuffer(),
-								 signature: data.asBuffer(),
+								 signature: signature.asBuffer(),
+								 publicKey: std.string(publicKey))
+	}
+	
+	public func verifySignature(
+		_ signature: Data,
+		of data: Data,
+		with publicKey: String
+	) throws -> Bool {
+		try self.verifySignature(data: data.asBuffer(),
+								 signature: signature.asBuffer(),
 								 publicKey: std.string(publicKey))
 	}
 }

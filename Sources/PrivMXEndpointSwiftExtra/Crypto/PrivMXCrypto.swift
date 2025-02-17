@@ -66,7 +66,26 @@ public protocol PrivMXCrypto{
 	/// - Returns: The derived private key in WIF format (Wallet Import Format) as a `String`.
 	///
 	/// - Throws: `PrivMXEndpointError.failedGeneratingPrivKey` if the derivation fails.
+	@available(*, deprecated, renamed: "derivePrivateKey2(from:and:)")
 	func derivePrivateKey(
+		from password: String,
+		and salt: String
+	) throws -> String
+	
+	/// Deterministically derives a Private Key from a password and salt.
+	///
+	/// This method generates a private key using a combination of a password and salt.
+	/// The resulting private key is derived in a deterministic way, ensuring the same password and salt
+	/// will always produce the same private key.
+	///
+	/// - Parameters:
+	///   - password: The base string (password) used for private key generation.
+	///   - salt: A string used as salt for private key generation.
+	///
+	/// - Returns: The derived private key in WIF format (Wallet Import Format) as a `String`.
+	///
+	/// - Throws: `PrivMXEndpointError.failedGeneratingPrivKey` if the derivation fails.
+	func derivePrivateKey2(
 		from password: String,
 		and salt: String
 	) throws -> String
@@ -134,16 +153,16 @@ public protocol PrivMXCrypto{
 	
 	/// Validate a signature of data using given key.
 	///
-	/// - Parameter data: buffer containing the data signature of which is being verified.
 	/// - Parameter signature: signature to be verified.
+	/// - Parameter data: buffer containing the data signature of which is being verified.
 	/// - Parameter publicKey: public ECC key in BASE58DER format used to validate data.
 	/// - Returns: data validation result.
 	///
 	/// - Throws: `PrivMXEndpointError.failedVerifyingSignature` if an verification process fails.
 	func verifySignature(
-		data: Data,
-		signature: Data,
-		publicKey: String
+		_ signature: Data,
+		of data: Data,
+		with publicKey: String
 	) throws -> Bool
 }
 

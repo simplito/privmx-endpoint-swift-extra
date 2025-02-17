@@ -196,7 +196,14 @@ extension StoreApi : PrivMXStore{
 					   position: position)
 	}
 	
+	@available(*, deprecated, renamed: "unsubscribeFromFileEvents(in:)")
 	public func unubscribeFromFileEvents(
+		in storeId: String
+	) throws -> Void {
+		try unsubscribeFromFileEvents(storeId: std.string(storeId))
+	}
+	
+	public func unsubscribeFromFileEvents(
 		in storeId: String
 	) throws -> Void {
 		try unsubscribeFromFileEvents(storeId: std.string(storeId))
