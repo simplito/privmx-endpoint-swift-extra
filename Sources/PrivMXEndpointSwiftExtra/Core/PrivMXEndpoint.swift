@@ -734,7 +734,7 @@ public class PrivMXEndpoint: Identifiable{
 				if s == "thread"{
 					try threadApi?.unsubscribeFromMessageEvents(in: id)
 				}else if s == "store"{
-					try storeApi?.unubscribeFromFileEvents(in: id)
+					try storeApi?.unsubscribeFromFileEvents(in: id)
 				}else if s == "inbox"{
 					try inboxApi?.unsubscribeFromEntryEvents(in: id)
 				}

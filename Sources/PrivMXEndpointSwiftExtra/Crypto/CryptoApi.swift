@@ -16,7 +16,6 @@ import PrivMXEndpointSwiftNative
 /// Extension of `CryptoApi`, providing conformance for protocol using Swift types.
 extension CryptoApi: PrivMXCrypto{
 	
-	@available(*, deprecated, renamed: "generatePrivateKey(withSeed:)")
 	public func generatePrivateKey(
 		withSeed randomSeed: String?
 	) throws -> String {
@@ -28,16 +27,6 @@ extension CryptoApi: PrivMXCrypto{
 		
 	}
 	
-	public func generatePrivateKey2(
-		withSeed randomSeed: String?
-	) throws -> String {
-		if let rS = randomSeed{
-			return try String(self.generatePrivateKey2(randomSeed: std.string(rS)))
-		} else {
-			return try String(self.generatePrivateKey2(randomSeed: nil))
-		}
-		
-	}
 	
 	public func generateKeySymmetric(
 	) throws -> Data{
@@ -97,21 +86,24 @@ extension CryptoApi: PrivMXCrypto{
 		try String(self.convertPEMKeyToWIFKey(pemKey:std.string(pemKey)))
 	}
 	
-	/// Validate a signature of data using given key.
-	///
-	/// - Parameter data: buffer containing the data signature of which is being verified.
-	/// - Parameter signature: signature to be verified.
-	/// - Parameter publicKey: public ECC key in BASE58DER format used to validate data.
-	/// - Returns: data validation result.
-	///
-	/// - Throws: `PrivMXEndpointError.failedVerifyingSignature` if an verification process fails.
+	@available(*, deprecated)
 	public func verifySignature(
 		data: Data,
 		signature: Data,
 		publicKey: String
 	) throws -> Bool {
 		try self.verifySignature(data: data.asBuffer(),
-								 signature: data.asBuffer(),
+								 signature: signature.asBuffer(),
+								 publicKey: std.string(publicKey))
+	}
+	
+	public func verifySignature(
+		_ signature: Data,
+		of data: Data,
+		with publicKey: String
+	) throws -> Bool {
+		try self.verifySignature(data: data.asBuffer(),
+								 signature: signature.asBuffer(),
 								 publicKey: std.string(publicKey))
 	}
 }

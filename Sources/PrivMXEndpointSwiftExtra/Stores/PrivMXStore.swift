@@ -317,8 +317,16 @@ public protocol PrivMXStore{
 	/// - Parameter storeId: The unique identifier of the Store for which to unsubscribe from file events.
 	///
 	/// - Throws: An error if the unsubscribing fails.
-	func unubscribeFromFileEvents(
+	func unsubscribeFromFileEvents(
 		in storeId:String
 	) throws -> Void
 }
 
+extension PrivMXStore{
+	@available(*, deprecated,renamed: "unsubscribeFromFileEvents(in:)")
+	public func unubscribeFromFileEvents(
+		in storeId: String
+	) throws -> Void {
+		try self.unsubscribeFromFileEvents(in: storeId)
+	}
+}

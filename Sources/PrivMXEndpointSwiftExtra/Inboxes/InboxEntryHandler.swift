@@ -133,7 +133,6 @@ public class InboxEntryHandler:@unchecked Sendable{
 																			description: std.string("Sending cannot be aborted in \"\(self.state)\" state."),
 																			code: nil))
 			case .prepared:
-
 				self.state = .aborted
 				try inboxApi.sendEntry(to: inboxHandle)
 		}
