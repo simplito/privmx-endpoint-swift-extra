@@ -24,22 +24,7 @@ public protocol PrivMXCrypto{
 	/// - Returns: A WIF formatted private key as a `String`.
 	///
 	/// - Throws: `PrivMXEndpointError.failedGeneratingPrivKey` if the key generation fails or an error occurs in the C++ layer.
-	@available(*, deprecated, renamed: "generatePrivateKey2(withSeed:)")
 	func generatePrivateKey(
-		withSeed randomSeed: String?
-	) throws -> String
-	
-	/// Generates a new Private Key, which can be used for accessing PrivMX Bridge.
-	///
-	/// This method generates a private key using an optional base string (seed) for added randomness.
-	/// The generated key is returned in WIF (Wallet Import Format).
-	///
-	/// - Parameter randomSeed: An optional seed string to generate the private key. If `nil`, a random seed is used.
-	///
-	/// - Returns: A WIF formatted private key as a `String`.
-	///
-	/// - Throws: `PrivMXEndpointError.failedGeneratingPrivKey` if the key generation fails or an error occurs in the C++ layer.
-	func generatePrivateKey2(
 		withSeed randomSeed: String?
 	) throws -> String
 	
@@ -168,16 +153,16 @@ public protocol PrivMXCrypto{
 	
 	/// Validate a signature of data using given key.
 	///
-	/// - Parameter data: buffer containing the data signature of which is being verified.
 	/// - Parameter signature: signature to be verified.
+	/// - Parameter data: buffer containing the data signature of which is being verified.
 	/// - Parameter publicKey: public ECC key in BASE58DER format used to validate data.
 	/// - Returns: data validation result.
 	///
 	/// - Throws: `PrivMXEndpointError.failedVerifyingSignature` if an verification process fails.
 	func verifySignature(
-		data: Data,
-		signature: Data,
-		publicKey: String
+		_ signature: Data,
+		of data: Data,
+		with publicKey: String
 	) throws -> Bool
 }
 

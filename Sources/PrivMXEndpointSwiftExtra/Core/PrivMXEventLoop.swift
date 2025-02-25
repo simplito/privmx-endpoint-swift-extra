@@ -111,8 +111,10 @@ final class PrivMXEventLoop: @unchecked Sendable{
 			x = try EventHandler.extractThreadStatsEvent(eventHolder: eh)
 		}else if try EventHandler.isThreadNewMessageEvent(eventHolder: eh){
 			x = try EventHandler.extractThreadNewMessageEvent(eventHolder: eh)
-		}else if try EventHandler.isThreadDeletedMessageEvent(eventHolder: eh){
-			x = try EventHandler.extractThreadDeletedMessageEvent(eventHolder: eh)
+		}else if try EventHandler.isThreadMessageDeletedEvent(eventHolder: eh){
+			x = try EventHandler.extractThreadMessageDeletedEvent(eventHolder: eh)
+		}else if try EventHandler.isThreadMessageUpdatedEvent(eventHolder: eh){
+			x = try EventHandler.extractThreadMessageUpdatedEvent(eventHolder: eh)
 		}else if try EventHandler.isStoreCreatedEvent(eventHolder: eh){
 			x = try EventHandler.extractStoreCreatedEvent(eventHolder: eh)
 		}else if try EventHandler.isStoreUpdatedEvent(eventHolder: eh){

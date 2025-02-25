@@ -30,7 +30,8 @@ extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 									managers: privmx.UserWithPubKeyVector(managaers),
 									publicMeta: publicMeta.asBuffer(),
 									privateMeta: privateMeta.asBuffer(),
-									filesConfig: filesConfig))
+									filesConfig: filesConfig,
+									policies: policies))
 	}
 	
 	public func updateInbox(
@@ -53,7 +54,8 @@ extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 							 filesConfig: filesConfig,
 							 version: version,
 							 force: force,
-							 forceGenerateNewKey: forceGenerateNewKey)
+							 forceGenerateNewKey: forceGenerateNewKey,
+							 policies: policies)
 	}
 	
 	public func getInbox(
