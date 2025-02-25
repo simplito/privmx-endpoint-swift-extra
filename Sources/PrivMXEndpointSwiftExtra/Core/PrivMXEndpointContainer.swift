@@ -20,18 +20,18 @@ import PrivMXEndpointSwiftNative
 /// This class operates in a concurrent environment with support for handling cryptographic operations, managing
 /// secure communication endpoints, and listening for events. It also supports asynchronous endpoint creation,
 /// disconnection, and event processing.
-public class PrivMXEndpointContainer{
-	var eventLoop: PrivMXEventLoop?
+public final class PrivMXEndpointContainer: Sendable{
+	nonisolated(unsafe) var eventLoop: PrivMXEventLoop?
 	
 	public init(){
 		
 	}
 	
 	/// Provides access to cryptographic operations via `PrivMXCrypto`.
-	public private(set) var cryptoApi:PrivMXCrypto = CryptoApi.create()
+	nonisolated(unsafe) public private(set) var cryptoApi:PrivMXCrypto = CryptoApi.create()
 	
 	/// A dictionary containing `PrivMXEndpoint` instances, keyed by their connection IDs.
-	private var endpoints: [Int64:PrivMXEndpoint] = [:]
+	nonisolated(unsafe) private var endpoints: [Int64:PrivMXEndpoint] = [:]
 	
 	/// Retrieves an `PrivMXEndpoint` instance from the container based on its ID.
 	///
@@ -156,9 +156,7 @@ public class PrivMXEndpointContainer{
 	/// - Throws: An error if stopping event listening fails.
 	public func stopListening(
 	) async throws  -> Void {
-		
 			try self.eventLoop?.stopListening()
-		
 	}
 	
 	/// Starts listening for events in PrivMX system.
@@ -170,7 +168,9 @@ public class PrivMXEndpointContainer{
 	public func startListening() async throws {
 			if eventLoop == nil {
 				eventLoop = PrivMXEventLoop(){ event, eventType, connectionID in
-					
+					Task{
+						try? await self.endpoints[connectionID]?.handleEvent(event, ofType: eventType)
+					}
 				}
 			}
 			
@@ -180,14 +180,7 @@ public class PrivMXEndpointContainer{
 				err.name = "Event Listener Error"
 				throw PrivMXEndpointError.otherFailure(err)
 			}
-			
-			//if await el.isListening {
-//				var err = privmx.InternalError()
-//				err.message = "Event Listener is already running"
-//				err.name = "Event Listener Error"
-//				throw PrivMXEndpointError.otherFailure(err)
-			//}
-			
+		
 			// Run the event loop's background task
 			el.startBackgroundLoop()
 			
