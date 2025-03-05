@@ -125,6 +125,8 @@ final class PrivMXEventLoop: @unchecked Sendable{
 			x = try EventHandler.extractStoreStatsChangedEvent(eventHolder: eh)
 		}else if try EventHandler.isStoreFileCreatedEvent(eventHolder: eh){
 			x = try EventHandler.extractStoreFileCreatedEvent(eventHolder: eh)
+		}else if try EventHandler.isStoreFileDeletedEvent(eventHolder: eh){
+			x = try EventHandler.extractStoreFileDeletedEvent(eventHolder: eh)
 		}else if try EventHandler.isStoreFileUpdatedEvent(eventHolder: eh){
 			x = try EventHandler.extractStoreFileUpdatedEvent(eventHolder: eh)
 		} else if try EventHandler.isInboxCreatedEvent(eventHolder: eh){
