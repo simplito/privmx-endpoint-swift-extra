@@ -155,20 +155,25 @@ public protocol PrivMXInbox:Sendable{
 		containing data: Data,
 		attaching inboxFilesHandles: [privmx.InboxFileHandle],
 		as userPrivateKey: String?
-	) throws -> privmx.InboxHandle
+	) throws -> privmx.EntryHandle
 	
 	/// Sends a previously prepared entry to its corresponding inbox.
 	///
-	/// This method sends an entry that has been prepared using `prepareEntry`. The `InboxHandle` must be passed,
+	/// This method sends an entry that has been prepared using `prepareEntry`. The `EntryHandle` must be passed,
 	/// which represents the entry that was previously prepared for submission.
 	///
-	/// - Parameter inboxHandle: The handle of the prepared entry to be sent, provided as an `InboxHandle`.
+	/// - Parameter entryHandle: The handle of the prepared entry to be sent, provided as an `EntryHandle`.
 	///
 	/// - Throws: Throws an error if the entry cannot be sent, such as if the handle is invalid or the network request fails.
 	///
 	/// - Returns: This method returns `Void` and does not provide any result on success.
 	func sendEntry(
-		to inboxHandle: privmx.InboxHandle
+		withHandle entryHandle: privmx.EntryHandle
+	) throws -> Void
+	
+	@available(*, deprecated, renamed: "sendEntry(withHandle:)")
+	func sendEntry(
+		to entryHandle: privmx.InboxHandle
 	) throws -> Void
 	
 	/// Reads the content of a specific inbox entry identified by its entry ID.
@@ -242,12 +247,19 @@ public protocol PrivMXInbox:Sendable{
 	///
 	/// - Parameters:
 	///   - inboxFileHandle: The handle of the file to which data will be written, provided as an `InboxFileHandle`.
-	///   - inboxHandle: The handle of the inbox entry that the file is associated with, provided as an `InboxHandle`.
+	///   - entryHandle: The handle of the inbox entry that the file is associated with, provided as an `InboxHandle`.
 	///   - dataChunk: The chunk of data to be uploaded, provided as `Data`.
 	///
 	/// - Throws: Throws an error if the file write operation fails.
 	///
 	/// - Returns: This method returns `Void` and does not provide any result on success.
+	func writeToFile(
+		_ inboxFileHandle: privmx.InboxFileHandle,
+		of entryHandle: privmx.EntryHandle,
+		uploading dataChunk: Data
+	) throws -> Void
+
+	@available(*, deprecated, renamed: "writeToFile(_:of:uploading:)")
 	func writeToFile(
 		_ inboxFileHandle: privmx.InboxFileHandle,
 		in inboxHandle: privmx.InboxHandle,

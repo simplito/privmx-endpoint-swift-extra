@@ -20,7 +20,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 	public static let RecommendedChunkSize :Int64 = 131072
 	
 	private var inboxApi : any PrivMXInbox
-	private var inboxHandle: privmx.InboxHandle
+	private var entryHandle: privmx.InboxHandle
 	private var fileHandlers: [InboxFileHandler]
 	private var err: PrivMXEndpointError?
 	
@@ -29,12 +29,12 @@ public class InboxEntryHandler:@unchecked Sendable{
 	
 	internal init(
 		inboxApi:any PrivMXInbox,
-		inboxHandle:privmx.InboxHandle,
+		entryHandle:privmx.InboxHandle,
 		data:Data,
 		fileHandlers: [InboxFileHandler]
 	) throws {
 		self.inboxApi = inboxApi
-		self.inboxHandle = inboxHandle
+		self.entryHandle = entryHandle
 		self.fileHandlers = fileHandlers
 		if fileHandlers.isEmpty{
 			self.state = .filesSent
@@ -77,17 +77,17 @@ public class InboxEntryHandler:@unchecked Sendable{
 			handles.append(h.fileHandle)
 		}
 		
-		let inboxHandle = try inboxApi.prepareEntry(in: inboxId,
+		let entryHandle = try inboxApi.prepareEntry(in: inboxId,
 													containing: data,
 													attaching: handles,
 													as: userPrivateKey)
 		
 		for h in fileHandlers{
-			h.setInboxHandle(inboxHandle)
+			h.setInboxHandle(entryHandle)
 		}
 		
 		return try InboxEntryHandler(inboxApi: inboxApi,
-									 inboxHandle: inboxHandle,
+									 entryHandle: entryHandle,
 									 data: data,
 									 fileHandlers: fileHandlers)
 		
@@ -134,7 +134,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 																			code: nil))
 			case .prepared:
 				self.state = .aborted
-				try inboxApi.sendEntry(to: inboxHandle)
+				try inboxApi.sendEntry(to: entryHandle)
 		}
 	}
 	
@@ -147,7 +147,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 										 code: nil)
 		switch self.state{
 			case .filesSent:
-				try self.inboxApi.sendEntry(to: inboxHandle)
+				try self.inboxApi.sendEntry(to: entryHandle)
 			case .sent:
 				error.message = "Entry already sent!"
 				throw PrivMXEndpointError.otherFailure(error)
