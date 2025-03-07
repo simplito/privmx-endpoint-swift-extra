@@ -69,13 +69,13 @@ final class PrivMXEventLoop: @unchecked Sendable{
     /// Performs the main background work by waiting for, parsing, and publishing events.
     ///
     /// - Returns: A `Bool` indicating if the loop should terminate.
-    private func backgroundWork() async -> Bool {
+	private func backgroundWork() async -> Bool {
 		
-		guard let q = try?  EventQueue.getInstance() else {return true}
-		guard let (event, type) = try?  await self.parseEvent(q.waitEvent() ) else { return  true }
-		await publishToMainActor(event,type: type)
-		return type.typeStr() == privmx.endpoint.core.LibBreakEvent.typeStr()
-		
+		guard let q = try? EventQueue.getInstance() else {return true}
+		if let (event, type) = try? await self.parseEvent(q.waitEvent()) {
+			await publishToMainActor(event,type: type)
+			return type.typeStr() == privmx.endpoint.core.LibBreakEvent.typeStr()
+		} else { return false }
 	}
 
 	/// Publishes the received event to the main actor.
