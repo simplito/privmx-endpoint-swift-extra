@@ -20,13 +20,18 @@ public extension privmx.endpoint.core.PagingQuery{
 		skip: Int64,
 		limit: Int64,
 		sortOrder: PMXSortOrder,
-		lastId:String? = nil
+		lastId:String? = nil,
+		queryAsJson: String? = nil
 	){
 		var lid = privmx.OptionalString()
 		if let lastId{
 			lid = privmx.makeOptional(std.string(lastId))
 		}
-		self.init(skip: skip,limit: limit,sortOrder: sortOrder.rawValue,lastId: lid)
+		var qaj = privmx.OptionalString()
+		if let queryAsJson{
+			qaj = privmx.makeOptional(std.string(queryAsJson))
+		}
+		self.init(skip: skip,limit: limit,sortOrder: sortOrder.rawValue,lastId: lid,queryAsJson: qaj)
 	}
 }
 
