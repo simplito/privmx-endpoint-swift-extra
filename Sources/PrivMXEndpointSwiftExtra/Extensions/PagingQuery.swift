@@ -21,7 +21,7 @@ public extension privmx.endpoint.core.PagingQuery{
 		limit: Int64,
 		sortOrder: PMXSortOrder,
 		lastId:String? = nil,
-		queryAsJson: Data? = nil
+		queryAsJson: String? = nil
 	){
 		var lid = privmx.OptionalString()
 		if let lastId{
@@ -29,7 +29,7 @@ public extension privmx.endpoint.core.PagingQuery{
 		}
 		var qaj = privmx.OptionalString()
 		if let queryAsJson{
-			qaj = privmx.makeOptional(std.string(String(data:queryAsJson, encoding: .utf8)))
+			qaj = privmx.makeOptional(std.string(queryAsJson))
 		}
 		self.init(skip: skip,limit: limit,sortOrder: sortOrder.rawValue,lastId: lid,queryAsJson: qaj)
 	}
