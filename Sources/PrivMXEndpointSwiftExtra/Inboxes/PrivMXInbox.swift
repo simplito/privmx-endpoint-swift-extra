@@ -145,11 +145,11 @@ public protocol PrivMXInbox:Sendable{
 	///   - inboxId: The unique identifier of the inbox to which the entry will be sent, provided as a `String`.
 	///   - data: The main content of the entry, provided as `Data`.
 	///   - inboxFilesHandles: An array of `InboxFileHandle` objects representing any files that should be attached to the entry.
-	///   - userPrivateKey: An optional private key for encryption, provided as a `String`. Otherwise random key is used.
+	///   - userPrivateKey: An optional private key that will be used to attach a dreived public key to the entry.
 	///
 	/// - Throws: Throws an error if the entry preparation fails.
 	///
-	/// - Returns: An `InboxHandle` object representing the prepared entry that can be sent.
+	/// - Returns: An `EntryHandle` of the prepared entry, that can beused to upload files and send the entry itself.
 	func prepareEntry(
 		in inboxId: String,
 		containing data: Data,
@@ -157,7 +157,7 @@ public protocol PrivMXInbox:Sendable{
 		publicKeyDerivedFrom userPrivateKey: String?
 	) throws -> privmx.EntryHandle
 	
-	@available(*, deprecated, renamed: "prepareEntry(in:containing:attaching:publicKeyFrom:)")
+	@available(*, deprecated, renamed: "prepareEntry(in:containing:attaching:publicKeyDerivedFrom:)")
 	func prepareEntry(
 		in inboxId: String,
 		containing data: Data,
@@ -167,14 +167,18 @@ public protocol PrivMXInbox:Sendable{
 	
 	/// Sends a previously prepared entry to its corresponding inbox.
 	///
-	/// This method sends an entry that has been prepared using `prepareEntry`. The `InboxHandle` must be passed,
-	/// which represents the entry that was previously prepared for submission.
+	/// This method sends an entry that has been prepared using `prepareEntry`.
 	///
-	/// - Parameter inboxHandle: The handle of the prepared entry to be sent, provided as an `InboxHandle`.
+	/// - Parameter entryHandle: The handle of the prepared entry to be sent, provided as an `InboxHandle`.
 	///
 	/// - Throws: Throws an error if the entry cannot be sent, such as if the handle is invalid or the network request fails.
 	///
 	/// - Returns: This method returns `Void` and does not provide any result on success.
+	func sendEntry(
+		_ entryHandle: privmx.EntryHandle
+	) throws -> Void
+
+	@available(*, deprecated, renamed: "sendEntry(_:)")
 	func sendEntry(
 		to inboxHandle: privmx.InboxHandle
 	) throws -> Void
@@ -246,16 +250,23 @@ public protocol PrivMXInbox:Sendable{
 	/// Writes a chunk of data to a file associated with a prepared inbox entry.
 	///
 	/// This method uploads a chunk of data to a file that is part of a prepared inbox entry.
-	/// The `InboxFileHandle` represents the file, and the `InboxHandle` represents the entry being prepared.
+	/// The `InboxFileHandle` represents the file, and the `EntryHandle` represents the entry to which the file is assigned.
 	///
 	/// - Parameters:
 	///   - inboxFileHandle: The handle of the file to which data will be written, provided as an `InboxFileHandle`.
-	///   - inboxHandle: The handle of the inbox entry that the file is associated with, provided as an `InboxHandle`.
+	///   - entryHandle: The handle of the inbox entry that the file is associated with, provided as an `EntryHandle`.
 	///   - dataChunk: The chunk of data to be uploaded, provided as `Data`.
 	///
 	/// - Throws: Throws an error if the file write operation fails.
 	///
 	/// - Returns: This method returns `Void` and does not provide any result on success.
+	func writeToFile(
+		_ inboxFileHandle: privmx.InboxFileHandle,
+		of entryHandle: privmx.EntryHandle,
+		uploading dataChunk: Data
+	) throws -> Void
+	
+	@available(*, deprecated, renamed: "writeToFile(_:of:uploading:)")
 	func writeToFile(
 		_ inboxFileHandle: privmx.InboxFileHandle,
 		in inboxHandle: privmx.InboxHandle,
