@@ -25,7 +25,7 @@ public final class InboxFileHandler:@unchecked Sendable{
 	/// InboxFileHandle
 	public let fileHandle:privmx.InboxFileHandle
 	private var inboxApi:PrivMXInbox
-	private var inboxHandle: privmx.InboxHandle?
+	private var entryHandle: privmx.EntryHandle?
 	private var dataSource: (any FileDataSource)?
 	private var buffer: Data?
 	private var localFile: FileHandle?
@@ -35,6 +35,7 @@ public final class InboxFileHandler:@unchecked Sendable{
 	
 	public private(set) var hasDataLeft:Bool = true
 	
+	/// Read File
 	internal init(
 		fileId:String,
 		inboxApi: any PrivMXInbox,
@@ -49,14 +50,7 @@ public final class InboxFileHandler:@unchecked Sendable{
 		self.chunkSize = chunkSize
 	}
 	
-	/// Initializes a new handler that operates on local and remote files, using methods from `PrivMXInbox`.
-	///
-	/// - Parameters:
-	///   - StoreFileHandle: The file handle for the store file.
-	///   - inboxApi: The API for interacting with the `PrivMXInbox`.
-	///   - localFile: The local file handle (swift-nio) for file operations.
-	///   - mode: The mode of operation (e.g., read or write).
-	///   - chunkSize: The size of the chunks for file transfers.
+	/// Upload File
 	internal init(
 		inboxApi:any PrivMXInbox,
 		dataSource: any FileDataSource,
@@ -72,12 +66,20 @@ public final class InboxFileHandler:@unchecked Sendable{
 		self.chunkSize = chunkSize
 	}
 	
-	/// Sets the Inbox handle for uploading the file.
-	/// - Parameter handle: Inbox handle received by preparing an Inbox Entry
+	/// Sets the Entry handle for uploading the file.
+	/// - Parameter handle: Entry handle received by preparing an Inbox Entry
+	
+	public func setEntryHandle(
+		_ handle: privmx.EntryHandle
+	) -> Void {
+		self.entryHandle = handle
+	}
+	
+	@available(*, deprecated, renamed: "setEntryHandle(_:)")
 	public func setInboxHandle(
 		_ handle: privmx.InboxHandle
 	) -> Void {
-		self.inboxHandle = handle
+		self.entryHandle = handle
 	}
 	
 	/// Provides access to the data buffer of the processed file.
@@ -157,12 +159,12 @@ public final class InboxFileHandler:@unchecked Sendable{
 	) throws -> Void{
 		if mode == .write{
 			let buf = try dataSource!.getNextChunk(ofSize: chunkSize)
-			guard let inboxHandle else {throw PrivMXEndpointError.failedWritingToFile(privmx.InternalError(name: "Unknown Destination",
+			guard let entryHandle else {throw PrivMXEndpointError.failedWritingToFile(privmx.InternalError(name: "Unknown Destination",
 																										   message: "Inbox Handle was nil",
 																										   description: "Error",
 																										   code: nil))}
 			try inboxApi.writeToFile(fileHandle,
-									 in: inboxHandle,
+									 of: entryHandle,
 									 uploading: buf)
 			
 			hasDataLeft = dataSource!.hasDataLeft
