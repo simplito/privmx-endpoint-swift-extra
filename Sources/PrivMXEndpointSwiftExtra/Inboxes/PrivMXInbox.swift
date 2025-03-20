@@ -154,6 +154,14 @@ public protocol PrivMXInbox:Sendable{
 		in inboxId: String,
 		containing data: Data,
 		attaching inboxFilesHandles: [privmx.InboxFileHandle],
+		publicKeyDerivedFrom userPrivateKey: String?
+	) throws -> privmx.EntryHandle
+	
+	@available(*, deprecated, renamed: "prepareEntry(in:containing:attaching:publicKeyFrom:)")
+	func prepareEntry(
+		in inboxId: String,
+		containing data: Data,
+		attaching inboxFilesHandles: [privmx.InboxFileHandle],
 		as userPrivateKey: String?
 	) throws -> privmx.InboxHandle
 	
