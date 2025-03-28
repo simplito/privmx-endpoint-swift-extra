@@ -141,6 +141,8 @@ final class PrivMXEventLoop: @unchecked Sendable{
 			x = try EventHandler.extractInboxEntryDeletedEvent(eventHolder: eh)
 		} else if try EventHandler.isLibBreakEvent(eventHolder: eh){
 			x = try EventHandler.extractLibBreakEvent(eventHolder: eh)
+		} else if try EventHandler.isContextCustomEvent(eventHolder: eh){
+			x = try EventHandler.extractContextCustomEvent(eventHolder: eh)
 		} else {
 			return nil
 		}

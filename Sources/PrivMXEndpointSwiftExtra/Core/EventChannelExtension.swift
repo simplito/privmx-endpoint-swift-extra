@@ -31,6 +31,8 @@ extension EventChannel {
 				return "inbox"
 			case .inboxEntries(inboxID: let inboxID):
 				return "inbox/\(inboxID)/entries"
+			case .custom(let contextID,let name):
+				return "context/\(contextID)/\(name)"
 		}
 	}
 }

@@ -13,7 +13,7 @@ import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 import Foundation
 
-extension EventApi{
+public extension EventApi{
 	public func emitEvent(
 		contextId: String,
 		channelName: String,
@@ -29,7 +29,7 @@ extension EventApi{
 	
 	public func subscribeForCustomEvents(
 		in contextId: String,
-		fromChannel channelName: String
+		onChannel channelName: String
 	) throws -> Void {
 		try subscribeForCustomEvents(
 			contextId:std.string(contextId),
@@ -38,7 +38,7 @@ extension EventApi{
 	
 	public func unsubscribeFromCustomEvents(
 		in contextId:String,
-		fromChannel channelName: String
+		onChannel channelName: String
 	) throws -> Void {
 		try unsubscribeFromCustomEvents(
 			contextId: std.string(contextId),
