@@ -32,9 +32,11 @@ extension privmx.endpoint.thread.ThreadDeletedEvent: PMXEvent {
 	/// - Parameter cb: A closure that accepts an optional `Any?` argument,
 	///   representing the data to be passed when the event is handled.
 	public func handleWith(
-		cb: @escaping ((_ data: Any?) -> Void)
+		cb: @escaping (@MainActor @Sendable (_ data: Any?) async -> Void)
 	) -> Void {
-		cb(data)
+		Task{
+			await cb(data)
+		}
 	}
 
 	/// Returns the event type as a string.

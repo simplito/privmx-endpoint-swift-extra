@@ -41,9 +41,11 @@ extension privmx.endpoint.core.LibDisconnectedEvent: PMXEvent {
 	/// - Parameter cb: A closure that accepts an optional `Any?` argument,
 	///   representing the data to be passed when the event is handled.
 	public func handleWith(
-		cb: @escaping ((_ data: Any?) -> Void)
+		cb: @escaping @Sendable @MainActor (_ data: Any?) async -> Void
 	) -> Void {
-		cb(nil)
+		Task{
+			await cb(nil)
+		}
 	}
 }
 

@@ -33,6 +33,7 @@ public class PrivMXEndpoint: Identifiable{
 	/// API for handling inboxes.
 	public private(set) var inboxApi : PrivMXInbox?
 	
+	fileprivate var callbacks : [String:[String: [String :  [(@Sendable @MainActor (_ data:Any?)->Void)]]]] = [:]
 	
 	/// Initializes a new instance of `PrivMXEndpoint` with a connection to PrivMX Bridge and optional modules.
     ///
@@ -199,9 +200,6 @@ public class PrivMXEndpoint: Identifiable{
 		}
 		self.id = try! con.getConnectionId()
 	}
-	
-	fileprivate var callbacks : [String:[String: [String :  [(@Sendable (_ data:Any?)->Void)]]]] = [:]
-	fileprivate var cbId = 0
 	
 	/// Begins uploading a new file using `PrivMXStoreFileHandler`, which manages file uploads.
 	///
@@ -622,7 +620,7 @@ public class PrivMXEndpoint: Identifiable{
 		for type: PMXEvent.Type,
 		from channel:EventChannel,
 		identified id:String,
-		_ cb: (@escaping @Sendable (Any?) -> Void) = {_ in}
+		_ cb: (@escaping @Sendable @MainActor (Any?) -> Void) = {_ in}
 	) throws -> Void {
 		if callbacks[channel.name] == nil{
 			callbacks[channel.name] = [:]

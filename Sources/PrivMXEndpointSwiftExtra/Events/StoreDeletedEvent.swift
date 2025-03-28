@@ -32,9 +32,11 @@ extension privmx.endpoint.store.StoreDeletedEvent: PMXEvent {
 	/// - Parameter cb: A closure that accepts an optional `Any?` argument,
 	///   representing the data to be passed when the event is handled.
 	public func handleWith(
-		cb: @escaping ((_ data: Any?) -> Void)
+		cb: @escaping (@Sendable @MainActor (_ data: Any?) async -> Void)
 	) -> Void {
-		cb(data)
+		Task{
+			await cb(data)
+		}
 	}
 
 	/// Returns the event type as a string.

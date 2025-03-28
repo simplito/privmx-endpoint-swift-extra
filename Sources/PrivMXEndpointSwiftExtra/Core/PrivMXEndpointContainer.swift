@@ -168,9 +168,7 @@ public final class PrivMXEndpointContainer: Sendable{
 	public func startListening() async throws {
 			if eventLoop == nil {
 				eventLoop = PrivMXEventLoop(){ event, eventType, connectionID in
-					Task{
 						try? await self.endpoints[connectionID]?.handleEvent(event, ofType: eventType)
-					}
 				}
 			}
 			
