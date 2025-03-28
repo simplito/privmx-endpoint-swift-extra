@@ -21,7 +21,7 @@ public protocol PMXEvent: Sendable {
 	/// though some events may lack associated data (hence, the optional `Any?` type).
 	///
 	/// - Parameter cb: A closure that processes the event's data. This callback accepts an optional `Any?` parameter representing the event's data.
-	func handleWith(cb: @escaping @Sendable (Any?) -> Void)
+	func handleWith(cb: @escaping @Sendable @MainActor (Any?) async -> Void)
 	
 	/// Provides a string that uniquely represents the type of the event.
 	///

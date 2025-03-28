@@ -32,9 +32,11 @@ extension privmx.endpoint.core.LibBreakEvent: PMXEvent {
 	/// - Parameter cb: A closure that accepts an optional `Any?` argument,
 	///   representing the data to be passed when the event is handled.
 	public func handleWith(
-		cb: @escaping ((Any?) -> Void)
+		cb: @escaping (@Sendable @MainActor (Any?) async -> Void)
 	) {
-		cb(nil)
+		Task{
+			await cb(nil)
+		}
 	}
 
 	/// Returns the event type as a string.
