@@ -145,7 +145,7 @@ public protocol PrivMXInbox:Sendable{
 	///   - inboxId: The unique identifier of the inbox to which the entry will be sent, provided as a `String`.
 	///   - data: The main content of the entry, provided as `Data`.
 	///   - inboxFilesHandles: An array of `InboxFileHandle` objects representing any files that should be attached to the entry.
-	///   - userPrivateKey: An optional private key that will be used to attach a dreived public key to the entry.
+	///   - userPrivateKey: An optional private key that will be used to attach a derived public key to the entry.
 	///
 	/// - Throws: Throws an error if the entry preparation fails.
 	///
