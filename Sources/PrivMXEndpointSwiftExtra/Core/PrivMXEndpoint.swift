@@ -26,12 +26,13 @@ public class PrivMXEndpoint: Identifiable{
 	public let anonymous: Bool
 	/// Provides handling of network and events through `PrivMXConnection`.
 	public private(set) var connection : PrivMXConnection
-	/// API for handling threads.
+	/// API for handling Threads.
 	public private(set) var threadApi : PrivMXThread?
-	/// API for handling stores.
+	/// API for handling Stores.
 	public private(set) var storeApi : PrivMXStore?
-	/// API for handling inboxes.
+	/// API for handling Inboxes.
 	public private(set) var inboxApi : PrivMXInbox?
+	/// API for handling Custom Events
 	public private(set) var eventApi: EventApi?
 	
 	

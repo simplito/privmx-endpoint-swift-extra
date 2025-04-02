@@ -14,6 +14,15 @@ import PrivMXEndpointSwift
 import Foundation
 
 public extension EventApi{
+	
+	/// Emits a new Custom Event
+	///
+	/// - Parameter contextId: id of the Context in which the Event will be emited
+	/// - Parameter channelName: channel name on which the event will be emitted
+	/// - Parameter eventData: arbitrary payload of the Event
+	/// - Parameter users: users that will receive the Event
+	///
+	/// - Throws: When emitting the event fails
 	public func emitEvent(
 		in contextId: String,
 		on channelName: String,
@@ -27,6 +36,12 @@ public extension EventApi{
 			users: privmx.UserWithPubKeyVector(users))
 	}
 	
+	/// Subscribes to Custom Events in a specific Context, that arrive on a specific, named Channel
+	///
+	/// - Parameter contextId: id of the Context
+	/// - Parameter channelName: arbitrary name of the channel
+	///
+	/// - Throws: When subscribing fails
 	public func subscribeForCustomEvents(
 		in contextId: String,
 		onChannel channelName: String
@@ -36,6 +51,12 @@ public extension EventApi{
 			channelName:std.string(channelName))
 	}
 	
+	/// Unsbscribes from Custom Events in a specific Context, that arrive on a specific, named Channel
+	///
+	/// - Parameter contextId: id of the Context
+	/// - Parameter channelName: arbitrary name of the channel
+	///
+	/// - Throws: When unsubscribing fails
 	public func unsubscribeFromCustomEvents(
 		in contextId:String,
 		onChannel channelName: String
