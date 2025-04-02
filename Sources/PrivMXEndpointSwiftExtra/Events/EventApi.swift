@@ -15,10 +15,10 @@ import Foundation
 
 public extension EventApi{
 	public func emitEvent(
-		contextId: String,
-		channelName: String,
-		eventData: Data,
-		users: [privmx.endpoint.core.UserWithPubKey]
+		in contextId: String,
+		on channelName: String,
+		containing eventData: Data,
+		to users: [privmx.endpoint.core.UserWithPubKey]
 	) throws -> Void {
 		try emitEvent(
 			contextId: std.string(contextId),
