@@ -21,8 +21,8 @@ This package implements:
 
 1. Enums and static fields to reduce errors while using the methods.
 2. Protocols and Extensions for translating C++ values to Swift Types.
-3. [`PrivmxEndpointWrapper`](https://docs.privmx.dev/swift/api-reference/privmx-endpoint-swift-extra/classes/privmx-endpoint-wrapper) for managing a single connection and operations that use it.
-4. [`PrivmxEndpointContainer`](https://docs.privmx.dev/swift/api-reference/privmx-endpoint-swift-extra/classes/privmx-endpoint-container) for managing global sessions.
+3. [`PrivmxEndpoint`](https://docs.privmx.dev/docs/latest/reference/privmx-endpoint-swift-extra/core/privmx-endpoint) for managing a single connection and operations that use it.
+4. [`PrivmxEndpointContainer`](https://docs.privmx.dev/docs/latest/reference/privmx-endpoint-swift-extra/core/privmx-endpoint-container) for managing global sessions.
 5. Classes to simplify reading/writing to files using byte arrays and Swift [`FileHandle`](https://developer.apple.com/documentation/foundation/filehandle).
 
 ## Dependency setup
@@ -44,7 +44,7 @@ To add it directly to a Swift package, include this line in the `dependencies` a
 ```swift
 .package(
     url: "https://github.com/simplito/privmx-endpoint-swift-extra",
-    .upToNextMajor(from: .init(2, 0, 0))
+    .upToNextMinor(from: .init(2, 2, 0))
 ),
 ```
 
@@ -55,7 +55,7 @@ For more details on PrivMX Platform, including setup guides and API reference, v
 
 ## License information
 
-**PrivMX Endpoint Swift**
+**PrivMX Endpoint Swift Extra**
 Copyright © 2024 Simplito sp. z o.o.
 
 This project is part of the PrivMX Platform (https://privmx.dev).
