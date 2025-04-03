@@ -17,7 +17,7 @@ public class ItemPolicyBuilder{
 	
 	public init(){}
 	
-	/// Initalises the builder with existing policies.
+	/// Initializes the builder with existing policies.
 	///
 	/// - parameter policy: preexisting Policy object.
 	public init(
