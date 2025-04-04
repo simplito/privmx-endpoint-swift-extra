@@ -88,6 +88,19 @@ extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 	public func prepareEntry(in inboxId: String,
 							 containing data: Data,
 							 attaching inboxFilesHandles: [privmx.InboxFileHandle],
+							 publicKeyDerivedFrom userPrivateKey: String?
+	) throws -> privmx.EntryHandle {
+		try self.prepareEntry(inboxId: std.string(inboxId),
+							  data: data.asBuffer(),
+							  inboxFileHandles: privmx.InboxFileHandleVector(inboxFilesHandles),
+							  userPrivKey: userPrivateKey != nil ? std.string(userPrivateKey) : nil)
+	}
+	
+	
+	@available(*, deprecated, renamed: "prepareEntry(in:containing:attaching:publicKeyDerivedFrom:)")
+	public func prepareEntry(in inboxId: String,
+							 containing data: Data,
+							 attaching inboxFilesHandles: [privmx.InboxFileHandle],
 							 as userPrivateKey: String?
 	) throws -> privmx.InboxHandle {
 		try self.prepareEntry(inboxId: std.string(inboxId),
@@ -96,6 +109,13 @@ extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 							  userPrivKey: userPrivateKey != nil ? std.string(userPrivateKey) : nil)
 	}
 	
+	public func sendEntry(
+		_ entryHandle:privmx.EntryHandle
+	) throws -> Void {
+		try self.sendEntry(entryHandle: entryHandle)
+	}
+	
+	@available(*, deprecated, renamed: "sendEntry(_:)")
 	public func sendEntry(
 		to inboxHandle:privmx.InboxHandle
 	) throws -> Void {
@@ -112,6 +132,17 @@ extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 								  fileSize: fileSize)
 	}
 	
+	public func writeToFile(
+		_ inboxFileHandle: privmx.InboxFileHandle,
+		of entryHandle: privmx.EntryHandle,
+		uploading dataChunk: Data
+	) throws -> Void {
+		try self.writeToFile(entryHandle: entryHandle,
+							 inboxFileHandle: inboxFileHandle,
+							 dataChunk: dataChunk.asBuffer())
+	}
+	
+	@available(*, deprecated, renamed: "writeToFile(_:of:uploading:)")
 	public func writeToFile(
 		_ inboxFileHandle: privmx.InboxFileHandle,
 		in inboxHandle: privmx.InboxHandle,
