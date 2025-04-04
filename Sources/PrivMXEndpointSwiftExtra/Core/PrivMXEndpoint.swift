@@ -26,12 +26,14 @@ public class PrivMXEndpoint: Identifiable{
 	public let anonymous: Bool
 	/// Provides handling of network and events through `PrivMXConnection`.
 	public private(set) var connection : PrivMXConnection
-	/// API for handling threads.
+	/// API for handling Threads.
 	public private(set) var threadApi : PrivMXThread?
-	/// API for handling stores.
+	/// API for handling Stores.
 	public private(set) var storeApi : PrivMXStore?
-	/// API for handling inboxes.
+	/// API for handling Inboxes.
 	public private(set) var inboxApi : PrivMXInbox?
+	/// API for handling Custom Events
+	public private(set) var eventApi: EventApi?
 	
 	fileprivate var callbacks : [String:[String: [String :  [(@Sendable @MainActor (_ data:Any?)->Void)]]]] = [:]
 	
@@ -75,6 +77,9 @@ public class PrivMXEndpoint: Identifiable{
 												  threadApi: &t,
 												  storeApi: &s)
 		}
+		if modules.contains(.event){
+			self.eventApi = try EventApi.create(connection: &con)
+		}
 		self.id = try! con.getConnectionId()
 	}
 	
@@ -117,6 +122,9 @@ public class PrivMXEndpoint: Identifiable{
 												  threadApi: &t,
 												  storeApi: &s)
 		}
+		if modules.contains(.event){
+			self.eventApi = try EventApi.create(connection: &con)
+		}
 		self.id = try! con.getConnectionId()
 	}
 	
@@ -158,6 +166,9 @@ public class PrivMXEndpoint: Identifiable{
 												  threadApi: &t,
 												  storeApi: &s)
 		}
+		if modules.contains(.event){
+			self.eventApi = try EventApi.create(connection: &con)
+		}
 		self.id = try! con.getConnectionId()
 	}
 	
@@ -191,12 +202,18 @@ public class PrivMXEndpoint: Identifiable{
 			sto = try StoreApi.create(connection: &con)
 			self.storeApi = sto
 		}
+		if modules.contains(.event){
+			self.eventApi = try EventApi.create(connection: &con)
+		}
 		if modules.contains(.inbox){
 			var s = try (sto ?? StoreApi.create(connection: &con))
 			var t = try (thr ?? ThreadApi.create(connection: &con))
 			self.inboxApi = try InboxApi.create(connection: &con,
 												  threadApi: &t,
 												  storeApi: &s)
+		}
+		if modules.contains(.event){
+			self.eventApi = try EventApi.create(connection: &con)
 		}
 		self.id = try! con.getConnectionId()
 	}
@@ -639,6 +656,8 @@ public class PrivMXEndpoint: Identifiable{
 					try self.inboxApi?.subscribeForInboxEvents()
 				case .inboxEntries(let inboxID):
 					try self.inboxApi?.subscribeForEntryEvents(in: inboxID)
+				case .custom(let cid,let cname):
+					try self.eventApi?.subscribeForCustomEvents(contextId: std.string(cid), channelName: std.string(cname))
 			}
 		}
 		if callbacks[channel.name]?[type.typeStr()] == nil{
@@ -715,7 +734,7 @@ public class PrivMXEndpoint: Identifiable{
 	private func unsubscribeFromChannel(
 		_ c:String
 	) throws {
-		let splitted = c.split(separator: "/")
+		let splitted = c.split(separator: "/",maxSplits: 2)
 		switch splitted{
 			case _ where splitted.count == 1:
 				let s = String(splitted[0])
@@ -727,14 +746,17 @@ public class PrivMXEndpoint: Identifiable{
 					try inboxApi?.unsubscribeFromInboxEvents()
 				}
 			case _ where splitted.count == 3:
-				let id = String(splitted[1])
 				let s = String(splitted[0])
+				let id = String(splitted[1])
+				let n = String(splitted[2])
 				if s == "thread"{
 					try threadApi?.unsubscribeFromMessageEvents(in: id)
 				}else if s == "store"{
 					try storeApi?.unsubscribeFromFileEvents(in: id)
 				}else if s == "inbox"{
 					try inboxApi?.unsubscribeFromEntryEvents(in: id)
+				}else if s == "context"{
+					try eventApi?.unsubscribeFromCustomEvents(in: id, onChannel: n)
 				}
 			default:
 				break

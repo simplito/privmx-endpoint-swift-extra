@@ -29,4 +29,6 @@ public enum EventChannel {
 	case inbox
 	/// Channel for Events regarding Entries in a particular Inbox
 	case inboxEntries(inboxID:String)
+	/// Channels for `ContextCustomEvent`s
+	case custom(contextId:String,name:String)
 }
