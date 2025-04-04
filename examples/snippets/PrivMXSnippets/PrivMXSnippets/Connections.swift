@@ -45,14 +45,14 @@ class PrivMXSnippetClass {
 
 
     func setup() async throws {
-        // Initialize the endpoint container
+        // Initialize the `PrivMXEndpointContainer`
         let endpointContainer = PrivMXEndpointContainer()
 
         // Set the path to the certificate matching Your installation
         guard let pathToCerts = Bundle.main.path(forResource: "cacert", ofType: "pem") else { return }
         try endpointContainer.setCertsPath(to: pathToCerts)
 
-        // Establish a new endpoint session
+        // Establish a new `PrivMXEndpoint` session
         var endpointSession = try await endpointContainer.newEndpoint(
             enabling: [.thread,.store,.inbox],
             connectingAs: USER1_PRIVATE_KEY,
@@ -69,7 +69,7 @@ class PrivMXSnippetClass {
         // Set the path to the certificate matching Your installation
         guard let pathToCerts = Bundle.main.path(forResource: "cacert", ofType: "pem") else {return}
         try? Connection.setCertsPath(pathToCerts)
-        // Establish a new endpoint session
+        // Establish a new `PrivMXEndpoint` session
         var endpointSession = try? PrivMXEndpoint(
             modules: [.thread,.store,.inbox],
             userPrivKey: USER1_PRIVATE_KEY,

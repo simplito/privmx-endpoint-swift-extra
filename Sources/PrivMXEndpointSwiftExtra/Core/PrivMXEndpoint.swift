@@ -18,7 +18,7 @@ import PrivMXEndpointSwift
 /// The `PrivMXEndpoint` class is designed to encapsulate and manage a single connection to PrivMX. It provides
 /// access to different APIs for handling Threads, Stores, and Inboxes, based on the modules that are enabled during initialization.
 /// It also supports asynchronous operations like uploading and downloading files, and allows for managing callbacks for events.
-public class PrivMXEndpoint: Identifiable{
+public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	
 	public let id:Int64
 	

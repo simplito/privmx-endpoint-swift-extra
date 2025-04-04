@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
  
 /// The `PrivMXEndpointContainer` class serves as the central management component for handling multiple
 /// `PrivMXEndpoint` instances within PrivMX system. It is responsible for initializing, managing, and
-/// disconnecting endpoints, as well as providing cryptographic services and event handling capabilities.
+/// disconnecting PrivMX Endpoints, as well as providing cryptographic services and event handling capabilities.
 ///
 /// This class operates in a concurrent environment with support for handling cryptographic operations, managing
 /// secure communication endpoints, and listening for events. It also supports asynchronous endpoint creation,
@@ -44,9 +44,9 @@ public final class PrivMXEndpointContainer: Sendable{
 		return endpoints[id]
 	}
 	
-	/// Returns an array of all connected endpoint IDs.
+	/// Returns an array of all connected `PrivMXEndpoint` IDs.
 	///
-	/// This is useful when managing multiple endpoints and retrieving their connection IDs.
+	/// This is useful when managing multiple  `PrivMXEndpoint`s and retrieving their connection IDs.
 	///
 	/// - Returns: An array of connection IDs for all connected endpoints.
 	public func getEndpointIds(
@@ -109,9 +109,9 @@ public final class PrivMXEndpointContainer: Sendable{
 		return ne
 	}
 	
-	/// Disconnects and removes an endpoint from the container.
+	/// Disconnects and removes a `PrivMXEndpoint` from the container.
 	///
-	/// This method terminates the connection of the specified endpoint and removes it from the container.
+	/// This method terminates the connection of the specified `PrivMXEndpoint` and removes it from the container.
 	///
 	/// - Parameter endpoint: The connection ID of the endpoint to be disconnected.
 	///
@@ -123,9 +123,9 @@ public final class PrivMXEndpointContainer: Sendable{
 		try e?.connection.disconnect()
 	}
 	
-	/// Disconnects and removes all endpoints from the container.
+	/// Disconnects and removes all `PrivMXEndpoint`s from the container.
 	///
-	/// This method terminates the connections of all endpoints managed by the container and clears the container.
+	/// This method terminates the connections of all `PrivMXEndpoint`s managed by the container and clears the container.
 	///
 	/// - Throws: An error if disconnecting any endpoint fails.
 	public func disconnectAll(
