@@ -20,7 +20,7 @@ public class ContainerPolicyBuilder{
 	/// Creates a fresh ContainerPolicyBuilder
 	public init(){}
 	
-	/// Initalises the builder with existing policies.
+	/// Initializes the builder with existing policies.
 	///
 	/// - parameter policy: preexisting policy object.
 	public init(
@@ -35,7 +35,7 @@ public class ContainerPolicyBuilder{
 																	ownerCanBeRemovedFromManagers: policy.ownerCanBeRemovedFromManagers)
 	}
 	
-	/// Initalises the builder with existing policies.
+	/// Initializes the builder with existing policies.
 	///
 	/// - parameter policy: preexisting policy object.
 	public init(
