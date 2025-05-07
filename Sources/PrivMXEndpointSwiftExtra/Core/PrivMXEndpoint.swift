@@ -676,6 +676,21 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	/// If there are no callbacks left for events from a particular channel, `Connection.unsubscribeFromChannel(_:)` is called, which means no Events from that Channel will arrive.
 	///
 	/// - Parameter id: ID of the callback to be deleted
+	public func clearCallbacks(
+		identified id:String
+	) -> Void {
+		for c in callbacks.keys{
+			for t in callbacks[c]!.keys{
+				callbacks[c]?[t]?.removeValue(forKey: id)
+			}
+			if nil != callbacks[c], (callbacks[c] ?? [:]).isEmpty{
+				callbacks.removeValue(forKey: c)
+				try? unsubscribeFromChannel(c)
+			}
+		}
+	}
+	
+	@available(*, deprecated, renamed: "clearCallbacks(identified:)")
 	public func deleteCallbacks(
 		identified id:String
 	) -> Void {
@@ -688,7 +703,6 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 				try? unsubscribeFromChannel(c)
 			}
 		}
-		
 	}
 	
 	/// Removes all callbacks for a particular Event type.
@@ -713,6 +727,14 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	/// Once all callbacks are removed, `Connection.unsubscribeFromChannel(_:)` is called, which means no Events from that Channel will arrive.
 	///
 	/// - Parameter channel: the EventChannel, from which events should no longer be received
+	public func clearCallbacks(
+		from channel:EventChannel
+	) -> Void {
+		callbacks.removeValue(forKey: channel.name)
+		try? unsubscribeFromChannel(channel.name)
+	}
+	
+	@available(*, deprecated, renamed: "clearCallbacks(from:)")
 	public func clearCallbacks(
 		for channel:EventChannel
 	) -> Void {
