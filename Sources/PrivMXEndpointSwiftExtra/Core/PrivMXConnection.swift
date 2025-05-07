@@ -47,7 +47,8 @@ public protocol PrivMXConnection{
 	static func connect(
 		as userPrivKey: String,
 		to solutionID: String,
-		on bridgeUrl: String
+		on bridgeUrl: String,
+		setting verificationOptions: privmx.endpoint.core.PKIVerificationOptions
 	) throws -> any PrivMXConnection
 	
 	/// Connects with public access to PrivMX Bridge. It is used mainly for public access to `InboxApi`.
@@ -59,7 +60,8 @@ public protocol PrivMXConnection{
 	/// - Throws: Any Connection Exceptions
 	static func connectPublic(
 		to solutionID: String,
-		on bridgeUrl: String
+		on bridgeUrl: String,
+		setting verificationOptions: privmx.endpoint.core.PKIVerificationOptions
 	) throws -> any PrivMXConnection
 	
 	/// Returns current Connection ID.
