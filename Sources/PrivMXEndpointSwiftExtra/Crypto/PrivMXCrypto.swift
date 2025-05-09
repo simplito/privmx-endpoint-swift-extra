@@ -10,6 +10,8 @@
 //
 
 import Foundation
+import PrivMXEndpointSwift
+import PrivMXEndpointSwiftNative
 
 /// Protocol declaring cryptographic operations using Swift types.
 public protocol PrivMXCrypto{
@@ -164,5 +166,59 @@ public protocol PrivMXCrypto{
 		of data: Data,
 		with publicKey: String
 	) throws -> Bool
+	
+	 func convertPGPAsn1KeyToBase58DERKey(
+		pgpKey: String
+	) throws -> String
+	
+	 func generateBip39(
+		strength: size_t,
+		password: String
+	) throws -> BIP39
+	
+	 func fromMnemonic(
+		mnemonic: String,
+		password: String
+	) throws -> BIP39
+	
+	 func fromEntropy(
+		entropy: Data,
+		password: String
+	)throws -> BIP39
+	
+	/// Converts BIP-39 mnemonic to entropy.
+	///
+	/// - Parameter mnemonic: BIP-39 mnemonic
+	///
+	/// - Throws: `PrivMXEndpointError.failedConvertingMnemonicToEntropy` if the conversion fails.
+	///
+	/// - Returns: BIP-39 entropy
+	 func mnemonicToEntropy(
+		mnemonic: String
+	) throws -> Data
+	
+	/// Converts BIP-39 mnemonic to entropy.
+	///
+	/// - Parameter entropy: BIP-39 entropy
+	///
+	/// - Throws: `PrivMXEndpointError.failedConvertingEntropyToMnemonic` if the conversion fails.
+	///
+	/// - Returns: BIP-39 mnemonic
+	 func entropyToMnemonic(
+		entropy: Data
+	) throws -> String
+	
+	/// Generates a seed used to generate a key using BIP-39 mnemonic with PBKDF2.
+	///
+	/// - Parameters mnemonic: BIP-39 mnemonic
+	/// - Parameters password: the password used to generate the seed
+	///
+	/// - Throws: `PrivMXEndpointError.failedGeneratingSeedFromMnemonic` if the generating fails.
+	///
+	/// - Returns: generated seed
+	 func mnemonicToSeed(
+		mnemonic: String,
+		password: String
+	) throws -> Data
 }
 
