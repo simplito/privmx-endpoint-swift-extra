@@ -71,8 +71,8 @@ extension privmx.endpoint.core.Buffer: Hashable {
 	
 	/// Creates a string representing this Buffer in Hex format.
 	public func toHex(
-	) throws -> String {
-		try String(Hex.encode(data: self))
+	) throws -> std.string {
+		try Hex.encode(data: self)
 	}
 	
 	
@@ -80,15 +80,15 @@ extension privmx.endpoint.core.Buffer: Hashable {
 	/// - Parameter hex: string to decode
 	/// - Returns: decoded Buffer
 	public static func from(
-		hex: String
+		hex: std.string
 	) throws -> privmx.endpoint.core.Buffer {
-		try Hex.decode(hex_data: std.string(hex))
+		try Hex.decode(hex_data: hex)
 	}
 	
 	/// Creates a string representing this Buffer in Base32 format.
 	public func toBase32(
-	) throws -> String {
-		try String(Base32.encode(data: self))
+	) throws -> std.string {
+		try Base32.encode(data: self)
 	}
 	
 	
@@ -96,15 +96,15 @@ extension privmx.endpoint.core.Buffer: Hashable {
 	/// - Parameter base32: string to decode
 	/// - Returns: decoded Buffer
 	public static func from(
-		base32: String
+		base32: std.string
 	) throws -> privmx.endpoint.core.Buffer {
-		try Base32.decode(base32_data: std.string(base32))
+		try Base32.decode(base32_data: base32)
 	}
 	
 	/// Creates a string representing this Buffer in Base64 format.
 	public func toBase64(
-	) throws -> String {
-		try String(Base64.encode(data: self))
+	) throws -> std.string {
+		try Base64.encode(data: self)
 	}
 	
 	
@@ -112,9 +112,9 @@ extension privmx.endpoint.core.Buffer: Hashable {
 	/// - Parameter base64: string to decode
 	/// - Returns: decoded Buffer
 	public static func from(
-		base64: String
+		base64: std.string
 	) throws -> privmx.endpoint.core.Buffer {
-		try Base64.decode(base64_data: std.string(base64))
+		try Base64.decode(base64_data: base64)
 	}
 	
 	
