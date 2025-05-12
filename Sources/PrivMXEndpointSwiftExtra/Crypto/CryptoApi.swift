@@ -106,4 +106,116 @@ extension CryptoApi: PrivMXCrypto{
 								 signature: signature.asBuffer(),
 								 publicKey: std.string(publicKey))
 	}
+	
+	/// Converts given public key in PGP format to its base58DER format.
+	///
+	/// - Parameter pgpKey: public key to convert
+	///
+	/// - Throws: `PrivMXEndpointError.failedConvertingKeyToBase58DER` if the conversion fails.
+	///
+	/// - Returns: public key in base58DER format
+	public func convertPGPAsn1KeyToBase58DERKey(
+		pgpKey: String
+	) throws -> String {
+		try String(self.convertPGPAsn1KeyToBase58DERKey(pgpKey:std.string(pgpKey)))
+	}
+	
+	
+	/// Generates ECC key and BIP-39 mnemonic from a password using BIP-39.
+	///
+	/// - Parameter strength: size of BIP-39 entropy, must be a multiple of 32
+	/// - Parameter password: the password used to generate the Key
+	///
+	/// - Throws: `PrivMXEndpointError.failedGeneratingBIP39` if the generating fails.
+	///
+	/// - Returns: `BIP39` object containing ECC Key and associated with it BIP-39 mnemonic and entropy
+	public func generateBip39(
+		strength: size_t,
+		password: String = ""
+	) throws -> BIP39 {
+		try self.generateBip39(strength:strength,
+							   password:std.string(password))
+		
+	}
+	
+	
+	/// Generates ECC key using BIP-39 mnemonic.
+	///
+	/// - Parameters mnemonic: the BIP-39 entropy used to generate the Key
+	/// - Parameters mnemonic: the password used to generate the Key
+	///
+	/// - Throws: `PrivMXEndpointError.failedGeneratingBIP39` if the generating fails.
+	///
+	/// - Returns: `BIP39` object containing ECC Key and associated with it BIP-39 mnemonic and entropy
+	public func fromMnemonic(
+		mnemonic: String,
+		password: String = ""
+	) throws -> BIP39 {
+		try self.fromMnemonic(mnemonic:std.string(mnemonic),
+							  password:std.string(password))
+	}
+	
+	
+	/// Generates ECC key using BIP-39 entropy.
+	///
+	/// - Parameters entropy: the BIP-39 entropy used to generate the Key
+	/// - Parameters password: the password used to generate the Key
+	///
+	/// - Throws: `PrivMXEndpointError.failedGeneratingBIP39` if the generating fails.
+	///
+	/// - Returns: `BIP39_t` object containing ECC Key and associated with it BIP-39 mnemonic and entropy
+	public func fromEntropy(
+		entropy: Data,
+		password: String = ""
+	) throws -> BIP39{
+		try self.fromEntropy(entropy: entropy.asBuffer(),
+							 password: std.string(password))
+	}
+	
+	
+	/// Converts BIP-39 mnemonic to entropy.
+	///
+	/// - Parameter entropy: BIP-39 entropy
+	///
+	/// - Throws: `PrivMXEndpointError.failedConvertingEntropyToMnemonic` if the conversion fails.
+	///
+	/// - Returns: BIP-39 mnemonic
+	public func entropyToMnemonic(
+		entropy: Data
+	) throws -> String {
+		try String(self.entropyToMnemonic(entropy:entropy.asBuffer()))
+		
+	}
+	
+	
+	/// Converts BIP-39 mnemonic to entropy.
+	///
+	/// - Parameter mnemonic: BIP-39 mnemonic
+	///
+	/// - Throws: `PrivMXEndpointError.failedConvertingMnemonicToEntropy` if the conversion fails.
+	///
+	/// - Returns: BIP-39 entropy
+	public func mnemonicToEntropy(
+		mnemonic: String
+	) throws -> Data {
+		try Data(from: self.mnemonicToEntropy(mnemonic:std.string(mnemonic)))
+	}
+	
+	
+	/// Generates a seed used to generate a key using BIP-39 mnemonic with PBKDF2.
+	///
+	/// - Parameters mnemonic: BIP-39 mnemonic
+	/// - Parameters password: the password used to generate the seed
+	///
+	/// - Throws: `PrivMXEndpointError.failedGeneratingSeedFromMnemonic` if the generating fails.
+	///
+	/// - Returns: generated seed
+	public func mnemonicToSeed(
+		mnemonic: String,
+		password: String = ""
+	) throws -> Data {
+		try Data(from:self.mnemonicToSeed(mnemonic:std.string(mnemonic),
+										  password:std.string(password)))
+		
+	}
 }
