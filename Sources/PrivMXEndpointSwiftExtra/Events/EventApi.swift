@@ -23,7 +23,7 @@ public extension EventApi{
 	/// - Parameter users: users that will receive the Event
 	///
 	/// - Throws: When emitting the event fails
-	func emitEvent(
+	public func emitEvent(
 		in contextId: String,
 		on channelName: String,
 		containing eventData: Data,
@@ -31,9 +31,9 @@ public extension EventApi{
 	) throws -> Void {
 		try emitEvent(
 			contextId: std.string(contextId),
-			users: privmx.UserWithPubKeyVector(users),
 			channelName: std.string(channelName),
-			eventData: eventData.asBuffer())
+			eventData: eventData.asBuffer(),
+			users: privmx.UserWithPubKeyVector(users))
 	}
 	
 	/// Subscribes to Custom Events in a specific Context, that arrive on a specific, named Channel
@@ -42,7 +42,7 @@ public extension EventApi{
 	/// - Parameter channelName: arbitrary name of the channel
 	///
 	/// - Throws: When subscribing fails
-	func subscribeForCustomEvents(
+	public func subscribeForCustomEvents(
 		in contextId: String,
 		onChannel channelName: String
 	) throws -> Void {
@@ -57,7 +57,7 @@ public extension EventApi{
 	/// - Parameter channelName: arbitrary name of the channel
 	///
 	/// - Throws: When unsubscribing fails
-	func unsubscribeFromCustomEvents(
+	public func unsubscribeFromCustomEvents(
 		in contextId:String,
 		onChannel channelName: String
 	) throws -> Void {
