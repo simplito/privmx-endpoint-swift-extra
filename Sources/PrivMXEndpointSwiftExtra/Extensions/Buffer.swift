@@ -11,6 +11,7 @@
 
 import Foundation
 import PrivMXEndpointSwiftNative
+import PrivMXEndpointSwift
 
 /// An extension for `Buffer` to conform to the `Hashable` protocol.
 /// This extension allows comparing two `Buffer` instances and generating a hash value
@@ -67,4 +68,55 @@ extension privmx.endpoint.core.Buffer: Hashable {
 	public static func from(_ data: Data) -> privmx.endpoint.core.Buffer {
 		Self.from([UInt8](data), data.count)
 	}
+	
+	/// Creates a string representing this Buffer in Hex format.
+	public func toHex(
+	) throws -> String {
+		try String(Hex.encode(data: self))
+	}
+	
+	
+	/// Decodes a string in Hex.
+	/// - Parameter hex: string to decode
+	/// - Returns: decoded Buffer
+	public static func from(
+		hex: String
+	) throws -> privmx.endpoint.core.Buffer {
+		try Hex.decode(hex_data: std.string(hex))
+	}
+	
+	/// Creates a string representing this Buffer in Base32 format.
+	public func toBase32(
+	) throws -> String {
+		try String(Base32.encode(data: self))
+	}
+	
+	
+	/// Decodes a string in Base32.
+	/// - Parameter base32: string to decode
+	/// - Returns: decoded Buffer
+	public static func from(
+		base32: String
+	) throws -> privmx.endpoint.core.Buffer {
+		try Base32.decode(base32_data: std.string(base32))
+	}
+	
+	/// Creates a string representing this Buffer in Base64 format.
+	public func toBase64(
+	) throws -> String {
+		try String(Base64.encode(data: self))
+	}
+	
+	
+	/// Decodes a string in Base64.
+	/// - Parameter base64: string to decode
+	/// - Returns: decoded Buffer
+	public static func from(
+		base64: String
+	) throws -> privmx.endpoint.core.Buffer {
+		try Base64.decode(base64_data: std.string(base64))
+	}
+	
+	
 }
+
