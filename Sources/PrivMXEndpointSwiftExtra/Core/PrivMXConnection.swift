@@ -81,5 +81,16 @@ public protocol PrivMXConnection{
 	func listContexts(
 		basedOn query: privmx.endpoint.core.PagingQuery
 	) throws -> privmx.ContextList
+	
+	/// Sets user’s custom verification callback.
+	///
+	/// Use this to set up verification with a PKI server.
+	///
+	/// - Parameter verifierImplementation: Callback that will be called for each verification request by the C++ library. It takes a C++ `std.vector` of
+	/// ``privmx.endpoint.core.VerificationRequest`` objects, exposed to swift as `privmx.VerificationRequestVector` and returns a `std.vector` of `bool`s
+	/// corresponding to the verification results.
+	func setUserVerifier(
+		_ verifierImplementation: privmx.VerificationImplementation
+	) throws -> Void
 }
 
