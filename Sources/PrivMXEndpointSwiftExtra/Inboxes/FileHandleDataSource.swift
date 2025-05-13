@@ -40,8 +40,7 @@ public struct FileHandleDataSource:FileDataSource{
 		else{
 			throw PrivMXEndpointError.otherFailure(privmx.InternalError(name: "Unexpectedly received nil data",
 																		message: "",
-																		description: "",
-																		code: nil)
+																		description: "")
 			)
 		}
 		if chunk.count < chunkSize{

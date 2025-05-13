@@ -116,8 +116,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 		else {
 			throw err ?? PrivMXEndpointError.otherFailure(privmx.InternalError(name: "Invalid State Error",
 																			   message: "Error",
-																			   description: "An Error occured",
-																			   code: nil))
+																			   description: "An Error occured"))
 		}
 		self.state = .filesSent
 		return self.state
@@ -130,8 +129,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 			case .sent,.error,.aborted,.filesSent:
 				throw PrivMXEndpointError.otherFailure(privmx.InternalError(name: "Invalid State Error",
 																			message: "Error",
-																			description: std.string("Sending cannot be aborted in \"\(self.state)\" state."),
-																			code: nil))
+																			description: "Sending cannot be aborted in \"\(self.state)\" state."))
 			case .prepared:
 				self.state = .aborted
 				try inboxApi.sendEntry(entryHandle)
@@ -143,8 +141,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 	) throws {
 		var error = privmx.InternalError(name: "Invalid State Error",
 										 message: "Error",
-										 description: std.string("Entry cannot be sent in \"\(self.state)\" state."),
-										 code: nil)
+										 description: "Entry cannot be sent in \"\(self.state)\" state.")
 		switch self.state{
 			case .filesSent:
 				try self.inboxApi.sendEntry(entryHandle)
