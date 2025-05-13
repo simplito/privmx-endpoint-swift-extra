@@ -100,8 +100,7 @@ public final class InboxFileHandler:@unchecked Sendable{
 		}else{
 			throw PrivMXEndpointError.otherFailure(privmx.InternalError(name: "Invalid State Error",
 																		message: "No DataSource to close",
-																		description: "No DataSource to close",
-																		code: nil))
+																		description: "No DataSource to close"))
 		}
 	}
 	
@@ -161,8 +160,7 @@ public final class InboxFileHandler:@unchecked Sendable{
 			let buf = try dataSource!.getNextChunk(ofSize: chunkSize)
 			guard let entryHandle else {throw PrivMXEndpointError.failedWritingToFile(privmx.InternalError(name: "Unknown Destination",
 																										   message: "Inbox Handle was nil",
-																										   description: "Error",
-																										   code: nil))}
+																										   description: "Error"))}
 			try inboxApi.writeToFile(fileHandle,
 									 of: entryHandle,
 									 uploading: buf)
