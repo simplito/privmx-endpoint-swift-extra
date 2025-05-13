@@ -94,4 +94,17 @@ extension Connection: PrivMXConnection {
 	) throws {
 		try Self.setCertsPath(std.string(path))
 	}
+	
+	/// Sets user’s custom verification callback.
+	///
+	/// Use this to set up verification with a PKI server.
+	///
+	/// - Parameter verifierImplementation: Callback that will be called for each verification request by the C++ library. It takes a C++ `std.vector` of
+	/// ``privmx.endpoint.core.VerificationRequest`` objects, exposed to swift as `privmx.VerificationRequestVector` and returns a `std.vector` of `bool`s
+	/// corresponding to the verification results.
+	public func setUserVerifier(
+		_ verifierImplementation: privmx.VerificationImplementation
+	) throws -> Void {
+		try self.setUserVerifier(verifier: privmx.UserVerifier(verifierImplementation))
+	}
 }
