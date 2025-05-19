@@ -17,7 +17,6 @@ import PrivMXEndpointSwiftNative
 
 /// Extension of `Connection`, providing methods for connecting to PrivMX Bridge and managing Contexts.
 extension Connection: PrivMXConnection {
-	
 	/// Lists all available Contexts for the authorized user in the current Solution.
 	///
 	/// This method retrieves a list of Contexts available to the user, filtered according to the provided query.
@@ -93,18 +92,5 @@ extension Connection: PrivMXConnection {
 		_ path: String
 	) throws {
 		try Self.setCertsPath(std.string(path))
-	}
-	
-	/// Sets user’s custom verification callback.
-	///
-	/// Use this to set up verification with a PKI server.
-	///
-	/// - Parameter verifierImplementation: Callback that will be called for each verification request by the C++ library. It takes a C++ `std.vector` of
-	/// ``privmx.endpoint.core.VerificationRequest`` objects, exposed to swift as `privmx.VerificationRequestVector` and returns a `std.vector` of `bool`s
-	/// corresponding to the verification results.
-	public func setUserVerifier(
-		_ verifierImplementation: privmx.VerificationImplementation
-	) throws -> Void {
-		try self.setUserVerifier(verifier: privmx.UserVerifier(verifierImplementation))
 	}
 }
