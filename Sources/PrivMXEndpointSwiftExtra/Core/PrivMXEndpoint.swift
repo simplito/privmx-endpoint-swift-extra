@@ -268,7 +268,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
              
 		} else {
 			var err = privmx.InternalError()
-			err.message = "StoresApi not initialised"
+			err.message = "StoresApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -325,7 +325,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
              
 		} else {
 			var err = privmx.InternalError()
-			err.message = "StoresApi not initialised"
+			err.message = "StoresApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -375,7 +375,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			
 		} else {
 			var err = privmx.InternalError()
-			err.message = "StoresApi not initialised"
+			err.message = "StoresApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -426,7 +426,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			
 		} else {
 			var err = privmx.InternalError()
-			err.message = "StoresApi not initialised"
+			err.message = "StoresApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -467,7 +467,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			return try sfhandler.close()
 		} else {
 			var err = privmx.InternalError()
-			err.message = "StoresApi not initialised"
+			err.message = "StoresApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -510,7 +510,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			return try sfhandler.closeRemote()
 		} else {
 			var err = privmx.InternalError()
-			err.message = "StoresApi not initialised"
+			err.message = "StoresApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -550,14 +550,14 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 				return b
 			} else {
 				var err = privmx.InternalError()
-				err.message = "StoresApi not initialised"
+				err.message = "StoresApi not initialized"
 				err.name = "Buffer Error"
 				throw PrivMXEndpointError.otherFailure(err)
 			}
 			
 		} else {
 			var err = privmx.InternalError()
-			err.message = "InboxApi not initialised"
+			err.message = "InboxApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -612,14 +612,14 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 				return b
 			} else {
 				var err = privmx.InternalError()
-				err.message = "StoresApi not initialised"
+				err.message = "StoresApi not initialized"
 				err.name = "Buffer Error"
 				throw PrivMXEndpointError.otherFailure(err)
 			}
 			
 		} else {
 			var err = privmx.InternalError()
-			err.message = "StoresApi not initialised"
+			err.message = "StoresApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
