@@ -145,6 +145,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 		switch self.state{
 			case .filesSent:
 				try self.inboxApi.sendEntry(entryHandle)
+				self.state = .sent
 			case .sent:
 				error.message = "Entry already sent!"
 				throw PrivMXEndpointError.otherFailure(error)
