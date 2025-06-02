@@ -39,7 +39,7 @@ extension CryptoApi: PrivMXCrypto{
 		try String(derivePublicKey(privKey: std.string(keyPriv)))
 	}
 	
-	@available(*, deprecated, renamed: "derivePrivateKey(from:and:)")
+	@available(*, deprecated, renamed: "derivePrivateKey2(from:and:)")
 	public func derivePrivateKey(
 		from password: String,
 		and salt: String
@@ -86,7 +86,7 @@ extension CryptoApi: PrivMXCrypto{
 		try String(self.convertPEMKeyToWIFKey(pemKey:std.string(pemKey)))
 	}
 	
-	@available(*, deprecated)
+	@available(*, deprecated, renamed: "verifySignature(_:of:with:)")
 	public func verifySignature(
 		data: Data,
 		signature: Data,
