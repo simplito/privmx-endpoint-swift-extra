@@ -107,6 +107,20 @@ class PrivMXSnippetClass {
         //by passing value indexed by connectionID
     }
     
+	func settingUserVerifier(){
+		
+		endpointSession?.connection.setUserVerifier({
+			requestHolder in
+			var result = [Bool]()
+			for req in requestHolder.requestVector{
+				var reqResult:Bool
+				// Some verification code for the request
+				result.append(reqResult)
+			}
+			return privmx.VerificationResult.init(resultVector: .init(from: result))
+		})
+	}
+	
     func teardown() {
         // Disconnect and clean up
         try? endpointContainer?.disconnectAll()
