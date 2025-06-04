@@ -28,7 +28,6 @@ extension PrivMXSnippetClass {
 		var additionalInfo: AdditionalInfo
 	}
 	
-	
 	func querySimple(){
 		let query = privmx.endpoint.core.PagingQuery(
 			skip: 0,
@@ -83,7 +82,7 @@ extension PrivMXSnippetClass {
 						"$lt": 10
 						},
 					"label":{
-						"$gt":30
+						"$gte":30
 						}
 					]
 				}
@@ -97,12 +96,12 @@ extension PrivMXSnippetClass {
 			sortOrder: .asc,
 			queryAsJson: """
 				{
-				"$and":[
-					"score":{
-						"$lt": 10
-						},
-					"role": "some role"
-					]
+				"score":{
+					"$lt": 10
+					},
+				"role": {
+					"$eq": "some role"
+					}
 				}
 				""")
 		let queryImplicit = privmx.endpoint.core.PagingQuery(
@@ -111,10 +110,14 @@ extension PrivMXSnippetClass {
 			sortOrder: .asc,
 			queryAsJson: """
 				{
-				"score":{
-					"$lt": 10
-					},
-				"role": "some role"
+				"$and":[
+					"score":{
+						"$lt": 10
+						},
+					"role": {
+						"$ne": "other role"
+						}
+					]
 				}
 				""")
 	}
