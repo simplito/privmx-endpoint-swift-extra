@@ -36,7 +36,7 @@ extension PrivMXSnippetClass {
 			sortOrder: .asc,
 			queryAsJson: """
 				{
-					"status": "active"
+				"status": "active"
 				}
 				""")
 	}
@@ -48,8 +48,8 @@ extension PrivMXSnippetClass {
 			sortOrder: .asc,
 			queryAsJson: """
 				{
-					"score":{
-						"$gt": 20
+				"score":{
+					"$gt": 20
 					}
 				}
 				""")
@@ -91,7 +91,7 @@ extension PrivMXSnippetClass {
 	}
 	
 	func queryAnd(){
-		let query = privmx.endpoint.core.PagingQuery(
+		let queryExplicit = privmx.endpoint.core.PagingQuery(
 			skip: 0,
 			limit: 10,
 			sortOrder: .asc,
@@ -101,8 +101,32 @@ extension PrivMXSnippetClass {
 					"score":{
 						"$lt": 10
 						},
-					"label": "some label"
+					"role": "some role"
 					]
+				}
+				""")
+		let queryImplicit = privmx.endpoint.core.PagingQuery(
+			skip: 0,
+			limit: 10,
+			sortOrder: .asc,
+			queryAsJson: """
+				{
+				"score":{
+					"$lt": 10
+					},
+				"role": "some role"
+				}
+				""")
+	}
+	
+	func queryNested(){
+		let queryExplicit = privmx.endpoint.core.PagingQuery(
+			skip: 0,
+			limit: 10,
+			sortOrder: .asc,
+			queryAsJson: """
+				{
+				"additionalInfo.label": "some label"
 				}
 				""")
 	}
