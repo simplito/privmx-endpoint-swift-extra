@@ -20,10 +20,13 @@ extension PrivMXSnippetClass {
 	let channel = EventChannel.custom(contextId: CONTEXT_ID , name: CHANNEL_NAME)
 	
 	func emittingCustomEvents(){
-		endpointSession?.eventApi?.emitEvent(in: CONTEXT_ID,
-											 to: [privmx.endpoint.core.UserWithPubKey]()//should be prepared by developer,
-											 on: channel,
-											 containing: Data())
+		endpointSession?.eventApi?.emitEvent(
+			in: CONTEXT_ID,
+			to: [privmx.endpoint.core.UserWithPubKey(userId: USER1_ID, pubKey: USER1_PUBLIC_KEY),
+				 privmx.endpoint.core.UserWithPubKey(userId: USER2_ID, pubKey: USER2_PUBLIC_KEY),
+				]
+			on: channel,
+			containing: Data())
 	}
 	
 	func handlingCustomEvents(){
