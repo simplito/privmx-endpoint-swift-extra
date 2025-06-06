@@ -54,7 +54,7 @@ class PrivMXSnippetClass {
 
         // Establish a new `PrivMXEndpoint` session
         var endpointSession = try await endpointContainer.newEndpoint(
-            enabling: [.thread,.store,.inbox],
+			enabling: [.thread,.store,.inbox,.event],
             connectingAs: USER1_PRIVATE_KEY,
             to: SOLUTION_ID,
             on: BRIDGE_URL
@@ -71,7 +71,7 @@ class PrivMXSnippetClass {
         try? Connection.setCertsPath(pathToCerts)
         // Establish a new `PrivMXEndpoint` session
         var endpointSession = try? PrivMXEndpoint(
-            modules: [.thread,.store,.inbox],
+			modules: [.thread,.store,.inbox,.event],
             userPrivKey: USER1_PRIVATE_KEY,
             solutionId: SOLUTION_ID,
             bridgeUrl: BRIDGE_URL)
@@ -96,6 +96,7 @@ class PrivMXSnippetClass {
             connection: &connection,
             threadApi: &threadApi,
             storeApi: &storeApi) else {return}
+		guard let eventApi = try? EventApi.create(connection: &connection) else {return}
                                      
     }
     
@@ -106,6 +107,20 @@ class PrivMXSnippetClass {
         //by passing value indexed by connectionID
     }
     
+	func settingUserVerifier(){
+		
+		endpointSession?.connection.setUserVerifier({
+			requestHolder in
+			var result = [Bool]()
+			for req in requestHolder.requestVector{
+				var reqResult:Bool = true // this is the default when no implementation is provided
+				// Some verification code for the request
+				result.append(reqResult)
+			}
+			return privmx.VerificationResult.init(resultVector: .init(from: result))
+		})
+	}
+	
     func teardown() {
         // Disconnect and clean up
         try? endpointContainer?.disconnectAll()
