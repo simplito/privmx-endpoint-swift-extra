@@ -113,7 +113,7 @@ class PrivMXSnippetClass {
 			requestHolder in
 			var result = [Bool]()
 			for req in requestHolder.requestVector{
-				var reqResult:Bool
+				var reqResult:Bool = true // when no implementation is provided
 				// Some verification code for the request
 				result.append(reqResult)
 			}
