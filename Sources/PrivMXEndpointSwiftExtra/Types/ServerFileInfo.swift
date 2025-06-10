@@ -16,7 +16,7 @@ import PrivMXEndpointSwiftNative
 
 /// An extension for `ServerFileInfo` to conform to the `Identifiable` and `Hashable` protocols.
 /// This extension allows for comparing two `ServerFileInfo` instances, generating unique hash values, and providing an identifier for each file.
-extension privmx.endpoint.store.ServerFileInfo: Identifiable, Hashable {
+extension privmx.endpoint.store.ServerFileInfo: Identifiable, Hashable, @unchecked Sendable {
 
 	/// Compares two `ServerFileInfo` instances for equality.
 	///

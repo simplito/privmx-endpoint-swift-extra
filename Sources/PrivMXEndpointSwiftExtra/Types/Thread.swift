@@ -16,7 +16,7 @@ import PrivMXEndpointSwiftNative
 
 /// An extension for `Thread` to conform to the `Identifiable` and `Hashable` protocols.
 /// This extension allows for comparing two `Thread` instances, generating unique hash values, and providing an identifier for each thread.
-extension privmx.endpoint.thread.Thread: Identifiable, Hashable {
+extension privmx.endpoint.thread.Thread: Identifiable, Hashable, @unchecked Sendable {
 
 	/// Compares two `Thread` instances for equality.
 	///
