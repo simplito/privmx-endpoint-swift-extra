@@ -9,6 +9,9 @@
 // limitations under the License.
 //
 
+import PrivMXEndpointSwiftNative
+import PrivMXEndpointSwift
+
 extension privmx.endpoint.inbox.InboxPublicView: Identifiable, Hashable, @unchecked Sendable {
 	public static func == (
 		lhs: privmx.endpoint.inbox.InboxPublicView,
