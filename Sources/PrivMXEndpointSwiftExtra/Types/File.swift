@@ -14,7 +14,7 @@ import PrivMXEndpointSwiftNative
 
 /// An extension for `File` to conform to the `Hashable` and `Identifiable` protocols.
 /// This extension allows for comparing two `File` instances, generating unique hash values, and providing an identifier for each file.
-extension privmx.endpoint.store.File: Hashable, Identifiable {
+extension privmx.endpoint.store.File: Hashable, Identifiable, @unchecked Sendable {
 
 	/// Compares two `File` instances for equality.
 	///

@@ -16,7 +16,7 @@ import PrivMXEndpointSwiftNative
 
 /// An extension for `Store` to conform to the `Identifiable` and `Hashable` protocols.
 /// This extension allows for comparing two `Store` instances, generating unique hash values, and providing an identifier for each store.
-extension privmx.endpoint.store.Store: Identifiable, Hashable {
+extension privmx.endpoint.store.Store: Identifiable, Hashable, @unchecked Sendable {
 
 	/// Compares two `Store` instances for equality.
 	///

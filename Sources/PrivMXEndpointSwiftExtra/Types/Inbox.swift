@@ -16,7 +16,7 @@ import PrivMXEndpointSwiftNative
 
 /// An extension for `Inbox` to conform to the `Identifiable` and `Hashable` protocols.
 /// This extension allows for comparing two `Inbox` instances, generating unique hash values, and providing an identifier for each inbox.
-extension privmx.endpoint.inbox.Inbox: Identifiable, Hashable {
+extension privmx.endpoint.inbox.Inbox: Identifiable, Hashable, @unchecked Sendable {
 
 	/// Compares two `Inbox` instances for equality.
 	///
