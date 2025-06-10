@@ -26,7 +26,7 @@ extension privmx.endpoint.core.Buffer: Hashable {
 	///   - rhs: The right-hand side `Buffer` instance.
 	/// - Returns: `true` if both buffers contain the same byte string, otherwise `false`.
 	public static func == (lhs: privmx.endpoint.core.Buffer, rhs: privmx.endpoint.core.Buffer) -> Bool {
-		lhs.__stdStringUnsafe().pointee == rhs.__stdStringUnsafe().pointee
+		privmx.compareBuffers(lhs,rhs)
 	}
 
 	/// Generates a hash value for the buffer.
