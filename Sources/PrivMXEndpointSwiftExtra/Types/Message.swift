@@ -14,7 +14,7 @@ import PrivMXEndpointSwiftNative
 
 /// An extension for `privmx.endpoint.thread.Message` to conform to the `Identifiable` and `Hashable` protocols.
 /// This extension provides an identifier for each message and allows for comparing and hashing messages.
-extension privmx.endpoint.thread.Message: Identifiable, Hashable {
+extension privmx.endpoint.thread.Message: Identifiable, Hashable, @unchecked Sendable {
 
 	/// The unique identifier for the message.
 	///

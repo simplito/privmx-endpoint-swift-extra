@@ -168,22 +168,22 @@ public protocol PrivMXCrypto{
 	) throws -> Bool
 	
 	 func convertPGPAsn1KeyToBase58DERKey(
-		pgpKey: String
+		_ pgpKey: String
 	) throws -> String
 	
 	 func generateBip39(
-		strength: size_t,
-		password: String
+		ofStrength strength: size_t,
+		usingPassword password: String
 	) throws -> BIP39
 	
 	 func fromMnemonic(
-		mnemonic: String,
-		password: String
+		_ mnemonic: String,
+		usingPassword password: String
 	) throws -> BIP39
 	
 	 func fromEntropy(
-		entropy: Data,
-		password: String
+		_ entropy: Data,
+		usingPassword password: String
 	)throws -> BIP39
 	
 	/// Converts BIP-39 mnemonic to entropy.
@@ -194,7 +194,7 @@ public protocol PrivMXCrypto{
 	///
 	/// - Returns: BIP-39 entropy
 	 func mnemonicToEntropy(
-		mnemonic: String
+		_ mnemonic: String
 	) throws -> Data
 	
 	/// Converts BIP-39 mnemonic to entropy.
@@ -205,7 +205,7 @@ public protocol PrivMXCrypto{
 	///
 	/// - Returns: BIP-39 mnemonic
 	 func entropyToMnemonic(
-		entropy: Data
+		_ entropy: Data
 	) throws -> String
 	
 	/// Generates a seed used to generate a key using BIP-39 mnemonic with PBKDF2.
@@ -217,8 +217,8 @@ public protocol PrivMXCrypto{
 	///
 	/// - Returns: generated seed
 	 func mnemonicToSeed(
-		mnemonic: String,
-		password: String
+		_ mnemonic: String,
+		usingPassword password: String
 	) throws -> Data
 }
 

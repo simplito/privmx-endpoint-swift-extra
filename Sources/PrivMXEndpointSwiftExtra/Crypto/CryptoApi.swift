@@ -39,7 +39,7 @@ extension CryptoApi: PrivMXCrypto{
 		try String(derivePublicKey(privKey: std.string(keyPriv)))
 	}
 	
-	@available(*, deprecated, renamed: "derivePrivateKey(from:and:)")
+	@available(*, deprecated, renamed: "derivePrivateKey2(from:and:)")
 	public func derivePrivateKey(
 		from password: String,
 		and salt: String
@@ -86,7 +86,7 @@ extension CryptoApi: PrivMXCrypto{
 		try String(self.convertPEMKeyToWIFKey(pemKey:std.string(pemKey)))
 	}
 	
-	@available(*, deprecated)
+	@available(*, deprecated, renamed: "verifySignature(_:of:with:)")
 	public func verifySignature(
 		data: Data,
 		signature: Data,
@@ -115,7 +115,7 @@ extension CryptoApi: PrivMXCrypto{
 	///
 	/// - Returns: public key in base58DER format
 	public func convertPGPAsn1KeyToBase58DERKey(
-		pgpKey: String
+		_ pgpKey: String
 	) throws -> String {
 		try String(self.convertPGPAsn1KeyToBase58DERKey(pgpKey:std.string(pgpKey)))
 	}
@@ -130,8 +130,8 @@ extension CryptoApi: PrivMXCrypto{
 	///
 	/// - Returns: `BIP39` object containing ECC Key and associated with it BIP-39 mnemonic and entropy
 	public func generateBip39(
-		strength: size_t,
-		password: String = ""
+		ofStrength strength: size_t,
+		usingPassword password: String = ""
 	) throws -> BIP39 {
 		try self.generateBip39(strength:strength,
 							   password:std.string(password))
@@ -142,14 +142,14 @@ extension CryptoApi: PrivMXCrypto{
 	/// Generates ECC key using BIP-39 mnemonic.
 	///
 	/// - Parameters mnemonic: the BIP-39 entropy used to generate the Key
-	/// - Parameters mnemonic: the password used to generate the Key
+	/// - Parameters password: the password used to generate the Key
 	///
 	/// - Throws: `PrivMXEndpointError.failedGeneratingBIP39` if the generating fails.
 	///
 	/// - Returns: `BIP39` object containing ECC Key and associated with it BIP-39 mnemonic and entropy
 	public func fromMnemonic(
-		mnemonic: String,
-		password: String = ""
+		_ mnemonic: String,
+		usingPassword password: String = ""
 	) throws -> BIP39 {
 		try self.fromMnemonic(mnemonic:std.string(mnemonic),
 							  password:std.string(password))
@@ -165,8 +165,8 @@ extension CryptoApi: PrivMXCrypto{
 	///
 	/// - Returns: `BIP39_t` object containing ECC Key and associated with it BIP-39 mnemonic and entropy
 	public func fromEntropy(
-		entropy: Data,
-		password: String = ""
+		_ entropy: Data,
+		usingPassword password: String = ""
 	) throws -> BIP39{
 		try self.fromEntropy(entropy: entropy.asBuffer(),
 							 password: std.string(password))
@@ -181,7 +181,7 @@ extension CryptoApi: PrivMXCrypto{
 	///
 	/// - Returns: BIP-39 mnemonic
 	public func entropyToMnemonic(
-		entropy: Data
+		_ entropy: Data
 	) throws -> String {
 		try String(self.entropyToMnemonic(entropy:entropy.asBuffer()))
 		
@@ -196,7 +196,7 @@ extension CryptoApi: PrivMXCrypto{
 	///
 	/// - Returns: BIP-39 entropy
 	public func mnemonicToEntropy(
-		mnemonic: String
+		_ mnemonic: String
 	) throws -> Data {
 		try Data(from: self.mnemonicToEntropy(mnemonic:std.string(mnemonic)))
 	}
@@ -211,8 +211,8 @@ extension CryptoApi: PrivMXCrypto{
 	///
 	/// - Returns: generated seed
 	public func mnemonicToSeed(
-		mnemonic: String,
-		password: String = ""
+		_ mnemonic: String,
+		usingPassword password: String = ""
 	) throws -> Data {
 		try Data(from:self.mnemonicToSeed(mnemonic:std.string(mnemonic),
 										  password:std.string(password)))
