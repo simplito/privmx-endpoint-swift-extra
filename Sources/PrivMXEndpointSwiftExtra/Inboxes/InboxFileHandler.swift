@@ -117,7 +117,7 @@ public final class InboxFileHandler:@unchecked Sendable{
 	/// - Parameter onChunkDownloaded: A closure called when a chunk is downloaded, passing the byte count of the chunk.
 	/// - Throws: An error if the file read operation fails.
 	public func readChunk(
-		onChunkDownloaded: @escaping ((Int)->Void) = {byteCount in}
+		onChunkDownloaded: (@escaping @Sendable (Int)->Void) = {byteCount in}
 	) throws -> Void{
 		if mode == .readToFile{
 			let buf = try inboxApi.readFromFile(withHandle: fileHandle,
@@ -154,7 +154,7 @@ public final class InboxFileHandler:@unchecked Sendable{
 	/// - Parameter onChunkUploaded: A closure called when a chunk is uploaded, passing the byte count of the chunk.
 	/// - Throws: An error if the file write operation fails.
 	public func writeChunk(
-		onChunkUploaded: @escaping ((Int) -> Void) = {byteCount in}
+		onChunkUploaded: (@escaping @Sendable (Int) -> Void) = {byteCount in}
 	) throws -> Void{
 		if mode == .write{
 			let buf = try dataSource!.getNextChunk(ofSize: chunkSize)
