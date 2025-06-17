@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `LibDisconnectedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.core.LibDisconnectedEvent: PMXEvent {
+extension privmx.endpoint.core.LibDisconnectedEvent: PMXEvent, @unchecked  Sendable { 
 
 	/// Returns the event channel as a string.
 	///
@@ -47,7 +47,4 @@ extension privmx.endpoint.core.LibDisconnectedEvent: PMXEvent {
 			await cb(nil)
 		}
 	}
-}
-
-extension privmx.endpoint.core.LibDisconnectedEvent: @unchecked  Sendable {
 }
