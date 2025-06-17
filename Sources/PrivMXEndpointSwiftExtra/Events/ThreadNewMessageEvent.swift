@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `ThreadNewMessageEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.thread.ThreadNewMessageEvent: PMXEvent {
+extension privmx.endpoint.thread.ThreadNewMessageEvent: PMXEvent, @unchecked  Sendable { 
 
 	/// Returns the event channel as a string.
 	///
@@ -47,7 +47,4 @@ extension privmx.endpoint.thread.ThreadNewMessageEvent: PMXEvent {
 			await cb(data)
 		}
 	}
-}
-
-extension privmx.endpoint.thread.ThreadNewMessageEvent: @unchecked  Sendable {
 }

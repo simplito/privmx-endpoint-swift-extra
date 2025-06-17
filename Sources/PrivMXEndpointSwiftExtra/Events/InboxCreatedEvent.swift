@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `InboxCreatedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.inbox.InboxCreatedEvent: PMXEvent {
+extension privmx.endpoint.inbox.InboxCreatedEvent: PMXEvent, @unchecked  Sendable {
 
 	/// Handles the event by calling the provided callback with an optional argument.
 	///
@@ -48,16 +48,3 @@ extension privmx.endpoint.inbox.InboxCreatedEvent: PMXEvent {
 		"inbox"
 	}
 }
-
-
-
-extension privmx.endpoint.inbox.InboxCreatedEvent: @unchecked  Sendable {
-}
-
-
-
-
-
-
-
-
