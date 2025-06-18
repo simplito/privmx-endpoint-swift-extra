@@ -15,6 +15,8 @@ import PrivMXEndpointSwift
 /// Definition of `EventChannel` available for reading Events.
 /// This is a helper structure, since channels are identified by strings in low-level Endpoint.
 extension EventChannel {
+	
+	/// This is a computed field that returns a channel in the form of a String
 	public var name: String {
 		switch self {
 			case .platform:
