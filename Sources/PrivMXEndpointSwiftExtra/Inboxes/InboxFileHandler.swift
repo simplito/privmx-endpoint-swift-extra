@@ -68,13 +68,13 @@ public final class InboxFileHandler:@unchecked Sendable{
 	
 	/// Sets the Entry handle for uploading the file.
 	/// - Parameter handle: Entry handle received by preparing an Inbox Entry
-	
 	public func setEntryHandle(
 		_ handle: privmx.EntryHandle
 	) -> Void {
 		self.entryHandle = handle
 	}
 	
+	///
 	@available(*, deprecated, renamed: "setEntryHandle(_:)")
 	public func setInboxHandle(
 		_ handle: privmx.InboxHandle
@@ -224,6 +224,7 @@ public final class InboxFileHandler:@unchecked Sendable{
 	}
 }
 
+/// Mode of the InboxFIleHandler
 public enum InboxFileHandlerMode:Sendable{
 	case write
 	case readToBuffer, readToFile

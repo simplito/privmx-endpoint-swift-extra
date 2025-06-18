@@ -13,7 +13,7 @@ import Foundation
 import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 
-/// Extension of `ThreadApi`, providing conformance for protocol using Swift types.
+/// Extension of `ThreadApi`, providing more "Swifty" methods, that take and return Swift types instead of C++ types when an equivalent exists.
 extension ThreadApi:PrivMXThread{
 	
 	 public func listThreads(

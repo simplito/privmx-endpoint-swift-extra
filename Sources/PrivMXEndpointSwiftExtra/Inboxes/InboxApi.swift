@@ -13,7 +13,7 @@ import Foundation
 import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 
-/// Extension of `InboxApi`, providing conformance for protocol using Swift types.
+/// Extension of `InboxApi`, providing more "Swifty" methods, that take and return Swift types instead of C++ types when an equivalent exists.
 extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 	
 	public func createInbox(
