@@ -177,10 +177,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	/// This method sets up the connection and, based on the provided modules, initializes the APIs for handling threads, stores, and inboxes. Using a Public (anonymous) connection.
 	/// Take note that this is only useful for Inboxes
 	///
-	/// - Parameters:
-	///   - modules: A set of modules to initialize (of type `PrivMXModule`).
-	///   - solutionId: The unique identifier of the PrivMX solution.
-	///   - bridgeUrl: The URL of the PrivMX Bridge instance.
+	///  - Parameter modules: A set of modules to initialize (of type `PrivMXModule`).
+	///  - Parameter solutionId: The unique identifier of the PrivMX solution.
+	///  - Parameter bridgeUrl: The URL of the PrivMX Bridge instance.
 	///
 	/// - Throws: An error if the connection or module initialization fails.
 	public init(
@@ -222,13 +221,13 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	///
 	/// This method uploads a file to a specified store using a `FileHandle`. It supports uploading large files in chunks and provides a callback for tracking the progress.
 	///
-	/// - Parameters:
-	///   - file: A local `FileHandle` representing the file to be uploaded.
-	///   - store: The identifier of the destination store.
-	///   - publicMeta: Public, unencrypted metadata for the file.
-	///   - privateMeta: Encrypted metadata for the file.
-	///   - size: The size of the file in bytes.
-	///   - onChunkUploaded: A callback that is called after each chunk upload is completed.
+	///  - Parameter file: A local `FileHandle` representing the file to be uploaded.
+	///  - Parameter store: The identifier of the destination store.
+	///  - Parameter publicMeta: Public, unencrypted metadata for the file.
+	///  - Parameter privateMeta: Encrypted metadata for the file.
+	///  - Parameter size: The size of the file in bytes.
+	///  - Parameter chunkSize: The size of individual chunks, by default set to `PrivMXStoreFileHandler.RecommendedChunkSize`
+	///  - Parameter onChunkUploaded: A callback that is called after each chunk upload is completed.
 	///
 	/// - Returns: The identifier of the uploaded file as a `String`.
 	///
@@ -335,13 +334,13 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
     ///
     /// This method updates an existing file in a store with new content and metadata, supporting chunked uploads for large files.
     ///
-    /// - Parameters:
-    ///   - file: A local `FileHandle` representing the updated file.
-    ///   - storeFile: The identifier of the file in the store to be updated.
-    ///   - publicMeta: Public metadata to overwrite the existing metadata.
-    ///   - privateMeta: Encrypted metadata to overwrite the existing metadata.
-    ///   - size: The size of the updated file in bytes.
-    ///   - onChunkUploaded: A callback that is called after each chunk upload is completed.
+    /// - Parameter file: A local `FileHandle` representing the updated file.
+    /// - Parameter storeFile: The identifier of the file in the store to be updated.
+    /// - Parameter publicMeta: Public metadata to overwrite the existing metadata.
+    /// - Parameter privateMeta: Encrypted metadata to overwrite the existing metadata.
+    /// - Parameter size: The size of the updated file in bytes.
+	/// - Parameter chunkSize: The size of individual chunks, by default set to `PrivMXStoreFileHandler.RecommendedChunkSize`
+    /// - Parameter onChunkUploaded: A callback that is called after each chunk upload is completed.
     ///
     /// - Returns: The identifier of the updated file as a `String`.
     ///
@@ -436,10 +435,10 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
     ///
     /// This method downloads a file from a Store to the local filesystem using a `FileHandle`. It supports downloading files in chunks and provides a callback for progress tracking.
     ///
-    /// - Parameters:
-    ///   - file: A local `FileHandle` representing the destination file.
-    ///   - fileId: The identifier of the file to be downloaded.
-    ///   - onChunkDownloaded: A callback that is called after each chunk download is completed.
+    /// - Parameter file: A local `FileHandle` representing the destination file.
+    /// - Parameter fileId: The identifier of the file to be downloaded.
+	/// - Parameter chunkSize: The size of individual chunks, by default set to `PrivMXStoreFileHandler.RecommendedChunkSize`
+	/// - Parameter onChunkDownloaded: A callback that is called after each chunk download is completed.
     ///
     /// - Returns: The identifier of the downloaded file as a `String`.
     ///
@@ -477,13 +476,12 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
     ///
     /// This method downloads a file from an Inbox to the local filesystem using a `FileHandle`. It supports downloading files in chunks and provides a callback for progress tracking.
     ///
-    /// - Parameters:
-    ///   - file: A local `FileHandle` representing the destination file.
-    ///   - fileId: The identifier of the file to be downloaded.
-	///   - chunkSize: The size of a chunk to be used
-    ///   - onChunkDownloaded: A callback that is called after each chunk download is completed.
+    /// - Parameter file: A local `FileHandle` representing the destination file.
+    /// - Parameter fileId: The identifier of the file to be downloaded.
+	/// - Parameter chunkSize: The size of a chunk to be used.
+	/// - Parameter onChunkDownloaded: A callback that is called after each chunk download is completed.
     ///
-    /// - Returns: The identifier of the downloaded file as a `String`.
+	/// - Returns: The identifier of the downloaded file as a `String`.
     ///
     /// - Throws: An error if the download process fails.
     public func startDownloadingToFileFromInbox(
@@ -520,13 +518,13 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
     ///
     /// This method downloads a file from a store to the local in-memory buffer. It supports downloading files in chunks and provides a callback for progress tracking.
     ///
-    /// - Parameters:
-    ///   - fileId: The identifier of the file to be downloaded.
-    ///   - onChunkDownloaded: A callback that is called after each chunk download is completed.
+    /// - Parameter fileId: The identifier of the file to be downloaded.
+	/// - Parameter chunkSize: The size of individual chunks, by default set to `PrivMXStoreFileHandler.RecommendedChunkSize`
+	/// - Parameter onChunkDownloaded: A callback that is called after each chunk download is completed.
     ///
-    /// - Returns: The identifier of the downloaded file as a `String`.
+	/// - Returns: The identifier of the downloaded file as a `String`.
     ///
-    /// - Throws: An error if the download process fails.
+	/// - Throws: An error if the download process fails.
     public func startDownloadingToBufferFromInbox(
 		from fileId:String,
 		withChunksOf chunkSize: Int64 = PrivMXStoreFileHandler.RecommendedChunkSize,
@@ -582,9 +580,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
     ///
     /// This method downloads a file from a store to the local in-memory buffer. It supports downloading files in chunks and provides a callback for progress tracking.
     ///
-    /// - Parameters:
-    ///   - fileId: The identifier of the file to be downloaded.
-    ///   - onChunkDownloaded: A callback that is called after each chunk download is completed.
+    /// - Parameter fileId: The identifier of the file to be downloaded.
+	/// - Parameter chunkSize: The size of individual chunks, by default set to `PrivMXStoreFileHandler.RecommendedChunkSize`
+    /// - Parameter onChunkDownloaded: A callback that is called after each chunk download is completed.
     ///
     /// - Returns: The identifier of the downloaded file as a `String`.
     ///
@@ -629,10 +627,10 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	///
 	/// This also causes events to start arriving from that channel.
 	///
-	/// - Parameters:
-	/// 	- type: type of Event
-	/// 	- channel channel: Endpoint defined event channel such as .platform or .thread
-	/// 	- id: Custom identifier for managing Callbacks
+	/// - Parameter type: type of Event
+	/// - Parameter channel: Endpoint defined event channel such as `.platform` or `.thread`
+	/// - Parameter id: Custom identifier for managing Callbacks
+	/// - Parameter cb: the callback that will be executed
 	public func registerCallback(
 		for type: PMXEvent.Type,
 		from channel:EventChannel,

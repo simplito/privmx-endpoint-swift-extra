@@ -88,11 +88,9 @@ public final class PrivMXEndpointContainer: Sendable{
 	/// and adds it to the `endpoints` dictionary.
 	/// Note it is only useful for
 	///
-	/// - Parameters:
-	///   - modules: A set of modules to be initialized with the new endpoint.
-	///   - userPrivKey: The user's private key in WIF format.
-	///   - solutionId: The unique identifier of the PrivMX solution.
-	///   - bridgeUrl: The URL of the PrivMX Bridge.
+	/// - Parameter modules: A set of modules to be initialized with the new endpoint.
+	/// - Parameter solutionId: The unique identifier of the PrivMX solution.
+	/// - Parameter bridgeUrl: The URL of the PrivMX Bridge.
 	///
 	/// - Throws: An error if creating the new endpoint fails.
 	///
