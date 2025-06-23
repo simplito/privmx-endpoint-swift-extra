@@ -13,7 +13,7 @@ import Foundation
 import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 
-/// Extension of `StoreApi`, providing conformance for protocol using Swift types.
+/// Extension of `StoreApi`, providing more "Swifty" methods, that take and return Swift types instead of C++ types when an equivalent exists.
 extension StoreApi : PrivMXStore{
 	
 	public func listStores(
@@ -179,8 +179,6 @@ extension StoreApi : PrivMXStore{
 	///
 	/// - Parameter fileId: which File should be deleted
 	///
-	/// - Returns: True if the file was deleted successfully, false otherwise.
-	///
 	/// - Throws: `PrivMXEndpointError.failedDeletingFile` if an exception was thrown in C++ code, or another error occurred.
 	public func deleteFile(
 		_ fileId: String
@@ -196,6 +194,7 @@ extension StoreApi : PrivMXStore{
 					   position: position)
 	}
 	
+	///
 	@available(*, deprecated, renamed: "unsubscribeFromFileEvents(in:)")
 	public func unubscribeFromFileEvents(
 		in storeId: String

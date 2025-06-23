@@ -15,9 +15,7 @@ import PrivMXEndpointSwift
 
 /// The `PrivMXConnection` protocol declares methods for managing connections to PrivMX Bridge with Swift types.
 ///
-/// This protocol defines the required methods for setting up, managing, and disconnecting a connection to PrivMX platform.
-/// It provides functionality for setting up the path to SSL certificates, managing connection lifecycle (connect/disconnect),
-/// and retrieving important connection details such as the connection ID. Additionally, it offers methods for connecting with public or private access.
+/// Do not conform to this protocol on your own.
 public protocol PrivMXConnection{
 	
 	
@@ -41,7 +39,8 @@ public protocol PrivMXConnection{
 	/// - Parameters:
 	/// 	- userPrivKey: User's Private Key in WIF format
 	/// 	- solutionID: Unique Solution Identifier defined at PrivMX Bridge
-	/// 	- platformUrl: URL of PrivMX Bridge Instance
+	/// 	- bridgeUrl: URL of PrivMX Bridge Instance
+	/// 	- verificationOptions: URL of PrivMX Bridge Instance
 	/// - Returns: new Connection object which can be used for initializing proper PrivMX Endpoint APIs
 	/// - Throws: Any Connection Exceptions
 	static func connect(
@@ -55,6 +54,7 @@ public protocol PrivMXConnection{
 	///
 	/// - Parameters:
 	/// 	- solutionID: Unique Solution Identifier defined at  PrivMX Bridge
+	/// 	- platformUrl: URL of PrivMX Bridge Instance
 	/// 	- platformUrl: URL of PrivMX Bridge Instance
 	/// - Returns: new Connection object which can be used for initializing  PrivMX `InboxApi`.
 	/// - Throws: Any Connection Exceptions

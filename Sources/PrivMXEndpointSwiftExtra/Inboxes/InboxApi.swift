@@ -13,13 +13,13 @@ import Foundation
 import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 
-/// Extension of `InboxApi`, providing conformance for protocol using Swift types.
+/// Extension of `InboxApi`, providing more "Swifty" methods, that take and return Swift types instead of C++ types when an equivalent exists.
 extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 	
 	public func createInbox(
 		in contextId: String,
 		for users: [privmx.endpoint.core.UserWithPubKey],
-		managedBy managaers: [privmx.endpoint.core.UserWithPubKey],
+		managedBy managers: [privmx.endpoint.core.UserWithPubKey],
 		withPublicMeta publicMeta: Data,
 		withPrivateMeta privateMeta: Data,
 		withFilesConfig filesConfig: privmx.endpoint.inbox.FilesConfig?,
@@ -27,7 +27,7 @@ extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 	) throws -> String {
 		String(try self.createInbox(contextId: std.string(contextId),
 									users: privmx.UserWithPubKeyVector(users),
-									managers: privmx.UserWithPubKeyVector(managaers),
+									managers: privmx.UserWithPubKeyVector(managers),
 									publicMeta: publicMeta.asBuffer(),
 									privateMeta: privateMeta.asBuffer(),
 									filesConfig: filesConfig,

@@ -14,6 +14,8 @@ import PrivMXEndpointSwift
 import PrivMXEndpointSwiftNative
 
 /// Protocol declaring cryptographic operations using Swift types.
+///
+/// Do not conform to this protocol on your own.
 public protocol PrivMXCrypto{
 	
 	/// Generates a new Private Key, which can be used for accessing PrivMX Bridge.
@@ -144,7 +146,7 @@ public protocol PrivMXCrypto{
 	///
 	/// This method converts a private key from PEM (Privacy-Enhanced Mail) format to Wallet Import Format (WIF).
 	///
-	/// - Parameter pemKey: The private key in PEM format.
+	/// - Parameter keyPem: The private key in PEM format.
 	///
 	/// - Returns: The converted private key in WIF format as a `String`.
 	///
