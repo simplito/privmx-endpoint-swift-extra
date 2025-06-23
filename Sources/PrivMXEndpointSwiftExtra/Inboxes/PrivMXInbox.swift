@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
 
 /// Protocol declaring methods of InboxApi using Swift types, enabling interaction with PrivMX Inboxes and Entries, as well as Files assigned to them.
 ///
-/// Do not Conform to this protocol on your own.
+/// Do not conform to this protocol on your own.
 public protocol PrivMXInbox:Sendable{
 	
 	/// Creates an inbox in a specified context for a group of users, managed by a set of managers.

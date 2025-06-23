@@ -14,7 +14,7 @@ import PrivMXEndpointSwiftNative
 
 /// Declaring thread and message management methods using Swift types.
 ///
-/// Do not Conform to this protocol on your own.
+/// Do not conform to this protocol on your own.
 public protocol PrivMXThread{
 	
 	/// Lists the Threads the user has access to in a specified context.

@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
 
 /// Protocol declaring cryptographic operations using Swift types.
 ///
-/// Do not Conform to this protocol on your own.
+/// Do not conform to this protocol on your own.
 public protocol PrivMXCrypto{
 	
 	/// Generates a new Private Key, which can be used for accessing PrivMX Bridge.
