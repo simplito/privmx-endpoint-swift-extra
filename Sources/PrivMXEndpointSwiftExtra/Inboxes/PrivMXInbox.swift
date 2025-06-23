@@ -26,7 +26,7 @@ public protocol PrivMXInbox:Sendable{
 	/// - Parameters:
 	///   - contextId: The unique identifier for the context in which the inbox is being created.
 	///   - users: An array of `UserWithPubKey` objects representing the users who will have access to the inbox.
-	///   - managaers: An array of `UserWithPubKey` objects representing the managers responsible for managing the inbox.
+	///   - managers: An array of `UserWithPubKey` objects representing the managers responsible for managing the inbox.
 	///   - publicMeta: Public metadata to be associated with the inbox, provided as `Data`.
 	///   - privateMeta: Private metadata to be associated with the inbox, provided as `Data`.
 	///   - filesConfig: Optional configuration for managing files in the inbox, provided as `FilesConfig`.
@@ -38,7 +38,7 @@ public protocol PrivMXInbox:Sendable{
 	func createInbox(
 		in contextId: String,
 		for users: [privmx.endpoint.core.UserWithPubKey],
-		managedBy managaers: [privmx.endpoint.core.UserWithPubKey],
+		managedBy managers: [privmx.endpoint.core.UserWithPubKey],
 		withPublicMeta publicMeta: Data,
 		withPrivateMeta privateMeta: Data,
 		withFilesConfig filesConfig: privmx.endpoint.inbox.FilesConfig?,
@@ -151,7 +151,7 @@ public protocol PrivMXInbox:Sendable{
 	///
 	/// - Throws: Throws an error if the entry preparation fails.
 	///
-	/// - Returns: An `EntryHandle` of the prepared entry, that can beused to upload files and send the entry itself.
+	/// - Returns: An `EntryHandle` of the prepared entry, that can be used to upload files and send the entry itself.
 	func prepareEntry(
 		in inboxId: String,
 		containing data: Data,

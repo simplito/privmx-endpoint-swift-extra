@@ -12,7 +12,7 @@
 import Foundation
 import PrivMXEndpointSwiftNative
 
-/// Enumaration of special cases of Policies.
+/// Enumeration of special cases of Policies.
 public enum SpecialPolicyValue :std.string {
 	case yes, no
 	case `default`, inherit
