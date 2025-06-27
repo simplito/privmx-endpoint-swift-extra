@@ -41,10 +41,10 @@ extension privmx.endpoint.thread.ThreadMessageUpdatedEvent: PMXEvent, @unchecked
 
 	/// Returns the event type as a string.
 	///
-	/// This method returns the constant string `"threadMessageDeleted"`, identifying the type
-	/// of this event as `threadMessageDeleted`.
-	/// - Returns: A `String` representing the event type, in this case, `"threadMessageDeleted"`.
+	/// This method returns the constant string `"threadMessageUpdated"`, identifying the type
+	/// of this event as `threadMessageUpdated`.
+	/// - Returns: A `String` representing the event type, in this case, `"threadMessageUpdated"`.
 	public static func typeStr() -> String {
-		"threadMessageDeleted"
+		"threadMessageUpdated"
 	}
 }
