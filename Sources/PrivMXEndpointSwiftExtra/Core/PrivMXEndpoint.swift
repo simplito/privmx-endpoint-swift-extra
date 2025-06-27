@@ -34,6 +34,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	public private(set) var inboxApi : PrivMXInbox?
 	/// API for handling Custom Events
 	public private(set) var eventApi: EventApi?
+	/// API for handling KVDBs
+	public private(set) var kvdbApi: KvdbApi?
 	
 	fileprivate var callbacks : [String:[String: [String :  [(@Sendable @MainActor (_ data:Any?)->Void)]]]] = [:]
 	

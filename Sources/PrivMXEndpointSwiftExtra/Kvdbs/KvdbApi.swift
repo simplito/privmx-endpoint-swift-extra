@@ -156,6 +156,19 @@ extension KvdbApi {
 			pagingQuery: pagingQuery)
 	}
 	
+	///Check whether the KVDB entry exists.
+	///
+	/// - Parameter kvdbId: KVDB ID of the KVDB entry to check
+	/// - Parameter key: key of the KVDB entry to check
+	///
+	/// - Returns: 'true' if the KVDB has an entry with given key, 'false' otherwise
+	public func hasEntry(
+		kvdbId: String,
+		key: String
+	) throws -> Bool {
+		try self.hasEntry(kvdbId: std.string(kvdbId), key: std.string(key))
+	}
+	
 	/// Gets a KVDB entry by given KVDB entry key and KVDB ID.
 	///
 	/// - Parameter kvdbId: KVDB ID of the KVDB entry to get
