@@ -41,9 +41,13 @@ extension PrivMXSnippetClass {
         
         guard let inboxPublicEntryData = try? JSONEncoder().encode(inboxPublicEntry) else {return}
         
-        guard let inboxHandle = try? publicEndpointSession?.inboxApi?.prepareEntry(in: inboxID, containing: inboxPublicEntryData, attaching: [], as: nil)  else {return}
+		guard let inboxHandle = try? publicEndpointSession?.inboxApi?.prepareEntry(
+			in: inboxID,
+			containing: inboxPublicEntryData,
+			attaching: [],
+			publicKeyDerivedFrom: nil)  else {return}
         
-        try? publicEndpointSession?.inboxApi?.sendEntry(to: inboxHandle)
+        try? publicEndpointSession?.inboxApi?.sendEntry(inboxHandle)
         
     }
     
@@ -75,18 +79,18 @@ extension PrivMXSnippetClass {
         
        
 
-        guard let inboxHandle = try? publicEndpointSession?.inboxApi?.prepareEntry(
+        guard let entryHandle = try? publicEndpointSession?.inboxApi?.prepareEntry(
             in: inboxID,
             containing: inboxPublicEntryData, //as in Basic Example
             attaching: [inboxFileHandle],
-            as: nil)  else {return}
+			publicKeyDerivedFrom: nil)  else {return}
 
         //3
-        try? publicEndpointSession?.inboxApi?.writeToFile(inboxFileHandle, in: inboxHandle, uploading: data)
+        try? publicEndpointSession?.inboxApi?.writeToFile(inboxFileHandle, of: entryHandle, uploading: data)
         try? publicEndpointSession?.inboxApi?.closeFile(withHandle: inboxFileHandle)
 
         //4
-        try? publicEndpointSession?.inboxApi?.sendEntry(to: inboxHandle)
+        try? publicEndpointSession?.inboxApi?.sendEntry(inboxHandle)
 
 
         

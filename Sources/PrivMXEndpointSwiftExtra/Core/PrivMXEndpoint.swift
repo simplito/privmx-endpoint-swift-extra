@@ -26,13 +26,16 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	public let anonymous: Bool
 	/// Provides handling of network and events through `PrivMXConnection`.
 	public private(set) var connection : PrivMXConnection
-	/// API for handling threads.
+	/// API for handling Threads.
 	public private(set) var threadApi : PrivMXThread?
-	/// API for handling stores.
+	/// API for handling Stores.
 	public private(set) var storeApi : PrivMXStore?
-	/// API for handling inboxes.
+	/// API for handling Inboxes.
 	public private(set) var inboxApi : PrivMXInbox?
+	/// API for handling Custom Events
+	public private(set) var eventApi: EventApi?
 	
+	fileprivate var callbacks : [String:[String: [String :  [(@Sendable @MainActor (_ data:Any?)->Void)]]]] = [:]
 	
 	/// Initializes a new instance of `PrivMXEndpoint` with a connection to PrivMX Bridge and optional modules.
     ///
@@ -73,6 +76,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			self.inboxApi = try InboxApi.create(connection: &con,
 												  threadApi: &t,
 												  storeApi: &s)
+		}
+		if modules.contains(.event){
+			self.eventApi = try EventApi.create(connection: &con)
 		}
 		self.id = try! con.getConnectionId()
 	}
@@ -116,6 +122,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 												  threadApi: &t,
 												  storeApi: &s)
 		}
+		if modules.contains(.event){
+			self.eventApi = try EventApi.create(connection: &con)
+		}
 		self.id = try! con.getConnectionId()
 	}
 	
@@ -157,6 +166,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 												  threadApi: &t,
 												  storeApi: &s)
 		}
+		if modules.contains(.event){
+			self.eventApi = try EventApi.create(connection: &con)
+		}
 		self.id = try! con.getConnectionId()
 	}
 	
@@ -165,10 +177,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	/// This method sets up the connection and, based on the provided modules, initializes the APIs for handling threads, stores, and inboxes. Using a Public (anonymous) connection.
 	/// Take note that this is only useful for Inboxes
 	///
-	/// - Parameters:
-	///   - modules: A set of modules to initialize (of type `PrivMXModule`).
-	///   - solutionId: The unique identifier of the PrivMX solution.
-	///   - bridgeUrl: The URL of the PrivMX Bridge instance.
+	///  - Parameter modules: A set of modules to initialize (of type `PrivMXModule`).
+	///  - Parameter solutionId: The unique identifier of the PrivMX solution.
+	///  - Parameter bridgeUrl: The URL of the PrivMX Bridge instance.
 	///
 	/// - Throws: An error if the connection or module initialization fails.
 	public init(
@@ -190,6 +201,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			sto = try StoreApi.create(connection: &con)
 			self.storeApi = sto
 		}
+		if modules.contains(.event){
+			self.eventApi = try EventApi.create(connection: &con)
+		}
 		if modules.contains(.inbox){
 			var s = try (sto ?? StoreApi.create(connection: &con))
 			var t = try (thr ?? ThreadApi.create(connection: &con))
@@ -197,23 +211,23 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 												  threadApi: &t,
 												  storeApi: &s)
 		}
+		if modules.contains(.event){
+			self.eventApi = try EventApi.create(connection: &con)
+		}
 		self.id = try! con.getConnectionId()
 	}
-	
-	fileprivate var callbacks : [String:[String: [String :  [(@Sendable (_ data:Any?)->Void)]]]] = [:]
-	fileprivate var cbId = 0
 	
 	/// Begins uploading a new file using `PrivMXStoreFileHandler`, which manages file uploads.
 	///
 	/// This method uploads a file to a specified store using a `FileHandle`. It supports uploading large files in chunks and provides a callback for tracking the progress.
 	///
-	/// - Parameters:
-	///   - file: A local `FileHandle` representing the file to be uploaded.
-	///   - store: The identifier of the destination store.
-	///   - publicMeta: Public, unencrypted metadata for the file.
-	///   - privateMeta: Encrypted metadata for the file.
-	///   - size: The size of the file in bytes.
-	///   - onChunkUploaded: A callback that is called after each chunk upload is completed.
+	///  - Parameter file: A local `FileHandle` representing the file to be uploaded.
+	///  - Parameter store: The identifier of the destination store.
+	///  - Parameter publicMeta: Public, unencrypted metadata for the file.
+	///  - Parameter privateMeta: Encrypted metadata for the file.
+	///  - Parameter size: The size of the file in bytes.
+	///  - Parameter chunkSize: The size of individual chunks, by default set to `PrivMXStoreFileHandler.RecommendedChunkSize`
+	///  - Parameter onChunkUploaded: A callback that is called after each chunk upload is completed.
 	///
 	/// - Returns: The identifier of the uploaded file as a `String`.
 	///
@@ -253,7 +267,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
              
 		} else {
 			var err = privmx.InternalError()
-			err.message = "StoresApi not initialised"
+			err.message = "StoresApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -310,7 +324,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
              
 		} else {
 			var err = privmx.InternalError()
-			err.message = "StoresApi not initialised"
+			err.message = "StoresApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -320,13 +334,13 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
     ///
     /// This method updates an existing file in a store with new content and metadata, supporting chunked uploads for large files.
     ///
-    /// - Parameters:
-    ///   - file: A local `FileHandle` representing the updated file.
-    ///   - storeFile: The identifier of the file in the store to be updated.
-    ///   - publicMeta: Public metadata to overwrite the existing metadata.
-    ///   - privateMeta: Encrypted metadata to overwrite the existing metadata.
-    ///   - size: The size of the updated file in bytes.
-    ///   - onChunkUploaded: A callback that is called after each chunk upload is completed.
+    /// - Parameter file: A local `FileHandle` representing the updated file.
+    /// - Parameter storeFile: The identifier of the file in the store to be updated.
+    /// - Parameter publicMeta: Public metadata to overwrite the existing metadata.
+    /// - Parameter privateMeta: Encrypted metadata to overwrite the existing metadata.
+    /// - Parameter size: The size of the updated file in bytes.
+	/// - Parameter chunkSize: The size of individual chunks, by default set to `PrivMXStoreFileHandler.RecommendedChunkSize`
+    /// - Parameter onChunkUploaded: A callback that is called after each chunk upload is completed.
     ///
     /// - Returns: The identifier of the updated file as a `String`.
     ///
@@ -360,7 +374,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			
 		} else {
 			var err = privmx.InternalError()
-			err.message = "StoresApi not initialised"
+			err.message = "StoresApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -411,7 +425,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			
 		} else {
 			var err = privmx.InternalError()
-			err.message = "StoresApi not initialised"
+			err.message = "StoresApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -421,10 +435,10 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
     ///
     /// This method downloads a file from a Store to the local filesystem using a `FileHandle`. It supports downloading files in chunks and provides a callback for progress tracking.
     ///
-    /// - Parameters:
-    ///   - file: A local `FileHandle` representing the destination file.
-    ///   - fileId: The identifier of the file to be downloaded.
-    ///   - onChunkDownloaded: A callback that is called after each chunk download is completed.
+    /// - Parameter file: A local `FileHandle` representing the destination file.
+    /// - Parameter fileId: The identifier of the file to be downloaded.
+	/// - Parameter chunkSize: The size of individual chunks, by default set to `PrivMXStoreFileHandler.RecommendedChunkSize`
+	/// - Parameter onChunkDownloaded: A callback that is called after each chunk download is completed.
     ///
     /// - Returns: The identifier of the downloaded file as a `String`.
     ///
@@ -452,7 +466,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			return try sfhandler.close()
 		} else {
 			var err = privmx.InternalError()
-			err.message = "StoresApi not initialised"
+			err.message = "StoresApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -462,13 +476,12 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
     ///
     /// This method downloads a file from an Inbox to the local filesystem using a `FileHandle`. It supports downloading files in chunks and provides a callback for progress tracking.
     ///
-    /// - Parameters:
-    ///   - file: A local `FileHandle` representing the destination file.
-    ///   - fileId: The identifier of the file to be downloaded.
-	///   - chunkSize: The size of a chunk to be used
-    ///   - onChunkDownloaded: A callback that is called after each chunk download is completed.
+    /// - Parameter file: A local `FileHandle` representing the destination file.
+    /// - Parameter fileId: The identifier of the file to be downloaded.
+	/// - Parameter chunkSize: The size of a chunk to be used.
+	/// - Parameter onChunkDownloaded: A callback that is called after each chunk download is completed.
     ///
-    /// - Returns: The identifier of the downloaded file as a `String`.
+	/// - Returns: The identifier of the downloaded file as a `String`.
     ///
     /// - Throws: An error if the download process fails.
     public func startDownloadingToFileFromInbox(
@@ -495,7 +508,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			return try sfhandler.closeRemote()
 		} else {
 			var err = privmx.InternalError()
-			err.message = "StoresApi not initialised"
+			err.message = "StoresApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -505,13 +518,13 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
     ///
     /// This method downloads a file from a store to the local in-memory buffer. It supports downloading files in chunks and provides a callback for progress tracking.
     ///
-    /// - Parameters:
-    ///   - fileId: The identifier of the file to be downloaded.
-    ///   - onChunkDownloaded: A callback that is called after each chunk download is completed.
+    /// - Parameter fileId: The identifier of the file to be downloaded.
+	/// - Parameter chunkSize: The size of individual chunks, by default set to `PrivMXStoreFileHandler.RecommendedChunkSize`
+	/// - Parameter onChunkDownloaded: A callback that is called after each chunk download is completed.
     ///
-    /// - Returns: The identifier of the downloaded file as a `String`.
+	/// - Returns: The identifier of the downloaded file as a `String`.
     ///
-    /// - Throws: An error if the download process fails.
+	/// - Throws: An error if the download process fails.
     public func startDownloadingToBufferFromInbox(
 		from fileId:String,
 		withChunksOf chunkSize: Int64 = PrivMXStoreFileHandler.RecommendedChunkSize,
@@ -535,14 +548,14 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 				return b
 			} else {
 				var err = privmx.InternalError()
-				err.message = "StoresApi not initialised"
+				err.message = "StoresApi not initialized"
 				err.name = "Buffer Error"
 				throw PrivMXEndpointError.otherFailure(err)
 			}
 			
 		} else {
 			var err = privmx.InternalError()
-			err.message = "InboxApi not initialised"
+			err.message = "InboxApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -567,9 +580,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
     ///
     /// This method downloads a file from a store to the local in-memory buffer. It supports downloading files in chunks and provides a callback for progress tracking.
     ///
-    /// - Parameters:
-    ///   - fileId: The identifier of the file to be downloaded.
-    ///   - onChunkDownloaded: A callback that is called after each chunk download is completed.
+    /// - Parameter fileId: The identifier of the file to be downloaded.
+	/// - Parameter chunkSize: The size of individual chunks, by default set to `PrivMXStoreFileHandler.RecommendedChunkSize`
+    /// - Parameter onChunkDownloaded: A callback that is called after each chunk download is completed.
     ///
     /// - Returns: The identifier of the downloaded file as a `String`.
     ///
@@ -597,14 +610,14 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 				return b
 			} else {
 				var err = privmx.InternalError()
-				err.message = "StoresApi not initialised"
+				err.message = "StoresApi not initialized"
 				err.name = "Buffer Error"
 				throw PrivMXEndpointError.otherFailure(err)
 			}
 			
 		} else {
 			var err = privmx.InternalError()
-			err.message = "StoresApi not initialised"
+			err.message = "StoresApi not initialized"
 			err.name = "Api Error"
 			throw PrivMXEndpointError.otherFailure(err)
 		}
@@ -614,15 +627,15 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	///
 	/// This also causes events to start arriving from that channel.
 	///
-	/// - Parameters:
-	/// 	- type: type of Event
-	/// 	- channel channel: Endpoint defined event channel such as .platform or .thread
-	/// 	- id: Custom identifier for managing Callbacks
+	/// - Parameter type: type of Event
+	/// - Parameter channel: Endpoint defined event channel such as `.platform` or `.thread`
+	/// - Parameter id: Custom identifier for managing Callbacks
+	/// - Parameter cb: the callback that will be executed
 	public func registerCallback(
 		for type: PMXEvent.Type,
 		from channel:EventChannel,
 		identified id:String,
-		_ cb: (@escaping @Sendable (Any?) -> Void) = {_ in}
+		_ cb: (@escaping @Sendable @MainActor (Any?) -> Void) = {_ in}
 	) throws -> Void {
 		if callbacks[channel.name] == nil{
 			callbacks[channel.name] = [:]
@@ -641,6 +654,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 					try self.inboxApi?.subscribeForInboxEvents()
 				case .inboxEntries(let inboxID):
 					try self.inboxApi?.subscribeForEntryEvents(in: inboxID)
+				case .custom(let cid,let cname):
+					try self.eventApi?.subscribeForCustomEvents(contextId: std.string(cid), channelName: std.string(cname))
 			}
 		}
 		if callbacks[channel.name]?[type.typeStr()] == nil{
@@ -659,6 +674,21 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	/// If there are no callbacks left for events from a particular channel, `Connection.unsubscribeFromChannel(_:)` is called, which means no Events from that Channel will arrive.
 	///
 	/// - Parameter id: ID of the callback to be deleted
+	public func clearCallbacks(
+		identified id:String
+	) -> Void {
+		for c in callbacks.keys{
+			for t in callbacks[c]!.keys{
+				callbacks[c]?[t]?.removeValue(forKey: id)
+			}
+			if nil != callbacks[c], (callbacks[c] ?? [:]).isEmpty{
+				callbacks.removeValue(forKey: c)
+				try? unsubscribeFromChannel(c)
+			}
+		}
+	}
+	
+	@available(*, deprecated, renamed: "clearCallbacks(identified:)")
 	public func deleteCallbacks(
 		identified id:String
 	) -> Void {
@@ -671,7 +701,6 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 				try? unsubscribeFromChannel(c)
 			}
 		}
-		
 	}
 	
 	/// Removes all callbacks for a particular Event type.
@@ -697,6 +726,14 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	///
 	/// - Parameter channel: the EventChannel, from which events should no longer be received
 	public func clearCallbacks(
+		from channel:EventChannel
+	) -> Void {
+		callbacks.removeValue(forKey: channel.name)
+		try? unsubscribeFromChannel(channel.name)
+	}
+	
+	@available(*, deprecated, renamed: "clearCallbacks(from:)")
+	public func clearCallbacks(
 		for channel:EventChannel
 	) -> Void {
 		callbacks.removeValue(forKey: channel.name)
@@ -717,7 +754,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	private func unsubscribeFromChannel(
 		_ c:String
 	) throws {
-		let splitted = c.split(separator: "/")
+		let splitted = c.split(separator: "/",maxSplits: 2)
 		switch splitted{
 			case _ where splitted.count == 1:
 				let s = String(splitted[0])
@@ -729,14 +766,17 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 					try inboxApi?.unsubscribeFromInboxEvents()
 				}
 			case _ where splitted.count == 3:
-				let id = String(splitted[1])
 				let s = String(splitted[0])
+				let id = String(splitted[1])
+				let n = String(splitted[2])
 				if s == "thread"{
 					try threadApi?.unsubscribeFromMessageEvents(in: id)
 				}else if s == "store"{
 					try storeApi?.unsubscribeFromFileEvents(in: id)
 				}else if s == "inbox"{
 					try inboxApi?.unsubscribeFromEntryEvents(in: id)
+				}else if s == "context"{
+					try eventApi?.unsubscribeFromCustomEvents(in: id, onChannel: n)
 				}
 			default:
 				break

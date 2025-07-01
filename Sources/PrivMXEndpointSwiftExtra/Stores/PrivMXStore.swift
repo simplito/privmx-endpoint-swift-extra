@@ -13,6 +13,8 @@ import Foundation
 import PrivMXEndpointSwiftNative
 
 /// Protocol declaring methods of StoreApi using Swift types, enabling interaction with PrivMX Stores and Files.
+///
+/// Do not conform to this protocol
 public protocol PrivMXStore{
 	
 

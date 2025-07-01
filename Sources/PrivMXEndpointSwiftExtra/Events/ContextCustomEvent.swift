@@ -12,10 +12,10 @@
 import Foundation
 import PrivMXEndpointSwiftNative
 
-/// A helper extension for `InboxDeletedEvent` to conform to the `PMXEvent` protocol.
+/// A helper extension for `ContextCustomEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.inbox.InboxDeletedEvent: PMXEvent, @unchecked  Sendable {
+extension privmx.endpoint.event.ContextCustomEvent: PMXEvent, @unchecked Sendable {
 
 	/// Handles the event by calling the provided callback with an optional argument.
 	///
@@ -23,7 +23,7 @@ extension privmx.endpoint.inbox.InboxDeletedEvent: PMXEvent, @unchecked  Sendabl
 	/// - Parameter cb: A closure that accepts an optional `Any?` argument,
 	///   representing the data to be passed when the event is handled.
 	public func handleWith(
-		cb: @escaping (@MainActor @Sendable (Any?) async -> Void)
+		cb: (@escaping @Sendable @MainActor (Any?) async -> Void)
 	) {
 		Task{
 			await cb(data)
@@ -32,20 +32,19 @@ extension privmx.endpoint.inbox.InboxDeletedEvent: PMXEvent, @unchecked  Sendabl
 
 	/// Returns the event type as a string.
 	///
-	/// This method returns the constant string `"inboxDeleted"`, identifying the type
-	/// of this event as `inboxDeleted`.
-	/// - Returns: A `String` representing the event type, in this case, `"inboxDeleted"`.
+	/// This method returns the constant string `"contextCustom"`, identifying the type
+	/// of this event as `contextCustom`.
+	/// - Returns: A `String` representing the event type, in this case, `"contextCustom"`.
 	public static func typeStr() -> String {
-		"inboxDeleted"
+		"contextCustom"
 	}
 
 	/// Returns the event channel as a string.
 	///
-	/// This implementation returns the constant string `"inbox"`,
-	/// identifying the channel associated with `InboxDeletedEvent`.
-	/// - Returns: A `String` representing the event channel, in this case, `"inbox"`.
+	/// This implementation retrieves the dynamic string from `Event` base class in cpp
+	/// - Returns: A `String` representing the event channel.
 	public func getChannel() -> String {
-		"inbox"
+		String(privmx.getChannelFrom(self))
 	}
 }
 

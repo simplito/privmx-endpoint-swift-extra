@@ -51,7 +51,6 @@ extension BackendRequester {
 	///
 	/// - Parameters:
 	///   - serverUrl: The URL of the PrivMX Bridge server.
-	///   - memberToken: The authentication token provided by the server.
 	///   - method: The API endpoint to be called (HTTP method, such as POST, GET, etc.).
 	///   - paramsAsJson: The parameters to be sent with the request, formatted as a JSON string.
 	///
@@ -77,10 +76,12 @@ extension BackendRequester {
 	/// and parameters are provided in JSON format.
 	///
 	/// - Parameters:
-	///   - serverUrl: The URL of the PrivMX Bridge server.
-	///   - memberToken: The authentication token provided by the server.
-	///   - method: The API endpoint to be called (HTTP method, such as POST, GET, etc.).
-	///   - paramsAsJson: The parameters to be sent with the request, formatted as a JSON string.
+	///   - serverUrl: PrivMX Bridge server URL
+	///   - apiKeyId: API KEY ID (see PrivMX Bridge API for more details)
+	///   - apiKeySecret: API KEY SECRET (see PrivMX Bridge API for more details)
+	///   - mode: allows you to set whether the request should be signed (mode = 1) or plain (mode = 0)
+	///   - method: API method to call
+	///   - paramsAsJson: API method's parameters in JSON format
 	///
 	/// - Returns: The result body as a `String`, representing the response from the backend.
 	///

@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `LibBreakEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.core.LibBreakEvent: PMXEvent {
+extension privmx.endpoint.core.LibBreakEvent: PMXEvent, @unchecked  Sendable { 
 	
 	/// Returns the event channel as a string.
 	///
@@ -32,9 +32,11 @@ extension privmx.endpoint.core.LibBreakEvent: PMXEvent {
 	/// - Parameter cb: A closure that accepts an optional `Any?` argument,
 	///   representing the data to be passed when the event is handled.
 	public func handleWith(
-		cb: @escaping ((Any?) -> Void)
+		cb: @escaping (@Sendable @MainActor (Any?) async -> Void)
 	) {
-		cb(nil)
+		Task{
+			await cb(nil)
+		}
 	}
 
 	/// Returns the event type as a string.
@@ -46,7 +48,4 @@ extension privmx.endpoint.core.LibBreakEvent: PMXEvent {
 		"libBreak"
 	}
 
-}
-
-extension privmx.endpoint.core.LibBreakEvent: @unchecked  Sendable {
 }

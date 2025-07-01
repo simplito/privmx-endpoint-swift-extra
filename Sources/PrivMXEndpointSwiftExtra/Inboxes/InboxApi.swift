@@ -13,13 +13,13 @@ import Foundation
 import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 
-/// Extension of `InboxApi`, providing conformance for protocol using Swift types.
+/// Extension of `InboxApi`, providing more "Swifty" methods, that take and return Swift types instead of C++ types when an equivalent exists.
 extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 	
 	public func createInbox(
 		in contextId: String,
 		for users: [privmx.endpoint.core.UserWithPubKey],
-		managedBy managaers: [privmx.endpoint.core.UserWithPubKey],
+		managedBy managers: [privmx.endpoint.core.UserWithPubKey],
 		withPublicMeta publicMeta: Data,
 		withPrivateMeta privateMeta: Data,
 		withFilesConfig filesConfig: privmx.endpoint.inbox.FilesConfig?,
@@ -27,7 +27,7 @@ extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 	) throws -> String {
 		String(try self.createInbox(contextId: std.string(contextId),
 									users: privmx.UserWithPubKeyVector(users),
-									managers: privmx.UserWithPubKeyVector(managaers),
+									managers: privmx.UserWithPubKeyVector(managers),
 									publicMeta: publicMeta.asBuffer(),
 									privateMeta: privateMeta.asBuffer(),
 									filesConfig: filesConfig,
@@ -88,6 +88,19 @@ extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 	public func prepareEntry(in inboxId: String,
 							 containing data: Data,
 							 attaching inboxFilesHandles: [privmx.InboxFileHandle],
+							 publicKeyDerivedFrom userPrivateKey: String?
+	) throws -> privmx.EntryHandle {
+		try self.prepareEntry(inboxId: std.string(inboxId),
+							  data: data.asBuffer(),
+							  inboxFileHandles: privmx.InboxFileHandleVector(inboxFilesHandles),
+							  userPrivKey: userPrivateKey != nil ? std.string(userPrivateKey) : nil)
+	}
+	
+	
+	@available(*, deprecated, renamed: "prepareEntry(in:containing:attaching:publicKeyDerivedFrom:)")
+	public func prepareEntry(in inboxId: String,
+							 containing data: Data,
+							 attaching inboxFilesHandles: [privmx.InboxFileHandle],
 							 as userPrivateKey: String?
 	) throws -> privmx.InboxHandle {
 		try self.prepareEntry(inboxId: std.string(inboxId),
@@ -96,6 +109,13 @@ extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 							  userPrivKey: userPrivateKey != nil ? std.string(userPrivateKey) : nil)
 	}
 	
+	public func sendEntry(
+		_ entryHandle:privmx.EntryHandle
+	) throws -> Void {
+		try self.sendEntry(entryHandle: entryHandle)
+	}
+	
+	@available(*, deprecated, renamed: "sendEntry(_:)")
 	public func sendEntry(
 		to inboxHandle:privmx.InboxHandle
 	) throws -> Void {
@@ -112,6 +132,17 @@ extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 								  fileSize: fileSize)
 	}
 	
+	public func writeToFile(
+		_ inboxFileHandle: privmx.InboxFileHandle,
+		of entryHandle: privmx.EntryHandle,
+		uploading dataChunk: Data
+	) throws -> Void {
+		try self.writeToFile(entryHandle: entryHandle,
+							 inboxFileHandle: inboxFileHandle,
+							 dataChunk: dataChunk.asBuffer())
+	}
+	
+	@available(*, deprecated, renamed: "writeToFile(_:of:uploading:)")
 	public func writeToFile(
 		_ inboxFileHandle: privmx.InboxFileHandle,
 		in inboxHandle: privmx.InboxHandle,

@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `ThreadMessageUpdatedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.thread.ThreadMessageUpdatedEvent: PMXEvent {
+extension privmx.endpoint.thread.ThreadMessageUpdatedEvent: PMXEvent, @unchecked  Sendable { 
 
 	/// Returns the event channel as a string.
 	///
@@ -32,21 +32,19 @@ extension privmx.endpoint.thread.ThreadMessageUpdatedEvent: PMXEvent {
 	/// - Parameter cb: A closure that accepts an optional `Any?` argument,
 	///   representing the data to be passed when the event is handled.
 	public func handleWith(
-		cb: @escaping ((_ data: Any?) -> Void)
+		cb: @escaping (@MainActor @Sendable (_ data: Any?)  async -> Void)
 	) -> Void {
-		cb(data)
+		Task{
+			await cb(data)
+		}
 	}
 
 	/// Returns the event type as a string.
 	///
-	/// This method returns the constant string `"threadMessageDeleted"`, identifying the type
-	/// of this event as `threadMessageDeleted`.
-	/// - Returns: A `String` representing the event type, in this case, `"threadMessageDeleted"`.
+	/// This method returns the constant string `"threadMessageUpdated"`, identifying the type
+	/// of this event as `threadMessageUpdated`.
+	/// - Returns: A `String` representing the event type, in this case, `"threadMessageUpdated"`.
 	public static func typeStr() -> String {
-		"threadMessageDeleted"
+		"threadMessageUpdated"
 	}
 }
-
-extension privmx.endpoint.thread.ThreadMessageUpdatedEvent: @unchecked  Sendable {
-}
-

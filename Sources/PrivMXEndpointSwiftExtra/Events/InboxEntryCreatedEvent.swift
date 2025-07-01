@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `InboxEntryCreatedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension  privmx.endpoint.inbox.InboxEntryCreatedEvent: PMXEvent {
+extension  privmx.endpoint.inbox.InboxEntryCreatedEvent: PMXEvent, @unchecked  Sendable {
 
 	/// Handles the event by calling the provided callback with an optional argument.
 	///
@@ -23,9 +23,11 @@ extension  privmx.endpoint.inbox.InboxEntryCreatedEvent: PMXEvent {
 	/// - Parameter cb: A closure that accepts an optional `Any?` argument,
 	///   representing the data to be passed when the event is handled.
 	public func handleWith(
-		cb: @escaping ((Any?) -> Void)
+		cb: @escaping (@MainActor @Sendable (Any?) async -> Void)
 	) {
-		cb(data)
+		Task{
+			await cb(data)
+		}
 	}
 
 	/// Returns the event type as a string.
@@ -47,6 +49,4 @@ extension  privmx.endpoint.inbox.InboxEntryCreatedEvent: PMXEvent {
 		"inbox/\(self.data.inboxId)/entries"
 	}
 }
- 
-extension privmx.endpoint.inbox.InboxEntryCreatedEvent: @unchecked  Sendable {
-}
+

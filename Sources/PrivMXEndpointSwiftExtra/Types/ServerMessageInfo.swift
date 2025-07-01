@@ -14,7 +14,7 @@ import PrivMXEndpointSwiftNative
 
 /// An extension for `ServerMessageInfo` to conform to the `Hashable` and `Identifiable` protocols.
 /// This extension provides a unique identifier for each message and allows comparing and hashing message info.
-extension privmx.endpoint.thread.ServerMessageInfo: Hashable, Identifiable {
+extension privmx.endpoint.thread.ServerMessageInfo: Hashable, Identifiable, @unchecked Sendable {
 
 	/// Compares two `ServerMessageInfo` instances for equality.
 	///

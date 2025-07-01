@@ -14,31 +14,29 @@ import Cxx
 import CxxStdlib
 import PrivMXEndpointSwiftNative
 
-/// An extension for `Store` to conform to the `Identifiable` and `Hashable` protocols.
-/// This extension allows for comparing two `Store` instances, generating unique hash values, and providing an identifier for each store.
-extension privmx.endpoint.store.Store: Identifiable, Hashable, @unchecked Sendable {
+/// An extension for `Inbox` to conform to the `Identifiable` and `Hashable` protocols.
+/// This extension allows for comparing two `Inbox` instances, generating unique hash values, and providing an identifier for each inbox.
+extension privmx.endpoint.inbox.Inbox: Identifiable, Hashable, @unchecked Sendable {
 
-	/// Compares two `Store` instances for equality.
+	/// Compares two `Inbox` instances for equality.
 	///
-	/// This function compares multiple key properties of the two `Store` instances, including `storeId`, `contextId`,
+	/// This function compares multiple key properties of the two `Inbox` instances, including `inboxId`, `contextId`,
 	/// `createDate`, `creator`, `privateMeta`, `publicMeta`, `filesCount`, `lastFileDate`, `lastModificationDate`,
 	/// `lastModifier`, `managers`, `users`, `version`, and `statusCode`.
 	/// - Parameters:
-	///   - lhs: The left-hand side `Store` instance.
-	///   - rhs: The right-hand side `Store` instance.
-	/// - Returns: `true` if all relevant fields of both stores are equal, otherwise `false`.
+	///   - lhs: The left-hand side `Inbox` instance.
+	///   - rhs: The right-hand side `Inbox` instance.
+	/// - Returns: `true` if all relevant fields of both inboxs are equal, otherwise `false`.
 	public static func == (
-		lhs: privmx.endpoint.store.Store,
-		rhs: privmx.endpoint.store.Store
+		lhs: privmx.endpoint.inbox.Inbox,
+		rhs: privmx.endpoint.inbox.Inbox
 	) -> Bool {
-		return lhs.storeId == rhs.storeId &&
+		return lhs.inboxId == rhs.inboxId &&
 			   lhs.contextId == rhs.contextId &&
 			   lhs.createDate == rhs.createDate &&
 			   lhs.creator == rhs.creator &&
 			   lhs.privateMeta == rhs.privateMeta &&
 			   lhs.publicMeta == rhs.publicMeta &&
-			   lhs.filesCount == rhs.filesCount &&
-			   lhs.lastFileDate == rhs.lastFileDate &&
 			   lhs.lastModificationDate == rhs.lastModificationDate &&
 			   lhs.lastModifier == rhs.lastModifier &&
 			   lhs.managers == rhs.managers &&
@@ -47,20 +45,20 @@ extension privmx.endpoint.store.Store: Identifiable, Hashable, @unchecked Sendab
 			   lhs.statusCode == rhs.statusCode
 	}
 
-	/// The unique identifier for the store.
+	/// The unique identifier for the inbox.
 	///
-	/// This property returns the `storeId` as a `String`, which serves as the unique identifier for the store.
+	/// This property returns the `inboxId` as a `String`, which serves as the unique identifier for the inbox.
 	public var id: String {
-		String(self.storeId)
+		String(self.inboxId)
 	}
 
-	/// Generates a hash value for the `Store` instance.
+	/// Generates a hash value for the `Inbox` instance.
 	///
-	/// This function combines several properties, including `storeId`, `lastModificationDate`, and `version`
-	/// to generate a unique hash value for the store.
+	/// This function combines several properties, including `inboxId`, `lastModificationDate`, and `version`
+	/// to generate a unique hash value for the inbox.
 	/// - Parameter hasher: The `Hasher` instance used to compute the hash value.
 	public func hash(into hasher: inout Hasher) -> Void {
-		hasher.combine(storeId)
+		hasher.combine(inboxId)
 		hasher.combine(lastModificationDate)
 		hasher.combine(version)
 	}

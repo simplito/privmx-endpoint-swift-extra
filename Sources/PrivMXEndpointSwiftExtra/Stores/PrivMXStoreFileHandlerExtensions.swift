@@ -118,7 +118,7 @@ extension PrivMXStoreFileHandler{
 	/// Creates a handler for updating a file with a new data buffer.
 	///
 	/// - Parameters:
-	///   - fileId: The ID of the file to be updated.
+	///   - storeId: The ID of the Store in which the file is to be created.
 	///   - sourceBuffer: The data buffer to replace the existing file content.
 	///   - storesApi: The API for interacting with the `PrivMXStore`.
 	///   - publicMeta: The new public metadata for the file.

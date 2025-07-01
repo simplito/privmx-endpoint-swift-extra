@@ -15,9 +15,7 @@ import PrivMXEndpointSwift
 
 /// The `PrivMXConnection` protocol declares methods for managing connections to PrivMX Bridge with Swift types.
 ///
-/// This protocol defines the required methods for setting up, managing, and disconnecting a connection to PrivMX platform.
-/// It provides functionality for setting up the path to SSL certificates, managing connection lifecycle (connect/disconnect),
-/// and retrieving important connection details such as the connection ID. Additionally, it offers methods for connecting with public or private access.
+/// Do not conform to this protocol on your own.
 public protocol PrivMXConnection{
 	
 	
@@ -41,13 +39,15 @@ public protocol PrivMXConnection{
 	/// - Parameters:
 	/// 	- userPrivKey: User's Private Key in WIF format
 	/// 	- solutionID: Unique Solution Identifier defined at PrivMX Bridge
-	/// 	- platformUrl: URL of PrivMX Bridge Instance
+	/// 	- bridgeUrl: URL of PrivMX Bridge Instance
+	/// 	- verificationOptions: URL of PrivMX Bridge Instance
 	/// - Returns: new Connection object which can be used for initializing proper PrivMX Endpoint APIs
 	/// - Throws: Any Connection Exceptions
 	static func connect(
 		as userPrivKey: String,
 		to solutionID: String,
-		on bridgeUrl: String
+		on bridgeUrl: String,
+		setting verificationOptions: privmx.endpoint.core.PKIVerificationOptions
 	) throws -> any PrivMXConnection
 	
 	/// Connects with public access to PrivMX Bridge. It is used mainly for public access to `InboxApi`.
@@ -55,11 +55,13 @@ public protocol PrivMXConnection{
 	/// - Parameters:
 	/// 	- solutionID: Unique Solution Identifier defined at  PrivMX Bridge
 	/// 	- platformUrl: URL of PrivMX Bridge Instance
+	/// 	- platformUrl: URL of PrivMX Bridge Instance
 	/// - Returns: new Connection object which can be used for initializing  PrivMX `InboxApi`.
 	/// - Throws: Any Connection Exceptions
 	static func connectPublic(
 		to solutionID: String,
-		on bridgeUrl: String
+		on bridgeUrl: String,
+		setting verificationOptions: privmx.endpoint.core.PKIVerificationOptions
 	) throws -> any PrivMXConnection
 	
 	/// Returns current Connection ID.
@@ -79,5 +81,16 @@ public protocol PrivMXConnection{
 	func listContexts(
 		basedOn query: privmx.endpoint.core.PagingQuery
 	) throws -> privmx.ContextList
+	
+	/// Sets user’s custom verification callback.
+	///
+	/// Use this to set up verification with a PKI server.
+	///
+	/// - Parameter verifierImplementation: Callback that will be called for each verification request by the C++ library. It takes a C++ `std.vector` of
+	/// ``privmx.endpoint.core.VerificationRequest`` objects, exposed to swift as `privmx.VerificationRequestVector` and returns a `std.vector` of `bool`s
+	/// corresponding to the verification results.
+	func setUserVerifier(
+		_ verifierImplementation: privmx.VerificationImplementation
+	) throws -> Void
 }
 

@@ -10,8 +10,12 @@
 //
 
 import Foundation
+import PrivMXEndpointSwift
+import PrivMXEndpointSwiftNative
 
 /// Protocol declaring cryptographic operations using Swift types.
+///
+/// Do not conform to this protocol on your own.
 public protocol PrivMXCrypto{
 	
 	/// Generates a new Private Key, which can be used for accessing PrivMX Bridge.
@@ -142,7 +146,7 @@ public protocol PrivMXCrypto{
 	///
 	/// This method converts a private key from PEM (Privacy-Enhanced Mail) format to Wallet Import Format (WIF).
 	///
-	/// - Parameter pemKey: The private key in PEM format.
+	/// - Parameter keyPem: The private key in PEM format.
 	///
 	/// - Returns: The converted private key in WIF format as a `String`.
 	///
@@ -164,5 +168,59 @@ public protocol PrivMXCrypto{
 		of data: Data,
 		with publicKey: String
 	) throws -> Bool
+	
+	 func convertPGPAsn1KeyToBase58DERKey(
+		_ pgpKey: String
+	) throws -> String
+	
+	 func generateBip39(
+		ofStrength strength: size_t,
+		usingPassword password: String
+	) throws -> BIP39
+	
+	 func fromMnemonic(
+		_ mnemonic: String,
+		usingPassword password: String
+	) throws -> BIP39
+	
+	 func fromEntropy(
+		_ entropy: Data,
+		usingPassword password: String
+	)throws -> BIP39
+	
+	/// Converts BIP-39 mnemonic to entropy.
+	///
+	/// - Parameter mnemonic: BIP-39 mnemonic
+	///
+	/// - Throws: `PrivMXEndpointError.failedConvertingMnemonicToEntropy` if the conversion fails.
+	///
+	/// - Returns: BIP-39 entropy
+	 func mnemonicToEntropy(
+		_ mnemonic: String
+	) throws -> Data
+	
+	/// Converts BIP-39 mnemonic to entropy.
+	///
+	/// - Parameter entropy: BIP-39 entropy
+	///
+	/// - Throws: `PrivMXEndpointError.failedConvertingEntropyToMnemonic` if the conversion fails.
+	///
+	/// - Returns: BIP-39 mnemonic
+	 func entropyToMnemonic(
+		_ entropy: Data
+	) throws -> String
+	
+	/// Generates a seed used to generate a key using BIP-39 mnemonic with PBKDF2.
+	///
+	/// - Parameters mnemonic: BIP-39 mnemonic
+	/// - Parameters password: the password used to generate the seed
+	///
+	/// - Throws: `PrivMXEndpointError.failedGeneratingSeedFromMnemonic` if the generating fails.
+	///
+	/// - Returns: generated seed
+	 func mnemonicToSeed(
+		_ mnemonic: String,
+		usingPassword password: String
+	) throws -> Data
 }
 

@@ -17,7 +17,6 @@ import PrivMXEndpointSwiftNative
 
 /// Extension of `Connection`, providing methods for connecting to PrivMX Bridge and managing Contexts.
 extension Connection: PrivMXConnection {
-	
 	/// Lists all available Contexts for the authorized user in the current Solution.
 	///
 	/// This method retrieves a list of Contexts available to the user, filtered according to the provided query.
@@ -38,10 +37,10 @@ extension Connection: PrivMXConnection {
 	/// This method initiates a secured connection to PrivMX Bridge using the user's private key. 
 	/// The connection allows for the execution of secured operations within a specified Solution.
 	///
-	/// - Parameters:
-	///   - userPrivKey: The user's private key used for authentication (WIF format).
-	///   - solutionID: The unique identifier of the Solution to connect to.
-	///   - bridgeUrl: The URL of PrivMX Bridge to connect to.
+	/// - Parameter  userPrivKey: The user's private key used for authentication (WIF format).
+	/// - Parameter solutionID: The unique identifier of the Solution to connect to.
+	/// - Parameter bridgeUrl: The URL of PrivMX Bridge to connect to.
+	/// - Parameter verificationOptions: Options used to verify if Bridge on given url is the one you expect.
 	///
 	/// - Returns: A new `PrivMXConnection` instance representing the established connection.
 	///
@@ -49,32 +48,36 @@ extension Connection: PrivMXConnection {
 	public static func connect(
 		as userPrivKey: String,
 		to solutionID: String,
-		on bridgeUrl: String
+		on bridgeUrl: String,
+		setting verificationOptions: privmx.endpoint.core.PKIVerificationOptions = privmx.endpoint.core.PKIVerificationOptions()
 	) throws -> any PrivMXConnection {
 		try Self.connect(
 			userPrivKey: std.string(userPrivKey),
 			solutionId: std.string(solutionID),
-			bridgeUrl: std.string(bridgeUrl))
+			bridgeUrl: std.string(bridgeUrl),
+			verificationOptions: verificationOptions)
 	}
 
 	/// Establishes a public connection to PrivMX Bridge.
 	///
 	/// This method initiates a public connection to PrivMX Bridge, which is typically used for operations that do not require authentication, such as handling inbound traffic to an Inbox.
 	///
-	/// - Parameters:
-	///   - solutionID: The unique identifier of the Solution to connect to.
-	///   - bridgeUrl: The URL of PrivMX Bridge to connect to.
+	/// - Parameter solutionID: The unique identifier of the Solution to connect to.
+	/// - Parameter bridgeUrl: The URL of PrivMX Bridge to connect to.
+	/// - Parameter verificationOptions: Options used to verify if Bridge on given url is the one you expect.
 	///
 	/// - Returns: A new `PrivMXConnection` instance representing the public connection.
 	///
 	/// - Throws: An error if the connection process fails.
 	public static func connectPublic(
 		to solutionID: String,
-		on bridgeUrl: String
+		on bridgeUrl: String,
+		setting verificationOptions: privmx.endpoint.core.PKIVerificationOptions = privmx.endpoint.core.PKIVerificationOptions()
 	) throws -> any PrivMXConnection {
 		try Self.connectPublic(
 			solutionId: std.string(solutionID),
-			bridgeUrl: std.string(bridgeUrl))
+			bridgeUrl: std.string(bridgeUrl),
+			verificationOptions: verificationOptions)
 	}
 
 	/// Sets the path to the `.pem` file containing certificates required for establishing a connection.

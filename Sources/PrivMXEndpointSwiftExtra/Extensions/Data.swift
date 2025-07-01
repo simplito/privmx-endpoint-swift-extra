@@ -51,6 +51,7 @@ extension Data {
 	/// This helper function creates a `std.string` representation of the `Data` object
 	/// by interpreting the data as a C string.
 	/// - Returns: A `std.string` representation of the `Data` contents.
+	
 	public func rawCppString() -> std.string {
 		let cString = self.withUnsafeBytes {
 			(ptr: UnsafeRawBufferPointer) -> UnsafePointer<CChar> in
@@ -68,5 +69,77 @@ extension Data {
 	/// - Returns: A `Data` representation of the given `std.string`.
 	public init(from str: std.string) {
 		self = "\(str)".data(using: .utf8) ?? Data()
+	}
+	
+	///Encodes `Data` to a string in Hex format.
+	public func toHex(
+	) throws -> String {
+		try String(Hex.encode(data: self.asBuffer()))
+	}
+	
+	/// Decodes a string in Hex.
+	/// - Parameter hex: string to decode
+	/// - Returns: decoded Data
+	public static func from(
+		hex: String
+	) throws -> privmx.endpoint.core.Buffer {
+		try Hex.decode(hex_data: std.string(hex))
+	}
+	
+	/// Decodes a string in Hex.
+	/// - Parameter hex: string to decode
+	/// - Returns: decoded Data
+	public static func from(
+		hex: std.string
+	) throws -> privmx.endpoint.core.Buffer {
+		try Hex.decode(hex_data: hex)
+	}
+	
+	///Encodes `Data` to a string in Base32 format.
+	public func toBase32(
+	) throws -> String {
+		try String(Base32.encode(data: self.asBuffer()))
+	}
+	
+	/// Decodes a string in Base32.
+	/// - Parameter base32: string to decode
+	/// - Returns: decoded Data
+	public static func from(
+		base32: String
+	) throws -> privmx.endpoint.core.Buffer {
+		try Base32.decode(base32_data: std.string(base32))
+	}
+
+	/// Decodes a string in Base32.
+	/// - Parameter base32: string to decode
+	/// - Returns: decoded Data
+	public static func from(
+		base32: std.string
+	) throws -> privmx.endpoint.core.Buffer {
+		try Base32.decode(base32_data: base32)
+	}
+	
+	///Encodes `Data` to a string in Base64 format.
+	public func toBase64(
+	) throws -> String {
+		try String(Base64.encode(data: self.asBuffer()))
+	}
+	
+	/// Decodes a string in Base64.
+	/// - Parameter base64: string to decode
+	/// - Returns: decoded Data
+	public static func from(
+		base64: String
+	) throws -> Data {
+		try Data(from:Base64.decode(base64_data: std.string(base64)))
+	}
+	
+	/// Decodes a string in Base64.
+	/// - Parameter base64: string to decode
+	/// - Returns: decoded Data
+	public static func from(
+		base64: std.string
+	) throws -> Data {
+		try Data(from:Base64.decode(base64_data: base64))
 	}
 }

@@ -20,7 +20,7 @@ final class PrivMXEventLoop: @unchecked Sendable{
 	// MARK: - Properties
 		
 	/// The handler invoked whenever an event is received.
-	let eventHandler: @Sendable (PMXEvent, PMXEvent.Type, Int64) -> Void
+	let eventHandler:@Sendable @MainActor (PMXEvent, PMXEvent.Type, Int64) async -> Void
 	
 	/// Indicates whether the event loop is currently listening for events.
 	public var isListening: Bool = false
@@ -30,7 +30,7 @@ final class PrivMXEventLoop: @unchecked Sendable{
 	/// Initializes the `PrivMXEventLoop` with an event handler.
 	///
 	/// - Parameter eventHandler: Closure called when an event is received.
-	init(eventHandler: @escaping @Sendable (PMXEvent, PMXEvent.Type, Int64) -> Void) {
+	init(eventHandler: @escaping @Sendable @MainActor (PMXEvent, PMXEvent.Type, Int64) async -> Void) {
 		self.eventHandler = eventHandler
 	}
 	
@@ -46,7 +46,7 @@ final class PrivMXEventLoop: @unchecked Sendable{
 			var shouldFinish = false
 			repeat {
 				shouldFinish = await self.backgroundWork()
-				try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
+				//try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
 			} while !shouldFinish
 			isListening = false
 		}
@@ -72,10 +72,15 @@ final class PrivMXEventLoop: @unchecked Sendable{
 	private func backgroundWork() async -> Bool {
 		
 		guard let q = try? EventQueue.getInstance() else {return true}
-		if let (event, type) = try? await self.parseEvent(q.waitEvent()) {
-			await publishToMainActor(event,type: type)
-			return type.typeStr() == privmx.endpoint.core.LibBreakEvent.typeStr()
-		} else { return false }
+		do{
+			if let (event, type) = try await self.parseEvent(q.waitEvent()) {
+				await publishToMainActor(event,type: type)
+				return type.typeStr() == privmx.endpoint.core.LibBreakEvent.typeStr()
+			} else { return false }
+		} catch {
+			print(error)
+			return false
+		}
 	}
 
 	/// Publishes the received event to the main actor.
@@ -83,8 +88,8 @@ final class PrivMXEventLoop: @unchecked Sendable{
 	/// - Parameters:
 	///   - event: The received `PMXEvent`.
 	///   - type: The type of the received event.
-	private func publishToMainActor(_ event: PMXEvent, type: PMXEvent.Type) async {
-		eventHandler(event,type,event.connectionId)
+	@MainActor private func publishToMainActor(_ event: PMXEvent, type: PMXEvent.Type) async {
+		await eventHandler(event,type,event.connectionId)
 	}
 	
 	/// Parses the provided event holder and returns the parsed event and its type if recognized.
@@ -141,6 +146,8 @@ final class PrivMXEventLoop: @unchecked Sendable{
 			x = try EventHandler.extractInboxEntryDeletedEvent(eventHolder: eh)
 		} else if try EventHandler.isLibBreakEvent(eventHolder: eh){
 			x = try EventHandler.extractLibBreakEvent(eventHolder: eh)
+		} else if try EventHandler.isContextCustomEvent(eventHolder: eh){
+			x = try EventHandler.extractContextCustomEvent(eventHolder: eh)
 		} else {
 			return nil
 		}

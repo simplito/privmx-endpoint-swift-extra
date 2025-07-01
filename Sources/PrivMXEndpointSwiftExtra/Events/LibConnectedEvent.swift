@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `LibConnectedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.core.LibConnectedEvent: PMXEvent {
+extension privmx.endpoint.core.LibConnectedEvent: PMXEvent, @unchecked  Sendable { 
 
 	/// Returns the event channel as a string.
 	///
@@ -41,12 +41,10 @@ extension privmx.endpoint.core.LibConnectedEvent: PMXEvent {
 	/// - Parameter cb: A closure that accepts an optional `Any?` argument,
 	///   representing the data to be passed when the event is handled.
 	public func handleWith(
-		cb: @escaping ((_ data: Any?) -> Void)
+		cb: @escaping(@Sendable @MainActor (_ data: Any?) async  -> Void)
 	) -> Void {
-		cb(nil)
+		Task{
+			await cb(nil)
+		}
 	}
-}
-
-
-extension privmx.endpoint.core.LibConnectedEvent: @unchecked  Sendable {
 }

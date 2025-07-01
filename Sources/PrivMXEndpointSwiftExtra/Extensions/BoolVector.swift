@@ -9,11 +9,17 @@
 // limitations under the License.
 //
 
-import Foundation
 import PrivMXEndpointSwiftNative
+import Foundation
 
-/// Enumeration of special cases of Policies.
-public enum SpecialPolicyValue :std.string {
-	case yes, no
-	case `default`, inherit
+public extension privmx.BoolVector {
+	init(
+		from array:[Bool]
+	) {
+		self.init()
+		self.reserve(array.count)
+		for b in array{
+			self.push_back(b)
+		}
+	}
 }

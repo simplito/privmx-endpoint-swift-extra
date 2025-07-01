@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `StoreCreatedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.store.StoreCreatedEvent: PMXEvent {
+extension privmx.endpoint.store.StoreCreatedEvent: PMXEvent, @unchecked  Sendable { 
 
 	/// Returns the event channel as a string.
 	///
@@ -32,9 +32,11 @@ extension privmx.endpoint.store.StoreCreatedEvent: PMXEvent {
 	/// - Parameter cb: A closure that accepts an optional `Any?` argument,
 	///   representing the data to be passed when the event is handled.
 	public func handleWith(
-		cb: @escaping ((_ data: Any?) -> Void)
+		cb: @escaping ( @MainActor @Sendable (_ data: Any?) async -> Void)
 	) -> Void {
-		cb(data)
+		Task{
+			await cb(data)
+		}
 	}
 
 	/// Returns the event type as a string.
@@ -46,11 +48,3 @@ extension privmx.endpoint.store.StoreCreatedEvent: PMXEvent {
 		"storeCreated"
 	}
 }
-
-
-
-
-
-extension privmx.endpoint.store.StoreCreatedEvent: @unchecked  Sendable {
-}
-
