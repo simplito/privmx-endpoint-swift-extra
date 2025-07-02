@@ -31,4 +31,8 @@ public enum EventChannel {
 	case inboxEntries(inboxID:String)
 	/// Channels for `ContextCustomEvent`s
 	case custom(contextId:String,name:String)
+	/// Channel for Events regarding KVDBs
+	case kvdb
+	/// Channel for Events regarding Entries in a particular KVDB
+	case kvdbEntries(kvdbId: String)
 }

@@ -148,6 +148,20 @@ final class PrivMXEventLoop: @unchecked Sendable{
 			x = try EventHandler.extractLibBreakEvent(eventHolder: eh)
 		} else if try EventHandler.isContextCustomEvent(eventHolder: eh){
 			x = try EventHandler.extractContextCustomEvent(eventHolder: eh)
+		} else if try EventHandler.isKvdbCreatedEvent(eventHolder: eh){
+			x = try EventHandler.extractKvdbCreatedEvent(eventHolder: eh)
+		} else if try EventHandler.isKvdbUpdatedEvent(eventHolder: eh){
+			x = try EventHandler.extractKvdbUpdatedEvent(eventHolder: eh)
+		} else if try EventHandler.isKvdbDeletedEvent(eventHolder: eh){
+			x = try EventHandler.extractKvdbDeletedEvent(eventHolder: eh)
+		} else if try EventHandler.isKvdbStatsChangedEvent(eventHolder: eh){
+			x = try EventHandler.extractKvdbStatsChangedEvent(eventHolder: eh)
+		} else if try EventHandler.isKvdbNewEntryEvent(eventHolder: eh){
+			x = try EventHandler.extractKvdbNewEntryEvent(eventHolder: eh)
+		} else if try EventHandler.isKvdbEntryUpdatedEvent(eventHolder: eh){
+			x = try EventHandler.extractKvdbEntryUpdatedEvent(eventHolder: eh)
+		} else if try EventHandler.isKvdbEntryDeletedEvent(eventHolder: eh){
+			x = try EventHandler.extractKvdbEntryDeletedEvent(eventHolder: eh)
 		} else {
 			return nil
 		}

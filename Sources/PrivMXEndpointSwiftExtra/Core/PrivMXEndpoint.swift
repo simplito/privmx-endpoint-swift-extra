@@ -82,6 +82,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		if modules.contains(.event){
 			self.eventApi = try EventApi.create(connection: &con)
 		}
+		if modules.contains(.kvdb){
+			self.kvdbApi = try KvdbApi.create(connection: &con)
+		}
 		self.id = try! con.getConnectionId()
 	}
 	
@@ -127,6 +130,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		if modules.contains(.event){
 			self.eventApi = try EventApi.create(connection: &con)
 		}
+		if modules.contains(.kvdb){
+			self.kvdbApi = try KvdbApi.create(connection: &con)
+		}
 		self.id = try! con.getConnectionId()
 	}
 	
@@ -170,6 +176,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		}
 		if modules.contains(.event){
 			self.eventApi = try EventApi.create(connection: &con)
+		}
+		if modules.contains(.kvdb){
+			self.kvdbApi = try KvdbApi.create(connection: &con)
 		}
 		self.id = try! con.getConnectionId()
 	}
@@ -215,6 +224,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		}
 		if modules.contains(.event){
 			self.eventApi = try EventApi.create(connection: &con)
+		}
+		if modules.contains(.kvdb){
+			self.kvdbApi = try KvdbApi.create(connection: &con)
 		}
 		self.id = try! con.getConnectionId()
 	}
@@ -658,6 +670,10 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 					try self.inboxApi?.subscribeForEntryEvents(in: inboxID)
 				case .custom(let cid,let cname):
 					try self.eventApi?.subscribeForCustomEvents(contextId: std.string(cid), channelName: std.string(cname))
+				case .kvdb:
+					try self.kvdbApi?.subscribeForKvdbEvents()
+				case .kvdbEntries(let kvdbId):
+					try self.kvdbApi?.subscribeForEntryEvents(kvdbId: std.string(kvdbId))
 			}
 		}
 		if callbacks[channel.name]?[type.typeStr()] == nil{
