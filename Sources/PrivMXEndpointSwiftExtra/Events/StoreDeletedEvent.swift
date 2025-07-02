@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `StoreDeletedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.store.StoreDeletedEvent: PMXEvent {
+extension privmx.endpoint.store.StoreDeletedEvent: PMXEvent, @unchecked  Sendable { 
 
 	/// Returns the event channel as a string.
 	///
@@ -48,7 +48,3 @@ extension privmx.endpoint.store.StoreDeletedEvent: PMXEvent {
 		"storeDeleted"
 	}
 }
-
-extension privmx.endpoint.store.StoreDeletedEvent: @unchecked  Sendable {
-}
-

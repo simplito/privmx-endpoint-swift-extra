@@ -13,7 +13,7 @@ import Foundation
 import PrivMXEndpointSwift
 import PrivMXEndpointSwiftNative
 
-/// Extension of `CryptoApi`, providing conformance for protocol using Swift types.
+/// Extension of `CryptoApi`, providing more "Swifty" methods, that take and return Swift types instead of C++ types when an equivalent exists.
 extension CryptoApi: PrivMXCrypto{
 	
 	public func generatePrivateKey(

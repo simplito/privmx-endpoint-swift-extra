@@ -51,7 +51,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 	/// - Parameters:
 	///   - inboxApi: provider of `PrivMXInbox` API
 	///   - inboxId: Id of the Inbox in which the Entry is supposed to appear
-	///   - data: arbitrary data that will appear as a mesasage in the Inbox
+	///   - data: arbitrary data that will appear as a message in the Inbox
 	///   - fileSources: list of sources of data for Files attached to the Entry
 	///   - userPrivateKey: Optional identity of the Sender.
 	///
@@ -116,7 +116,7 @@ public class InboxEntryHandler:@unchecked Sendable{
 		else {
 			throw err ?? PrivMXEndpointError.otherFailure(privmx.InternalError(name: "Invalid State Error",
 																			   message: "Error",
-																			   description: "An Error occured"))
+																			   description: "An Error occurred"))
 		}
 		self.state = .filesSent
 		return self.state
@@ -172,7 +172,7 @@ public enum InboxEntryHandlerState:Sendable{
 	case sent
 	/// Cancelled by user
 	case aborted
-	/// An error occured
+	/// An error occurred
 	case error
 }
 
