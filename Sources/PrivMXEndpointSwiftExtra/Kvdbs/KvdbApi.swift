@@ -61,6 +61,7 @@ extension KvdbApi {
 			policies: op))
 	}
 
+		
 	/// Updates an existing KVDB.
 	///
 	/// - Parameter kvdbId: ID of the KVDB to update
@@ -119,14 +120,13 @@ extension KvdbApi {
 	/// - Parameter kvdbId: ID of the KVDB to delete
 	///
 	/// - Throws: `PrivMXEndpointError.failedDeletingKvdb` if deleting the KVDB fails.
-	public func deleteKdvb(
+	public func deleteKvdb(
 		_ kvdbId: String
 	) throws -> Void {
 		try self.deleteKvdb(kvdbId: std.string(kvdbId))
 	}
 	
-	
-	///Gets a KVDB by given KVDB ID.
+	/// Gets a KVDB by given KVDB ID.
 	///
 	/// - Parameter kvdbId:ID of KVDB to get
 	///
@@ -156,7 +156,7 @@ extension KvdbApi {
 			pagingQuery: pagingQuery)
 	}
 	
-	///Check whether the KVDB entry exists.
+	/// Check whether the KVDB entry exists.
 	///
 	/// - Parameter kvdbId: KVDB ID of the KVDB entry to check
 	/// - Parameter key: key of the KVDB entry to check
