@@ -29,10 +29,10 @@ extension privmx.endpoint.kvdb.KvdbNewEntryEvent: PMXEvent, @unchecked Sendable 
 	/// Returns the event type as a string.
 	///
 	/// This method returns the constant string `"kvdbNewEntry"`, identifying the type
-	/// of this event as `kvdbNewMessage`.
-	/// - Returns: A `String` representing the event type, in this case, `"kvdbNewMessage"`.
+	/// of this event as `kvdbNewEntry`.
+	/// - Returns: A `String` representing the event type, in this case, `"kvdbNewEntry"`.
 	public static func typeStr() -> String {
-		return "kvdbNewMessage"
+		return "kvdbNewEntry"
 	}
 
 	/// Handles the event by calling the provided callback with an optional argument.

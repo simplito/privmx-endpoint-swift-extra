@@ -12,7 +12,7 @@
 import Foundation
 import PrivMXEndpointSwiftNative
 
-/// A helper extension for `ThreadDeletedEvent` to conform to the `PMXEvent` protocol.
+/// A helper extension for `KvdbDeletedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
 extension privmx.endpoint.kvdb.KvdbDeletedEvent: PMXEvent, @unchecked Sendable {
@@ -20,7 +20,7 @@ extension privmx.endpoint.kvdb.KvdbDeletedEvent: PMXEvent, @unchecked Sendable {
 	/// Returns the event channel as a string.
 	///
 	/// This implementation returns the constant string `"kvdb"`,
-	/// identifying the channel associated with `ThreadDeletedEvent`.
+	/// identifying the channel associated with `KvdbDeletedEvent`.
 	/// - Returns: A `String` representing the event channel, in this case, `"kvdb"`.
 	public func getChannel() -> String {
 		"kvdb"
