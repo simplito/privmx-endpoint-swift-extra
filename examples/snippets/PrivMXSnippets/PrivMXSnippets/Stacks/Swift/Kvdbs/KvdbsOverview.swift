@@ -9,13 +9,7 @@
 // limitations under the License.
 //
 
-import Foundation
-
-/// Modules that can be initialized by `PrivMXEndpoint`.
-public enum PrivMXModule{
-	case thread
-	case store
-	case inbox
-	case event
-	case kvdb
+extension PrivMXSnippetClass {
+	
+	
 }
