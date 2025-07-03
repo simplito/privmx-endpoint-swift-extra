@@ -16,7 +16,7 @@ let package = Package(
 	],
 	dependencies:[
 		.package(url:"https://github.com/simplito/privmx-endpoint-swift",
-				 branch: "dev"
+				 .upToNextMinor(from: .init(2, 5, 0, prereleaseIdentifiers: ["rc1"]))
 				 ),
 	],
     targets: [
