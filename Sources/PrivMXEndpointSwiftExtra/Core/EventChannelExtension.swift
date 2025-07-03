@@ -35,6 +35,10 @@ extension EventChannel {
 				return "inbox/\(inboxID)/entries"
 			case .custom(let contextID,let name):
 				return "context/\(contextID)/\(name)"
+			case .kvdb:
+				return "kvdb"
+			case .kvdbEntries(kvdbId: let kvdbId):
+				return "kvdb/\(kvdbId)/entries"
 		}
 	}
 }
