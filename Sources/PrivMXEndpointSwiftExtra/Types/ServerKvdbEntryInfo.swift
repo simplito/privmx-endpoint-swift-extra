@@ -14,24 +14,24 @@ import Cxx
 import CxxStdlib
 import PrivMXEndpointSwiftNative
 
-/// An extension for `ServerFileInfo` to conform to the `Identifiable` and `Hashable` protocols.
-/// This extension allows for comparing two `ServerFileInfo` instances, generating unique hash values, and providing an identifier for each file.
-extension privmx.endpoint.store.ServerFileInfo: Identifiable, Hashable, @unchecked Sendable {
+/// An extension for `ServerKvdbEntryInfo` to conform to the `Identifiable` and `Hashable` protocols.
+/// This extension allows for comparing two `ServerKvdbEntryInfo` instances, generating unique hash values, and providing an identifier for each file.
+extension privmx.endpoint.kvdb.ServerKvdbEntryInfo: Identifiable, Hashable, @unchecked Sendable {
 
-	/// Compares two `ServerFileInfo` instances for equality.
+	/// Compares two `ServerKvdbEntryInfo` instances for equality.
 	///
-	/// This function compares key properties of the two `ServerFileInfo` instances, including `fileId`, `storeId`,
+	/// This function compares key properties of the two `ServerKvdbEntryInfo` instances, including `fileId`, `kvdbId`,
 	/// `author`, and `createDate`.
 	/// - Parameters:
-	///   - lhs: The left-hand side `ServerFileInfo` instance.
-	///   - rhs: The right-hand side `ServerFileInfo` instance.
+	///   - lhs: The left-hand side `ServerKvdbEntryInfo` instance.
+	///   - rhs: The right-hand side `ServerKvdbEntryInfo` instance.
 	/// - Returns: `true` if all relevant fields of both file info instances are equal, otherwise `false`.
 	public static func == (
-		lhs: privmx.endpoint.store.ServerFileInfo,
-		rhs: privmx.endpoint.store.ServerFileInfo
+		lhs: privmx.endpoint.kvdb.ServerKvdbEntryInfo,
+		rhs: privmx.endpoint.kvdb.ServerKvdbEntryInfo
 	) -> Bool {
-		return lhs.fileId == rhs.fileId &&
-			   lhs.storeId == rhs.storeId &&
+		return lhs.key == rhs.key &&
+			   lhs.kvdbId == rhs.kvdbId &&
 			   lhs.author == rhs.author &&
 			   lhs.createDate == rhs.createDate
 	}
@@ -40,15 +40,15 @@ extension privmx.endpoint.store.ServerFileInfo: Identifiable, Hashable, @uncheck
 	///
 	/// This property returns the `fileId` as a `String`, which serves as the unique identifier for the file.
 	public var id: String {
-		String(self.fileId)
+		String(self.key)
 	}
 
-	/// Generates a hash value for the `ServerFileInfo` instance.
+	/// Generates a hash value for the `ServerKvdbEntryInfo` instance.
 	///
 	/// This function combines the `fileId` and `createDate` properties to generate a unique hash value for the file info.
 	/// - Parameter hasher: The `Hasher` instance used to compute the hash value.
 	public func hash(into hasher: inout Hasher) -> Void {
-		hasher.combine(fileId)
+		hasher.combine(key)
 		hasher.combine(createDate)
 	}
 }

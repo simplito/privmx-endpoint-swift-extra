@@ -32,17 +32,18 @@ extension privmx.endpoint.inbox.Inbox: Identifiable, Hashable, @unchecked Sendab
 		rhs: privmx.endpoint.inbox.Inbox
 	) -> Bool {
 		return lhs.inboxId == rhs.inboxId &&
-			   lhs.contextId == rhs.contextId &&
-			   lhs.createDate == rhs.createDate &&
-			   lhs.creator == rhs.creator &&
-			   lhs.privateMeta == rhs.privateMeta &&
-			   lhs.publicMeta == rhs.publicMeta &&
-			   lhs.lastModificationDate == rhs.lastModificationDate &&
-			   lhs.lastModifier == rhs.lastModifier &&
-			   lhs.managers == rhs.managers &&
-			   lhs.users == rhs.users &&
-			   lhs.version == rhs.version &&
-			   lhs.statusCode == rhs.statusCode
+			lhs.contextId == rhs.contextId &&
+			lhs.createDate == rhs.createDate &&
+			lhs.creator == rhs.creator &&
+			lhs.privateMeta == rhs.privateMeta &&
+			lhs.publicMeta == rhs.publicMeta &&
+			lhs.lastModificationDate == rhs.lastModificationDate &&
+			lhs.lastModifier == rhs.lastModifier &&
+			lhs.managers == rhs.managers &&
+			lhs.users == rhs.users &&
+			lhs.version == rhs.version &&
+			lhs.statusCode == rhs.statusCode &&
+			lhs.schemaVersion == rhs.schemaVersion
 	}
 
 	/// The unique identifier for the inbox.

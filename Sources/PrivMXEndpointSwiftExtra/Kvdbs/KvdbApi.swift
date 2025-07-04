@@ -33,7 +33,7 @@ extension KvdbApi {
 		for users: [privmx.endpoint.core.UserWithPubKey],
 		managedBy managers: [privmx.endpoint.core.UserWithPubKey],
 		withPublicMeta publicMeta: Data,
-		withPublicMeta privateMeta: Data,
+		withPrivateMeta privateMeta: Data,
 		withPolicies policies: privmx.endpoint.core.ContainerPolicy? = nil
 	) throws -> String {
 		var op = privmx.OptionalContainerPolicy()
@@ -81,7 +81,7 @@ extension KvdbApi {
 		replacingUsers users: [privmx.endpoint.core.UserWithPubKey],
 		replacingManagers managers: [privmx.endpoint.core.UserWithPubKey],
 		replacingPublicMeta publicMeta: Data,
-		replacingPublicMeta privateMeta: Data,
+		replacingPrivateMeta privateMeta: Data,
 		atVersion version: Int64,
 		force: Bool,
 		forceGenerateNewKey:Bool,

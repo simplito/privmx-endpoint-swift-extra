@@ -35,11 +35,12 @@ extension privmx.endpoint.thread.Message: Identifiable, Hashable, @unchecked Sen
 		lhs: privmx.endpoint.thread.Message,
 		rhs: privmx.endpoint.thread.Message
 	) -> Bool {
-		return lhs.info == rhs.info &&
-			   lhs.data == rhs.data &&
-			   lhs.privateMeta == rhs.privateMeta &&
-			   lhs.publicMeta == rhs.publicMeta &&
-			   lhs.authorPubKey == rhs.authorPubKey
+		lhs.info == rhs.info &&
+		lhs.data == rhs.data &&
+		lhs.privateMeta == rhs.privateMeta &&
+		lhs.publicMeta == rhs.publicMeta &&
+		lhs.authorPubKey == rhs.authorPubKey &&
+		lhs.schemaVersion == rhs.schemaVersion
 	}
 
 	/// Generates a hash value for the `Message` instance.
