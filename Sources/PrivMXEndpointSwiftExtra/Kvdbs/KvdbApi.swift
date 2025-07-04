@@ -23,7 +23,6 @@ extension KvdbApi {
 	/// - Parameter publicMeta: public (unencrypted) metadata
 	/// - Parameter privateMeta: private (encrypted) metadata
 	/// - Parameter policies: KVDB's policies
-	/// - Parameter contextId: ID of the Context to create the KVDB in
 	///
 	/// - Returns: Id of the created KVDB
 	///
@@ -73,7 +72,6 @@ extension KvdbApi {
 	/// - Parameter force: force update (without checking version)
 	/// - Parameter forceGenerateNewKey: force to regenerate a key for the KVDB
 	/// - Parameter policies: KVDB's policies
-	/// - Parameter kvdbId: ID of the KVDB to update
 	///
 	/// - Throws: `PrivMXEndpointError.failedUpdatingKvdb` when the operation fails.
 	public func updateKvdb(
@@ -224,6 +222,7 @@ extension KvdbApi {
 	/// Sets a KVDB entry in the given KVDB.
 	///
 	/// - Parameter kvdbId: ID of the KVDB to set the entry to
+	/// - Parameter version: the version of the Entry to set, the default value is 0 for creating a new KVDB Entry
 	/// - Parameter key: KVDB entry key
 	/// - Parameter publicMeta: public KVDB entry metadata
 	/// - Parameter privateMeta: private KVDB entry metadata
@@ -235,10 +234,10 @@ extension KvdbApi {
 	public func setEntry(
 		in kvdbId: String,
 		for key: String,
-		publicMeta: Data,
-		privateMeta: Data,
-		containing data: Data,
-		version: Int64
+		atVersion version: Int64 = 0,
+		withPublicMeta publicMeta: Data,
+		withPrivateMeta privateMeta: Data,
+		containing data: Data
 	) throws -> Void {
 		try self.setEntry(
 			kvdbId: std.string(kvdbId),
