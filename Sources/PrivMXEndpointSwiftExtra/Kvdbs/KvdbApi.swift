@@ -76,11 +76,11 @@ extension KvdbApi {
 	/// - Throws: `PrivMXEndpointError.failedUpdatingKvdb` when the operation fails.
 	public func updateKvdb(
 		_ kvdbId: String,
+		atVersion version: Int64,
 		replacingUsers users: [privmx.endpoint.core.UserWithPubKey],
 		replacingManagers managers: [privmx.endpoint.core.UserWithPubKey],
 		replacingPublicMeta publicMeta: Data,
 		replacingPrivateMeta privateMeta: Data,
-		atVersion version: Int64,
 		force: Bool,
 		forceGenerateNewKey:Bool,
 		replacingPolicies policies: privmx.endpoint.core.ContainerPolicy? = nil
