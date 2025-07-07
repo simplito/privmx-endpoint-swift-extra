@@ -82,10 +82,6 @@ extension KvdbApi {
 		forceGenerateNewKey:Bool,
 		replacingPolicies policies: privmx.endpoint.core.ContainerPolicy? = nil
 	) throws -> Void {
-		var op = privmx.OptionalContainerPolicy()
-		if let policies{
-			op = privmx.makeOptional(policies)
-		}
 		
 		var uv = privmx.UserWithPubKeyVector()
 		uv.reserve(users.count)
@@ -94,7 +90,7 @@ extension KvdbApi {
 		}
 		var mv = privmx.UserWithPubKeyVector()
 		mv.reserve(managers.count)
-		for m in mv{
+		for m in managers{
 			mv.push_back(m)
 		}
 		
@@ -107,7 +103,7 @@ extension KvdbApi {
 			version: version,
 			force: force,
 			forceGenerateNewKey: forceGenerateNewKey,
-			policies: op)
+			policies: policies)
 	}
 	
 	/// Deletes a KVDB by given KVDB ID.
