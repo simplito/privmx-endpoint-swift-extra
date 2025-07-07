@@ -193,7 +193,7 @@ extension KvdbApi {
 	///
 	/// - Throws: `PrivMXEndpointError.failedListingKvdbEntriesKeys` if the operation fails.
 	public func listEntriesKeys(
-		_ kvdbId: String,
+		from kvdbId: String,
 		basedOn pagingQuery: privmx.endpoint.core.PagingQuery
 	) throws -> privmx.StringList {
 		try self.listEntriesKeys(
