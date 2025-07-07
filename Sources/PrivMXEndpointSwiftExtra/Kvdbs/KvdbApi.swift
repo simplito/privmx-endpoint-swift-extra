@@ -35,19 +35,16 @@ extension KvdbApi {
 		withPrivateMeta privateMeta: Data,
 		withPolicies policies: privmx.endpoint.core.ContainerPolicy? = nil
 	) throws -> String {
-		var op = privmx.OptionalContainerPolicy()
-		if let policies{
-			op = privmx.makeOptional(policies)
-		}
 		
 		var uv = privmx.UserWithPubKeyVector()
 		uv.reserve(users.count)
 		for u in users{
 			uv.push_back(u)
 		}
+		
 		var mv = privmx.UserWithPubKeyVector()
 		mv.reserve(managers.count)
-		for m in mv{
+		for m in managers{
 			mv.push_back(m)
 		}
 		
@@ -57,7 +54,7 @@ extension KvdbApi {
 			managers: mv,
 			publicMeta: publicMeta.asBuffer(),
 			privateMeta: privateMeta.asBuffer(),
-			policies: op))
+			policies: policies))
 	}
 
 		
