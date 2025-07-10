@@ -93,4 +93,17 @@ extension Connection: PrivMXConnection {
 	) throws {
 		try Self.setCertsPath(std.string(path))
 	}
+	
+	/// Retrieves a list of Users from a particular Context.
+	///
+	/// - parameter contextId: Id of the Context.
+	///
+	/// - throws: When the operation fails.
+	///
+	/// - returns: a list of UserInfo objects.
+	public func getContextUsers(
+		of path: String
+	) throws -> [privmx.endpoint.core.UserInfo] {
+		try self.getContextUsers(contextId:std.string(path)).map({ x in x})
+	}
 }
