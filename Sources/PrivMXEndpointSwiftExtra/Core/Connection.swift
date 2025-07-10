@@ -17,6 +17,7 @@ import PrivMXEndpointSwiftNative
 
 /// Extension of `Connection`, providing methods for connecting to PrivMX Bridge and managing Contexts.
 extension Connection: PrivMXConnection {
+	
 	/// Lists all available Contexts for the authorized user in the current Solution.
 	///
 	/// This method retrieves a list of Contexts available to the user, filtered according to the provided query.

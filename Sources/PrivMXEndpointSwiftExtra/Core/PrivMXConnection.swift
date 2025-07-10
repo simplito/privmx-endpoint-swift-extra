@@ -102,6 +102,6 @@ public protocol PrivMXConnection{
 	/// - returns: a list of UserInfo objects.
 	func getContextUsers(
 		of contextId: String
-	) throws -> privmx.UserInfoVector
+	) throws -> [privmx.endpoint.core.UserInfo]
 }
 
