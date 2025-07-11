@@ -71,7 +71,7 @@ class PrivMXSnippetClass {
         try? Connection.setCertsPath(pathToCerts)
         // Establish a new `PrivMXEndpoint` session
         var endpointSession = try? PrivMXEndpoint(
-			modules: [.thread,.store,.inbox,.event],
+			modules: [.thread,.store,.inbox,.event, .kvdb],
             userPrivKey: USER1_PRIVATE_KEY,
             solutionId: SOLUTION_ID,
             bridgeUrl: BRIDGE_URL)
