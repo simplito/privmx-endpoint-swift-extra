@@ -17,6 +17,7 @@ import PrivMXEndpointSwiftNative
 
 /// Extension of `Connection`, providing methods for connecting to PrivMX Bridge and managing Contexts.
 extension Connection: PrivMXConnection {
+	
 	/// Lists all available Contexts for the authorized user in the current Solution.
 	///
 	/// This method retrieves a list of Contexts available to the user, filtered according to the provided query.
@@ -92,5 +93,18 @@ extension Connection: PrivMXConnection {
 		_ path: String
 	) throws {
 		try Self.setCertsPath(std.string(path))
+	}
+	
+	/// Retrieves a list of Users from a particular Context.
+	///
+	/// - parameter contextId: Id of the Context.
+	///
+	/// - throws: When the operation fails.
+	///
+	/// - returns: a list of UserInfo objects.
+	public func getContextUsers(
+		of contextId: String
+	) throws -> [privmx.endpoint.core.UserInfo] {
+		try self.getContextUsers(contextId:std.string(contextId)).map({ x in x})
 	}
 }
