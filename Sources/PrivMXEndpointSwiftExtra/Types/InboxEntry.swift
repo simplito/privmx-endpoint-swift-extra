@@ -27,12 +27,13 @@ extension privmx.endpoint.inbox.InboxEntry: Hashable, Identifiable, @unchecked S
 		rhs: privmx.endpoint.inbox.InboxEntry
 	) -> Bool {
 		return lhs.entryId == rhs.entryId &&
-		lhs.inboxId == rhs.inboxId &&
-		lhs.data == rhs.data &&
-		lhs.createDate == rhs.createDate &&
-		lhs.authorPubKey == rhs.authorPubKey &&
-		privmx.compareVectors(lhs.files,rhs.files) &&
-		lhs.statusCode == rhs.statusCode
+			lhs.inboxId == rhs.inboxId &&
+			lhs.data == rhs.data &&
+			lhs.createDate == rhs.createDate &&
+			lhs.authorPubKey == rhs.authorPubKey &&
+			privmx.compareVectors(lhs.files,rhs.files) &&
+			lhs.statusCode == rhs.statusCode &&
+			lhs.schemaVersion == rhs.schemaVersion
 		
 	}
 
