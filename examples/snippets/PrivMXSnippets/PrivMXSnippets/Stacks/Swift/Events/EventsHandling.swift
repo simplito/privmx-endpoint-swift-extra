@@ -165,10 +165,10 @@ extension PrivMXSnippetClass {
             })
 
         try? endpointSession?.registerCallback(
-            for: privmx.endpoint.inbox.InboxUpdatedEvent.self,
+            for: privmx.endpoint.inbox.InboxDeletedEvent.self,
             from: .inbox, identified: "SOME_UNIQUE_IDENTIFIER",
             { eventData in
-                // some actions when inbox updated
+                // some actions when inbox deleted
             })
     }
     
@@ -189,4 +189,54 @@ extension PrivMXSnippetClass {
                 // some actions when inbox entry deleted
             })
     }
+	func handlingKvdbsEvents(){
+        
+        try? endpointSession?.registerCallback(
+            for: privmx.endpoint.kvdb.KvdbCreatedEvent.self,
+            from: .kvdb, identified: "SOME_UNIQUE_IDENTIFIER",
+            { eventData in
+                // some actions when new kvdb created
+            })
+            
+        try? endpointSession?.registerCallback(
+            for: privmx.endpoint.kvdb.KvdbUpdatedEvent.self,
+            from: .kvdb, identified: "SOME_UNIQUE_IDENTIFIER",
+            { eventData in
+                // some actions when kvdb updated
+            })
+
+        try? endpointSession?.registerCallback(
+            for: privmx.endpoint.kvdb.KvdbDeletedEvent.self,
+            from: .kvdb, identified: "SOME_UNIQUE_IDENTIFIER",
+            { eventData in
+                // some actions when kvdb updated
+            })
+    }
+    
+    func handlingEntriesEvents(){
+        var kvdbId = "KVDB_ID"
+                        
+        try? endpointSession?.registerCallback(
+            for: privmx.endpoint.kvdb.KvdbNewEntryEvent.self,
+            from: .kvdbEntries(kvdbID: kvdbId), identified: "SOME_UNIQUE_IDENTIFIER",
+            { eventData in
+                // some actions on new kvdb entry
+            })
+		
+		try? endpointSession?.registerCallback(
+            for: privmx.endpoint.kvdb.KvdbUpdatedEvent.self,
+            from: .kvdbEntries(kvdbID: kvdbId), identified: "SOME_UNIQUE_IDENTIFIER",
+            { eventData in
+                // some actions on new kvdb entry
+            })
+            
+        try? endpointSession?.registerCallback(
+            for: privmx.endpoint.kvdb.KvdbEntryDeletedEvent.self,
+            from: .kvdbEntries(kvdbID: kvdbId), identified: "SOME_UNIQUE_IDENTIFIER",
+            { eventData in
+                // some actions when kvdb entry deleted
+            })
+    }
+	
+	
 }

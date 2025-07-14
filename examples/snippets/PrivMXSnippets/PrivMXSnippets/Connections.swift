@@ -123,7 +123,6 @@ class PrivMXSnippetClass {
 	
 	func gettingContextUsers(){
 		let contextUserInfo = endpointSession?.connection.getContextUsers(of: CONTEXT_ID)
-		contextUserInfo.self
 	}
 	
     func teardown() {
