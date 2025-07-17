@@ -90,7 +90,7 @@ extension PrivMXSnippetClass {
 		
 		try kvdbApi.updateKvdb(
 			kvdbId,
-			atVersion: 1,
+			atVersion: currentKvdb.version,
 			replacingUsers: [privmx.endpoint.core.UserWithPubKey(
 				userId: USER1_ID,
 				pubKey: USER1_PUBLIC_KEY)

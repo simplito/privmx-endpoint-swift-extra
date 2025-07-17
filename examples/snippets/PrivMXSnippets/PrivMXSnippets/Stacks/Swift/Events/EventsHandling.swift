@@ -204,13 +204,21 @@ extension PrivMXSnippetClass {
             { eventData in
                 // some actions when kvdb updated
             })
+		
+		try? endpointSession?.registerCallback(
+			for: privmx.endpoint.kvdb.KvdbStatsChangedEvent,
+			from: .kvdb, identified: "SOME_UNIQUE_IDENTIFIER"),
+			{ eventData in
+				// some actions when kvdb stats changed
+			})
 
         try? endpointSession?.registerCallback(
             for: privmx.endpoint.kvdb.KvdbDeletedEvent.self,
             from: .kvdb, identified: "SOME_UNIQUE_IDENTIFIER",
             { eventData in
-                // some actions when kvdb updated
+                // some actions when kvdb deleted
             })
+		
     }
     
     func handlingEntriesEvents(){
@@ -220,14 +228,14 @@ extension PrivMXSnippetClass {
             for: privmx.endpoint.kvdb.KvdbNewEntryEvent.self,
             from: .kvdbEntries(kvdbID: kvdbId), identified: "SOME_UNIQUE_IDENTIFIER",
             { eventData in
-                // some actions on new kvdb entry
+                // some actions when new kvdb entry created
             })
 		
 		try? endpointSession?.registerCallback(
-            for: privmx.endpoint.kvdb.KvdbUpdatedEvent.self,
+            for: privmx.endpoint.kvdb.KvdbEntryUpdatedEvent.self,
             from: .kvdbEntries(kvdbID: kvdbId), identified: "SOME_UNIQUE_IDENTIFIER",
             { eventData in
-                // some actions on new kvdb entry
+                // some actions when kvdb entry updated
             })
             
         try? endpointSession?.registerCallback(
