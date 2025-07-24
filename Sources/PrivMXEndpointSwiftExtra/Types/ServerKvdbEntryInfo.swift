@@ -40,7 +40,7 @@ extension privmx.endpoint.kvdb.ServerKvdbEntryInfo: Identifiable, Hashable, @unc
 	///
 	/// This property returns the `fileId` as a `String`, which serves as the unique identifier for the file.
 	public var id: String {
-		String(self.key)
+		"\(String(self.kvdbId))/\(String(self.key))"
 	}
 
 	/// Generates a hash value for the `ServerKvdbEntryInfo` instance.

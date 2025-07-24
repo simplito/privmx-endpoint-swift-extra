@@ -33,14 +33,15 @@ extension privmx.endpoint.kvdb.KvdbEntry: Hashable, Identifiable, @unchecked Sen
 		lhs.authorPubKey == rhs.authorPubKey &&
 		lhs.data == rhs.data && 
 		lhs.statusCode == rhs.statusCode &&
-		lhs.schemaVersion == rhs.schemaVersion
+		lhs.schemaVersion == rhs.schemaVersion &&
+		lhs.version == rhs.version
 	}
 
 	/// The unique identifier for the entry.
 	///
 	/// This property returns a string in the  `key`.
 	public var id: String {
-		String(self.info.key)
+		"\(String(self.info.kvdbId))/\(String(self.info.key))"
 	}
 
 	/// Generates a hash value for the `KvdbEntry` instance.
