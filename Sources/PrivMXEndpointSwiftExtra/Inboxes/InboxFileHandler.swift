@@ -205,7 +205,7 @@ public final class InboxFileHandler:@unchecked Sendable{
 	///
 	/// - Parameters:
 	///   - fileId: The ID of the file to be downloaded from the `PrivMXInbox`.
-	///   - storesApi: The API for interacting with the `PrivMXInbox`.
+	///   - inboxApi: The API for interacting with the `PrivMXInbox`.
 	///   - localFile: SwiftNIO handle to a file on the device
 	///   - chunkSize: The size of the chunks for downloading. Defaults to the recommended chunk size.
 	/// - Returns: A new `PrivMXInboxFileHandler` instance configured for downloading the File into the local file.

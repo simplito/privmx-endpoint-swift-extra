@@ -146,7 +146,7 @@ public protocol PrivMXCrypto{
 	///
 	/// This method converts a private key from PEM (Privacy-Enhanced Mail) format to Wallet Import Format (WIF).
 	///
-	/// - Parameter keyPem: The private key in PEM format.
+	/// - Parameter keyPEM: The private key in PEM format.
 	///
 	/// - Returns: The converted private key in WIF format as a `String`.
 	///

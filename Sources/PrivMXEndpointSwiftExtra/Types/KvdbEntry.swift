@@ -38,7 +38,7 @@ extension privmx.endpoint.kvdb.KvdbEntry: Hashable, Identifiable, @unchecked Sen
 
 	/// The unique identifier for the entry.
 	///
-	/// This property returns the `key converted to a `String`.
+	/// This property returns a string in the  `key`.
 	public var id: String {
 		String(self.info.key)
 	}
@@ -48,7 +48,8 @@ extension privmx.endpoint.kvdb.KvdbEntry: Hashable, Identifiable, @unchecked Sen
 	/// This function combines the `info` property into the hash to uniquely identify the file.
 	/// - Parameter hasher: The `Hasher` instance used to compute the hash value.
 	public func hash(into hasher: inout Hasher) -> Void {
-		hasher.combine(self.info.key)
+		hasher.combine(info.kvdbId)
+		hasher.combine(info.key)
 		hasher.combine(data)
 	}
 }

@@ -215,13 +215,11 @@ extension KvdbApi {
 	/// Sets a KVDB entry in the given KVDB.
 	///
 	/// - Parameter kvdbId: ID of the KVDB to set the entry to
-	/// - Parameter version: the version of the Entry to set, the default value is 0 for creating a new KVDB Entry
 	/// - Parameter key: KVDB entry key
+	/// - Parameter version: the version of the Entry to set, the default value is 0 for creating a new KVDB Entry
 	/// - Parameter publicMeta: public KVDB entry metadata
 	/// - Parameter privateMeta: private KVDB entry metadata
 	/// - Parameter data: content of the KVDB entry
-	///
-	/// - Returns: ID of the new KVDB entry
 	///
 	/// - Throws: PrivMXEndpointError.failedSettingKvdbEntry.
 	public func setEntry(
