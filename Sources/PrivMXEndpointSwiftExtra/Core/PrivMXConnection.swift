@@ -54,8 +54,8 @@ public protocol PrivMXConnection{
 	///
 	/// - Parameters:
 	/// 	- solutionID: Unique Solution Identifier defined at  PrivMX Bridge
-	/// 	- platformUrl: URL of PrivMX Bridge Instance
-	/// 	- platformUrl: URL of PrivMX Bridge Instance
+	/// 	- bridgeUrl: URL of PrivMX Bridge Instance
+	/// 	- verificationOptions: URL of PrivMX Bridge Instance
 	/// - Returns: new Connection object which can be used for initializing  PrivMX `InboxApi`.
 	/// - Throws: Any Connection Exceptions
 	static func connectPublic(
@@ -87,7 +87,7 @@ public protocol PrivMXConnection{
 	/// Use this to set up verification with a PKI server.
 	///
 	/// - Parameter verifierImplementation: Callback that will be called for each verification request by the C++ library. It takes a C++ `std.vector` of
-	/// ``privmx.endpoint.core.VerificationRequest`` objects, exposed to swift as `privmx.VerificationRequestVector` and returns a `std.vector` of `bool`s
+	/// `privmx.endpoint.core.VerificationRequest` objects, exposed to swift as `privmx.VerificationRequestVector` and returns a `std.vector` of `bool`s
 	/// corresponding to the verification results.
 	func setUserVerifier(
 		_ verifierImplementation: privmx.VerificationImplementation

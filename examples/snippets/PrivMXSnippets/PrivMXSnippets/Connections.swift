@@ -71,7 +71,7 @@ class PrivMXSnippetClass {
         try? Connection.setCertsPath(pathToCerts)
         // Establish a new `PrivMXEndpoint` session
         var endpointSession = try? PrivMXEndpoint(
-			modules: [.thread,.store,.inbox,.event],
+			modules: [.thread,.store,.inbox,.event, .kvdb],
             userPrivKey: USER1_PRIVATE_KEY,
             solutionId: SOLUTION_ID,
             bridgeUrl: BRIDGE_URL)
@@ -119,6 +119,10 @@ class PrivMXSnippetClass {
 			}
 			return privmx.VerificationResult.init(resultVector: .init(from: result))
 		})
+	}
+	
+	func gettingContextUsers(){
+		let contextUserInfo = endpointSession?.connection.getContextUsers(of: CONTEXT_ID)
 	}
 	
     func teardown() {

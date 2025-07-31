@@ -17,4 +17,5 @@ public enum PrivMXModule{
 	case store
 	case inbox
 	case event
+	case kvdb
 }

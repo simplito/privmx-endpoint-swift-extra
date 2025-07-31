@@ -29,11 +29,12 @@ extension privmx.endpoint.store.File: Hashable, Identifiable, @unchecked Sendabl
 		rhs: privmx.endpoint.store.File
 	) -> Bool {
 		return lhs.info == rhs.info &&
-			   lhs.privateMeta == rhs.privateMeta &&
-			   lhs.publicMeta == rhs.publicMeta &&
-			   lhs.authorPubKey == rhs.authorPubKey &&
-			   lhs.size == rhs.size &&
-			   lhs.statusCode == rhs.statusCode
+			lhs.privateMeta == rhs.privateMeta &&
+			lhs.publicMeta == rhs.publicMeta &&
+			lhs.authorPubKey == rhs.authorPubKey &&
+			lhs.size == rhs.size &&
+			lhs.statusCode == rhs.statusCode &&
+			lhs.schemaVersion == rhs.schemaVersion
 	}
 
 	/// The unique identifier for the file.

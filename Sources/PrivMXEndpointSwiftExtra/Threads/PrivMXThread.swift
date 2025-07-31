@@ -79,8 +79,8 @@ public protocol PrivMXThread{
 		in contextId: String,
 		for users: [privmx.endpoint.core.UserWithPubKey],
 		managedBy managers: [privmx.endpoint.core.UserWithPubKey],
-		withPublicMeta pubMeta: Data,
-		withPrivateMeta privMeta: Data,
+		withPublicMeta publicMeta: Data,
+		withPrivateMeta privateMeta: Data,
 		withPolicies policies: privmx.endpoint.core.ContainerPolicy?
 	) throws -> String
 	
@@ -106,8 +106,8 @@ public protocol PrivMXThread{
 		atVersion version: Int64,
 		replacingUsers users: [privmx.endpoint.core.UserWithPubKey],
 		replacingManagers managers: [privmx.endpoint.core.UserWithPubKey],
-		replacingPublicMeta pubMeta: Data,
-		replacingPrivateMeta privMeta: Data,
+		replacingPublicMeta publicMeta: Data,
+		replacingPrivateMeta privateMeta: Data,
 		force: Bool,
 		forceGenerateNewKey: Bool,
 		replacingPolicies policies: privmx.endpoint.core.ContainerPolicy?
@@ -177,7 +177,7 @@ public protocol PrivMXThread{
 		_ messageId: String,
 		replacingData data: Data,
 		replacingPublicMeta publicMeta: Data,
-		replacingPrivateMeta privMeta: Data
+		replacingPrivateMeta privateMeta: Data
 	) throws -> Void
 	
 	/// Deletes a specific Message.

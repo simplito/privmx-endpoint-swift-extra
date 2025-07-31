@@ -178,14 +178,14 @@ public final class InboxFileHandler:@unchecked Sendable{
 	
 	/// Creates a new handler for downloading a file to an internal buffer.
 	///
-	/// This method allows downloading a file from the `PrivMXStore` directly into memory (a buffer).
+	/// This method allows downloading a file from the `PrivMXInbox` directly into memory (a buffer).
 	/// To retrieve the buffer after the download, call `getBuffer()`.
 	///
 	/// - Parameters:
-	///   - fileId: The ID of the file to be downloaded from the `PrivMXStore`.
-	///   - storesApi: The API for interacting with the `PrivMXStore`.
+	///   - fileId: The ID of the file to be downloaded from the `Inbox`.
+	///   - inboxApi: The API for interacting with the `PrivMXInbox`.
 	///   - chunkSize: The size of the chunks for downloading. Defaults to the recommended chunk size.
-	/// - Returns: A new `PrivMXStoreFileHandler` instance configured for downloading the file into the buffer.
+	/// - Returns: A new `PrivMXInboxFileHandler` instance configured for downloading the file into the buffer.
 	/// - Throws: An error if the file cannot be opened or the download process fails.
 	public static func getInboxFileReaderToBuffer(
 		readFrom fileId:String,
@@ -200,15 +200,15 @@ public final class InboxFileHandler:@unchecked Sendable{
 	
 	/// Creates a new handler for downloading a file to a local File.
 	///
-	/// This method allows downloading a file from the `PrivMXStore` directly into memory (a buffer).
+	/// This method allows downloading a file from the `PrivMXInbox` directly into memory (a buffer).
 	/// To retrieve the buffer after the download, call `getBuffer()`.
 	///
 	/// - Parameters:
-	///   - fileId: The ID of the file to be downloaded from the `PrivMXStore`.
-	///   - storesApi: The API for interacting with the `PrivMXStore`.
+	///   - fileId: The ID of the file to be downloaded from the `PrivMXInbox`.
+	///   - inboxApi: The API for interacting with the `PrivMXInbox`.
 	///   - localFile: SwiftNIO handle to a file on the device
 	///   - chunkSize: The size of the chunks for downloading. Defaults to the recommended chunk size.
-	/// - Returns: A new `PrivMXStoreFileHandler` instance configured for downloading the File into the local file.
+	/// - Returns: A new `PrivMXInboxFileHandler` instance configured for downloading the File into the local file.
 	/// - Throws: An error if the file cannot be opened or the download process fails.
 	public static func getInboxFileReaderToFile(
 		readFrom fileId:String,
