@@ -100,16 +100,16 @@ class PrivMXSnippetClass {
                                      
     }
     
-    func gettingEndpointSessionFromContainer()
+    func gettingEndpointSessionFromContainer() throws
     {
         let endpointSessionId:Int64 = 0
         let endpointSession = endpointContainer?.getEndpoint(endpointSessionId)
         //by passing value indexed by connectionID
     }
     
-	func settingUserVerifier(){
+	func settingUserVerifier() throws{
 		
-		endpointSession?.connection.setUserVerifier({
+		try endpointSession?.connection.setUserVerifier({
 			requestHolder in
 			var result = [Bool]()
 			for req in requestHolder.requestVector{
@@ -121,8 +121,8 @@ class PrivMXSnippetClass {
 		})
 	}
 	
-	func gettingContextUsers(){
-		let contextUserInfo = endpointSession?.connection.getContextUsers(of: CONTEXT_ID)
+	func gettingContextUsers() throws{
+		let contextUserInfo = try endpointSession?.connection.getContextUsers(of: CONTEXT_ID)
 	}
 	
     func teardown() {

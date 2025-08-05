@@ -9,13 +9,18 @@
 // limitations under the License.
 //
 
+import Foundation
+import PrivMXEndpointSwiftNative
+import PrivMXEndpointSwift
+import PrivMXEndpointSwiftExtra
+
+var kvdbApi: KvdbApi!
 extension PrivMXSnippetClass {
 	
-	var kvdbApi : KvdbApi
-	let KVDB_ID = "ID of your KVDB"
-	let KVDB_ENTRY_KEY = "KEY"
-	let KVDB_ENTRY_KEY_1 = "KEY_1"
-	let KVDB_ENTRY_KEY_2 = "KEY_2"
+	var KVDB_ID : String { "ID of your KVDB"}
+	var KVDB_ENTRY_KEY : String { "KEY"}
+	var KVDB_ENTRY_KEY_1 : String { "KEY_1"}
+	var KVDB_ENTRY_KEY_2 : String { "KEY_2"}
 	
 	func guardKvdbSetup(){
 		guard let sessionKvdbApi = endpointSession?.kvdbApi
@@ -23,7 +28,7 @@ extension PrivMXSnippetClass {
 		kvdbApi = sessionKvdbApi
 	}
 	
-	func creatingKvdbBasic(){
+	func creatingKvdbBasic() throws{
 
 		let kvdbId = try kvdbApi.createKvdb(
 			in: CONTEXT_ID,
@@ -39,7 +44,7 @@ extension PrivMXSnippetClass {
 			withPrivateMeta: Data())
 	}
 	
-	func creatingKvdbNamed(){
+	func creatingKvdbNamed() throws{
 		
 		let name = "CUSTOM KVDB NAME"
 
@@ -57,7 +62,7 @@ extension PrivMXSnippetClass {
 			withPrivateMeta: Data())
 	}
 	
-	func creatingKvdbMeta(){
+	func creatingKvdbMeta() throws{
 		
 		struct PublicKVDBMeta : Codable{
 			var tags : [String]
@@ -83,7 +88,7 @@ extension PrivMXSnippetClass {
 			withPrivateMeta: Data())
 	}
 	
-	func updatingKvdb(){
+	func updatingKvdb() throws {
 		let KVDB_ID = "ID of your KVDB"
 		
 		let currentKvdb = try kvdbApi.getKvdb(KVDB_ID)
@@ -105,13 +110,13 @@ extension PrivMXSnippetClass {
 			forceGenerateNewKey: false)
 	}
 	
-	func deletingKvdb(){
+	func deletingKvdb() throws{
 		let KVDB_ID = "ID of your KVDB"
 		
 		try kvdbApi.deleteKvdb(KVDB_ID)
 	}
 	
-	func listingKvdbs(){
+	func listingKvdbs() throws{
 		let kvdbList = try kvdbApi.listKvdbs(
 			from: CONTEXT_ID,
 			basedOn: privmx.endpoint.core.PagingQuery(
@@ -120,7 +125,7 @@ extension PrivMXSnippetClass {
 				sortOrder: .desc))
 	}
 	
-	func gettingKvdb(){
+	func gettingKvdb() throws{
 		let KVDB_ID = "ID of your KVDB"
 		
 		let kvdb = kvdbApi.getKvdb(KVDB_ID)

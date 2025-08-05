@@ -9,32 +9,37 @@
 // limitations under the License.
 //
 
+import Foundation
+import PrivMXEndpointSwiftNative
+import PrivMXEndpointSwift
+import PrivMXEndpointSwiftExtra
+
 extension PrivMXSnippetClass {
 	
 	func creatingEntries() throws{
 		try kvdbApi.setEntry(
 			in: KVDB_ID,
 			for: KVDB_ENTRY_KEY,
-			withPublicMeta: publicMeta,
-			withPrivateMeta: privateMeta,
+			withPublicMeta: Data("Some public metadata".utf8),
+			withPrivateMeta: Data("Some private metadata".utf8),
 			containing: Data("Some entry data".utf8))
 	}
 	
-	func updatingEntries(){
+	func updatingEntries() throws{
 		
 		try kvdbApi.setEntry(
 			in: KVDB_ID,
 			for: KVDB_ENTRY_KEY,
 			atVersion: 1,
-			withPublicMeta: Data("NEW PUBLIC META"),
-			withPrivateMeta: Data("NEW PRIVATE META"),
+			withPublicMeta: Data("NEW PUBLIC META".utf8),
+			withPrivateMeta: Data("NEW PRIVATE META".utf8),
 			containing: Data("New entry data".utf8))
 	}
 	
 	
-	func listingKeys(){
+	func listingKeys() throws {
 		
-		let keysList = kvdbApi.listEntriesKeys(
+		let keysList = try kvdbApi.listEntriesKeys(
 			from: KVDB_ID,
 			basedOn: privmx.endpoint.core.PagingQuery(
 				skip:0,
@@ -43,7 +48,7 @@ extension PrivMXSnippetClass {
 			))
 	}
 	
-	func checkingEntry(){
+	func checkingEntry() throws{
 		
 		let entryExists = try kvdbApi.hasEntry(
 			kvdbId: KVDB_ID,
@@ -51,7 +56,7 @@ extension PrivMXSnippetClass {
 		
 	}
 	
-	func fetchingEntries(){
+	func fetchingEntries() throws {
 		
 		let entry = try kvdbApi.getEntry(
 			from: KVDB_ID,
@@ -67,13 +72,13 @@ extension PrivMXSnippetClass {
 		
 	}
 	
-	func deletingEntries(){
+	func deletingEntries() throws {
 		
 		try kvdbApi.deleteEntry(
 			from: KVDB_ID,
 			for: KVDB_ENTRY_KEY)
 		
-		let deletionStatus = kvdbApi.deleteEntries(
+		let deletionStatus = try kvdbApi.deleteEntries(
 			from: KVDB_ID,
 			for: [
 				KVDB_ENTRY_KEY_1,
