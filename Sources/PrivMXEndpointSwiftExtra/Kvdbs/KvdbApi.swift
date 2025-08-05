@@ -35,7 +35,6 @@ extension KvdbApi {
 		withPrivateMeta privateMeta: Data,
 		withPolicies policies: privmx.endpoint.core.ContainerPolicy? = nil
 	) throws -> String {
-		
 		var uv = privmx.UserWithPubKeyVector()
 		uv.reserve(users.count)
 		for u in users{
