@@ -23,7 +23,6 @@ extension KvdbApi {
 	/// - Parameter publicMeta: public (unencrypted) metadata
 	/// - Parameter privateMeta: private (encrypted) metadata
 	/// - Parameter policies: KVDB's policies
-	/// - Parameter contextId: ID of the Context to create the KVDB in
 	///
 	/// - Returns: Id of the created KVDB
 	///
@@ -33,22 +32,18 @@ extension KvdbApi {
 		for users: [privmx.endpoint.core.UserWithPubKey],
 		managedBy managers: [privmx.endpoint.core.UserWithPubKey],
 		withPublicMeta publicMeta: Data,
-		withPublicMeta privateMeta: Data,
+		withPrivateMeta privateMeta: Data,
 		withPolicies policies: privmx.endpoint.core.ContainerPolicy? = nil
 	) throws -> String {
-		var op = privmx.OptionalContainerPolicy()
-		if let policies{
-			op = privmx.makeOptional(policies)
-		}
-		
 		var uv = privmx.UserWithPubKeyVector()
 		uv.reserve(users.count)
 		for u in users{
 			uv.push_back(u)
 		}
+		
 		var mv = privmx.UserWithPubKeyVector()
 		mv.reserve(managers.count)
-		for m in mv{
+		for m in managers{
 			mv.push_back(m)
 		}
 		
@@ -58,7 +53,7 @@ extension KvdbApi {
 			managers: mv,
 			publicMeta: publicMeta.asBuffer(),
 			privateMeta: privateMeta.asBuffer(),
-			policies: op))
+			policies: policies))
 	}
 
 		
@@ -73,24 +68,19 @@ extension KvdbApi {
 	/// - Parameter force: force update (without checking version)
 	/// - Parameter forceGenerateNewKey: force to regenerate a key for the KVDB
 	/// - Parameter policies: KVDB's policies
-	/// - Parameter kvdbId: ID of the KVDB to update
 	///
 	/// - Throws: `PrivMXEndpointError.failedUpdatingKvdb` when the operation fails.
 	public func updateKvdb(
 		_ kvdbId: String,
+		atVersion version: Int64,
 		replacingUsers users: [privmx.endpoint.core.UserWithPubKey],
 		replacingManagers managers: [privmx.endpoint.core.UserWithPubKey],
 		replacingPublicMeta publicMeta: Data,
-		replacingPublicMeta privateMeta: Data,
-		atVersion version: Int64,
+		replacingPrivateMeta privateMeta: Data,
 		force: Bool,
 		forceGenerateNewKey:Bool,
 		replacingPolicies policies: privmx.endpoint.core.ContainerPolicy? = nil
 	) throws -> Void {
-		var op = privmx.OptionalContainerPolicy()
-		if let policies{
-			op = privmx.makeOptional(policies)
-		}
 		
 		var uv = privmx.UserWithPubKeyVector()
 		uv.reserve(users.count)
@@ -99,7 +89,7 @@ extension KvdbApi {
 		}
 		var mv = privmx.UserWithPubKeyVector()
 		mv.reserve(managers.count)
-		for m in mv{
+		for m in managers{
 			mv.push_back(m)
 		}
 		
@@ -112,7 +102,7 @@ extension KvdbApi {
 			version: version,
 			force: force,
 			forceGenerateNewKey: forceGenerateNewKey,
-			policies: op)
+			policies: policies)
 	}
 	
 	/// Deletes a KVDB by given KVDB ID.
@@ -195,7 +185,7 @@ extension KvdbApi {
 	///
 	/// - Throws: `PrivMXEndpointError.failedListingKvdbEntriesKeys` if the operation fails.
 	public func listEntriesKeys(
-		_ kvdbId: String,
+		from kvdbId: String,
 		basedOn pagingQuery: privmx.endpoint.core.PagingQuery
 	) throws -> privmx.StringList {
 		try self.listEntriesKeys(
@@ -225,20 +215,19 @@ extension KvdbApi {
 	///
 	/// - Parameter kvdbId: ID of the KVDB to set the entry to
 	/// - Parameter key: KVDB entry key
+	/// - Parameter version: the version of the Entry to set, the default value is 0 for creating a new KVDB Entry
 	/// - Parameter publicMeta: public KVDB entry metadata
 	/// - Parameter privateMeta: private KVDB entry metadata
 	/// - Parameter data: content of the KVDB entry
-	///
-	/// - Returns: ID of the new KVDB entry
 	///
 	/// - Throws: PrivMXEndpointError.failedSettingKvdbEntry.
 	public func setEntry(
 		in kvdbId: String,
 		for key: String,
-		publicMeta: Data,
-		privateMeta: Data,
-		containing data: Data,
-		version: Int64
+		atVersion version: Int64 = 0,
+		withPublicMeta publicMeta: Data,
+		withPrivateMeta privateMeta: Data,
+		containing data: Data
 	) throws -> Void {
 		try self.setEntry(
 			kvdbId: std.string(kvdbId),

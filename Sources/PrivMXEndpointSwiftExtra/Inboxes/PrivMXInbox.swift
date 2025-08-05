@@ -64,8 +64,6 @@ public protocol PrivMXInbox:Sendable{
 	///   - policies: The policies governing the Container.
 	///
 	/// - Throws: Throws an error if the update fails or if any of the data conversion processes fail.
-	///
-	/// - Returns: This method returns `Void` and does not provide any result on success.
 	func updateInbox(
 		_ inboxId: String,
 		replacingUsers users: [privmx.endpoint.core.UserWithPubKey],
@@ -131,8 +129,6 @@ public protocol PrivMXInbox:Sendable{
 	/// - Parameter inboxId: The unique identifier of the inbox to delete, provided as a `String`.
 	///
 	/// - Throws: Throws an error if the deletion process fails, such as if the inbox ID is invalid or the request cannot be completed.
-	///
-	/// - Returns: This method returns `Void` and does not provide any result on success.
 	func deleteInbox(
 		_ inboxId: String
 	) throws -> Void
@@ -174,8 +170,6 @@ public protocol PrivMXInbox:Sendable{
 	/// - Parameter entryHandle: The handle of the prepared entry to be sent, provided as an `InboxHandle`.
 	///
 	/// - Throws: Throws an error if the entry cannot be sent, such as if the handle is invalid or the network request fails.
-	///
-	/// - Returns: This method returns `Void` and does not provide any result on success.
 	func sendEntry(
 		_ entryHandle: privmx.EntryHandle
 	) throws -> Void
@@ -224,8 +218,6 @@ public protocol PrivMXInbox:Sendable{
 	/// - Parameter inboxEntryId: The unique identifier of the inbox entry to delete, provided as a `String`.
 	///
 	/// - Throws: Throws an error if the deletion process fails, such as if the entry ID is invalid or access is restricted.
-	///
-	/// - Returns: This method returns `Void` and does not provide any result on success.
 	func deleteEntry(
 		_ inboxEntryId: String
 	) throws -> Void
@@ -260,8 +252,6 @@ public protocol PrivMXInbox:Sendable{
 	///   - dataChunk: The chunk of data to be uploaded, provided as `Data`.
 	///
 	/// - Throws: Throws an error if the file write operation fails.
-	///
-	/// - Returns: This method returns `Void` and does not provide any result on success.
 	func writeToFile(
 		_ inboxFileHandle: privmx.InboxFileHandle,
 		of entryHandle: privmx.EntryHandle,
@@ -316,8 +306,6 @@ public protocol PrivMXInbox:Sendable{
 	///   - position: The position (in bytes) to move the file pointer to, provided as an `Int64`.
 	///
 	/// - Throws: Throws an error if seeking within the file fails, such as if the file handle is invalid or the position is out of bounds.
-	///
-	/// - Returns: This method returns `Void` and does not provide any result on success.
 	func seekInFile(
 		withHandle fileHandle: privmx.InboxFileHandle,
 		toPosition position: Int64
@@ -342,8 +330,6 @@ public protocol PrivMXInbox:Sendable{
 	/// This method subscribes to receive notifications or events related to all inboxes.
 	///
 	/// - Throws: Throws an error if the subscription process fails.
-	///
-	/// - Returns: This method returns `Void` and does not provide any result on success.
 	func subscribeForInboxEvents(
 	) throws -> Void
 	
@@ -352,8 +338,6 @@ public protocol PrivMXInbox:Sendable{
 	/// This method unsubscribes the client from receiving notifications or events related to inboxes.
 	///
 	/// - Throws: Throws an error if the unsubscribing process fails.
-	///
-	/// - Returns: This method returns `Void` and does not provide any result on success.
 	func unsubscribeFromInboxEvents(
 	) throws -> Void
 	
@@ -365,8 +349,6 @@ public protocol PrivMXInbox:Sendable{
 	/// - Parameter inboxId: The unique identifier of the inbox to subscribe to for entry events, provided as a `String`.
 	///
 	/// - Throws: Throws an error if the subscription process fails, such as if the inbox ID is invalid or the subscription cannot be established.
-	///
-	/// - Returns: This method returns `Void` and does not provide any result on success.
 	func subscribeForEntryEvents(
 		in inboxId: String
 	) throws -> Void
@@ -379,8 +361,6 @@ public protocol PrivMXInbox:Sendable{
 	/// - Parameter inboxId: The unique identifier of the inbox to unsubscribe from entry events, provided as a `String`.
 	///
 	/// - Throws: Throws an error if the unsubscribing process fails, such as if the inbox ID is invalid or the unsubscribing cannot be completed.
-	///
-	/// - Returns: This method returns `Void` and does not provide any result on success.
 	func unsubscribeFromEntryEvents(
 		in inboxId: String
 	) throws -> Void

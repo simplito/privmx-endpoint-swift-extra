@@ -24,10 +24,6 @@ struct InboxPublicEntry:Codable{
 
 
 extension PrivMXSnippetClass {
-    
-    
-     
-    
     public func sendingEntriesPublicBasic(solutionId:String,platformURL:String){
         
          
@@ -90,7 +86,7 @@ extension PrivMXSnippetClass {
         try? publicEndpointSession?.inboxApi?.closeFile(withHandle: inboxFileHandle)
 
         //4
-        try? publicEndpointSession?.inboxApi?.sendEntry(inboxHandle)
+        try? publicEndpointSession?.inboxApi?.sendEntry(entryHandle)
 
 
         

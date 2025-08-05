@@ -14,23 +14,24 @@ import PrivMXEndpointSwift
 import PrivMXEndpointSwiftExtra
 import PrivMXEndpointSwiftNative
 
+
 extension PrivMXSnippetClass {
+	var CHANNEL_NAME: String  {"CUSTOM_CHANNEL"}
+	var channel: EventChannel { EventChannel.custom(contextId: CONTEXT_ID , name: CHANNEL_NAME)}
 	
-	let CHANNEL_NAME = "CUSTOM_CHANNEL"
-	let channel = EventChannel.custom(contextId: CONTEXT_ID , name: CHANNEL_NAME)
 	
-	func emittingCustomEvents(){
-		endpointSession?.eventApi?.emitEvent(
+	func emittingCustomEvents() throws {
+		try endpointSession?.eventApi?.emitEvent(
 			in: CONTEXT_ID,
 			to: [privmx.endpoint.core.UserWithPubKey(userId: USER1_ID, pubKey: USER1_PUBLIC_KEY),
 				 privmx.endpoint.core.UserWithPubKey(userId: USER2_ID, pubKey: USER2_PUBLIC_KEY),
-				]
-			on: channel,
+				],
+			on: channel.name,
 			containing: Data())
 	}
 	
-	func handlingCustomEvents(){
-		endpointSession?.registerCallback(
+	func handlingCustomEvents() throws{
+		try endpointSession?.registerCallback(
 			for: privmx.endpoint.event.ContextCustomEvent.self,
 			from: channel,
 			identified: "SOME_UNIQUE_IDENTIFIER",
