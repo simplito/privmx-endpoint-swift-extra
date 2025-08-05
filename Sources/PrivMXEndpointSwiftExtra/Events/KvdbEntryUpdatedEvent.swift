@@ -47,5 +47,9 @@ extension privmx.endpoint.kvdb.KvdbEntryUpdatedEvent: PMXEvent, @unchecked Senda
 	public static func typeStr() -> String {
 		"kvdbEntryUpdated"
 	}
+	public func getSubscribtionList(
+	) -> [String] {
+		return self.subscriptions.map({x in String(x)})
+	}
 }
 

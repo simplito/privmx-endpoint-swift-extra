@@ -47,6 +47,11 @@ extension privmx.endpoint.inbox.InboxDeletedEvent: PMXEvent, @unchecked  Sendabl
 	public func getChannel() -> String {
 		"inbox"
 	}
+	
+	public func getSubscribtionList(
+	) -> [String] {
+		return self.subscriptions.map({x in String(x)})
+	}
 }
 
 

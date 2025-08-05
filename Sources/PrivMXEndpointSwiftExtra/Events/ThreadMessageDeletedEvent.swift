@@ -47,4 +47,9 @@ extension privmx.endpoint.thread.ThreadMessageDeletedEvent: PMXEvent, @unchecked
 	public static func typeStr() -> String {
 		"threadMessageDeleted"
 	}
+	
+	public func getSubscribtionList(
+	) -> [String] {
+		return self.subscriptions.map({x in String(x)})
+	}
 }

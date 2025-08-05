@@ -47,5 +47,8 @@ extension privmx.endpoint.core.LibBreakEvent: PMXEvent, @unchecked  Sendable {
 	public static func typeStr() -> String {
 		"libBreak"
 	}
-
+	public func getSubscribtionList(
+	) -> [String] {
+		return self.subscriptions.map({x in String(x)})
+	}
 }

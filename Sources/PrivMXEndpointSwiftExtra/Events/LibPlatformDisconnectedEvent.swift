@@ -47,4 +47,9 @@ extension privmx.endpoint.core.LibPlatformDisconnectedEvent: PMXEvent, @unchecke
 			await cb(nil)
 		}
 	}
+	
+	public func getSubscribtionList(
+	) -> [String] {
+		return self.subscriptions.map({x in String(x)})
+	}
 }
