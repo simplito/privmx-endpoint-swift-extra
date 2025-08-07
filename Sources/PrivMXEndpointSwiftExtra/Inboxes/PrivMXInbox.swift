@@ -325,44 +325,37 @@ public protocol PrivMXInbox:Sendable{
 		withHandle fileHandle: privmx.InboxFileHandle
 	) throws -> String
 	
-	/// Subscribes to receive general inbox events.
+	
+	/// Subscribes to receive events.
 	///
-	/// This method subscribes to receive notifications or events related to all inboxes.
+	/// - Parameter subscriptionQueries: listof properly formatted subscription query strings
 	///
-	/// - Throws: Throws an error if the subscription process fails.
-	func subscribeForInboxEvents(
+	/// - Throws: `PrivMXEndpointError.failedSubscribing` if the subscription process fails.
+	func subscribeFor(
+		_ queries: [String]
+	) throws -> [String]
+	
+	/// Revokes selected Subscriptions.
+	///
+	/// - Parameter subscriptionIds: List of subscription identifiers to annul
+	///
+	/// - Throws: `PrivMXEndpointError.failedUnsubscribing` if the unsubscribing process fails.
+	func unsubscribeFrom(
+		_ subscriptionIds: [String]
 	) throws -> Void
 	
-	/// Unsubscribes from receiving general inbox events.
+	/// Generate subscription Query for Inbox-related events.
 	///
-	/// This method unsubscribes the client from receiving notifications or events related to inboxes.
+	/// - Parameter eventType: type of the event you wish to receive
+	/// - Parameter selectorType: scope on which you listen for events
+	/// - Parameter selectorId: ID of the selector
 	///
-	/// - Throws: Throws an error if the unsubscribing process fails.
-	func unsubscribeFromInboxEvents(
-	) throws -> Void
-	
-	/// Subscribes to receive entry events for a specific inbox.
+	/// - Throws: When building the subscription Query fails.
 	///
-	/// This method subscribes to receive notifications or events related to entries within the specified inbox.
-	/// Once subscribed, the client will be notified of any changes or updates to the entries in the inbox.
-	///
-	/// - Parameter inboxId: The unique identifier of the inbox to subscribe to for entry events, provided as a `String`.
-	///
-	/// - Throws: Throws an error if the subscription process fails, such as if the inbox ID is invalid or the subscription cannot be established.
-	func subscribeForEntryEvents(
-		in inboxId: String
-	) throws -> Void
-	
-	/// Unsubscribes from receiving entry events for a specific inbox.
-	///
-	/// This method unsubscribes the client from receiving notifications or events related to entries within the specified inbox.
-	/// It stops further event notifications for that inbox.
-	///
-	/// - Parameter inboxId: The unique identifier of the inbox to unsubscribe from entry events, provided as a `String`.
-	///
-	/// - Throws: Throws an error if the unsubscribing process fails, such as if the inbox ID is invalid or the unsubscribing cannot be completed.
-	func unsubscribeFromEntryEvents(
-		in inboxId: String
-	) throws -> Void
-	
+	/// - Returns: a properly formatted event subscription request.
+	func buildSubscriptionQuery(
+		forEventType eventType: privmx.endpoint.inbox.EventType,
+		selectorType: privmx.endpoint.inbox.EventSelectorType,
+		selectorId: String
+	) throws -> String 
 }

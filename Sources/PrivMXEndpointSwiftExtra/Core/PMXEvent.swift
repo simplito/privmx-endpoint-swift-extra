@@ -11,6 +11,7 @@
 
 import Foundation
 import PrivMXEndpointSwift
+import PrivMXEndpointSwiftNative
 
 /// Protocol for managing events within PrivMX Endpoint. Provides a standardized interface for handling and processing events with Swift Types.
 public protocol PMXEvent: Sendable {
@@ -44,4 +45,52 @@ public protocol PMXEvent: Sendable {
 	
 	/// Retrieves the list of Subscribtion Ids of the Event
 	func getSubscribtionList()->[String]
+}
+
+public protocol PMXEventType:RawRepresentable{}
+public protocol PMXEventSelectorType:RawRepresentable{}
+
+extension privmx.endpoint.store.EventType:PMXEventType{}
+extension privmx.endpoint.store.EventSelectorType:PMXEventSelectorType{}
+
+extension privmx.endpoint.thread.EventType:PMXEventType{}
+extension privmx.endpoint.thread.EventSelectorType:PMXEventSelectorType{}
+
+extension privmx.endpoint.kvdb.EventType:PMXEventType{}
+extension privmx.endpoint.kvdb.EventSelectorType:PMXEventSelectorType{}
+
+extension privmx.endpoint.inbox.EventType:PMXEventType{}
+extension privmx.endpoint.inbox.EventSelectorType:PMXEventSelectorType{}
+
+extension privmx.endpoint.event.EventSelectorType:PMXEventSelectorType{}
+
+public enum PMXEventSelector: Hashable{
+	case thread(selectorType:privmx.endpoint.thread.EventSelectorType, selectorId:String)
+	case store(selectorType: privmx.endpoint.store.EventSelectorType, selectorId:String)
+	case inbox(selectorType: privmx.endpoint.kvdb.EventSelectorType, selectorId:String)
+	case kvdb(selectorType: privmx.endpoint.inbox.EventSelectorType, selectorId:String)
+	case event(selectorType: privmx.endpoint.event.EventSelectorType, selectorId:String)
+	
+	func getSelectorType(
+	) -> any PMXEventSelectorType{
+		return switch(self){
+			case .thread(let selectorType as any PMXEventSelectorType,_),
+					.event(let selectorType as any PMXEventSelectorType,_),
+					.inbox(let selectorType as any PMXEventSelectorType,_),
+					.kvdb(let selectorType as any PMXEventSelectorType,_),
+					.store(let selectorType as any PMXEventSelectorType,_):
+				selectorType
+		}
+	}
+	func getSelectorID(
+	) -> String{
+		return switch(self){
+			case .thread(_,let selectorId),
+					.event(_,let selectorId),
+					.inbox(_,let selectorId),
+					.kvdb(_,let selectorId),
+					.store(_,let selectorId):
+				selectorId
+		}
+	}
 }

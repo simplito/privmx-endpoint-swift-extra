@@ -23,7 +23,7 @@ extension privmx.endpoint.store.StoreFileUpdatedEvent: PMXEvent, @unchecked  Sen
 	/// where `storeId` is obtained from the `data.info.storeId` property.
 	/// - Returns: A `String` representing the event channel, in this case, `"store/{storeId}/files"`.
 	public func getChannel() -> String {
-		"store/\(self.data.info.storeId)/files"
+		"store/\(self.data.file.info.storeId)/files"
 	}
 
 	/// Returns the event type as a string.

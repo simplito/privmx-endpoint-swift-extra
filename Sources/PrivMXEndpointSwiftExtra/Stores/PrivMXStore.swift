@@ -283,52 +283,37 @@ public protocol PrivMXStore{
 		_ fileId: String
 	) throws -> Void
 	
-	/// Subscribes to events related to Stores.
+	/// Subscribes to receive events.
 	///
-	/// This method allows the client to receive notifications about changes to Stores, such as updates 
-	/// or new Stores being created, by subscribing to Store-related events.
+	/// - Parameter subscriptionQueries: listof properly formatted subscription query strings
 	///
-	/// - Throws: An error if the subscription fails.
-	func subscribeForStoreEvents(
+	/// - Throws: `PrivMXEndpointError.failedSubscribing` if the subscription process fails.
+	func subscribeFor(
+		_ queries: [String]
+	) throws -> [String]
+	
+	/// Revokes selected Subscriptions.
+	///
+	/// - Parameter subscriptionIds: List of subscription identifiers to annul
+	///
+	/// - Throws: `PrivMXEndpointError.failedUnsubscribing` if the unsubscribing process fails.
+	func unsubscribeFrom(
+		_ subscriptionIds: [String]
 	) throws -> Void
 	
-	/// Subscribes to events related to Files in a specific Store.
+	/// Generate subscription Query for KVDB-related events.
 	///
-	/// This method subscribes to file-related events for a specific Store, enabling the client to receive 
-	/// notifications about changes to Files, such as uploads or deletions.
+	/// - Parameter eventType: type of the event you wish to receive
+	/// - Parameter selectorType: scope on which you listen for events
+	/// - Parameter selectorId: ID of the selector
 	///
-	/// - Parameter storeId: The unique identifier of the Store for which to subscribe to file events.
+	/// - Throws: When building the subscription Query fails.
 	///
-	/// - Throws: An error if the subscription fails.
-	func subscribeForFileEvents(
-		in storeId:String
-	) throws -> Void
-
-	/// Unsubscribes from events related to Stores.
-	///
-	/// This method stops the client from receiving notifications about Store-related events.
-	///
-	/// - Throws: An error if the unsubscribing fails.
-	func unsubscribeFromStoreEvents(
-	) throws -> Void
-	
-	/// Unsubscribes from events related to Files in a specific Store.
-	///
-	/// This method stops the client from receiving notifications about file-related events in a specific Store.
-	///
-	/// - Parameter storeId: The unique identifier of the Store for which to unsubscribe from file events.
-	///
-	/// - Throws: An error if the unsubscribing fails.
-	func unsubscribeFromFileEvents(
-		in storeId:String
-	) throws -> Void
+	/// - Returns: a properly formatted event subscription request.
+	func buildSubscriptionQuery(
+		forEventType eventType: privmx.endpoint.store.EventType,
+		selectorType: privmx.endpoint.store.EventSelectorType,
+		selectorId: String
+	) throws -> String
 }
 
-extension PrivMXStore{
-	@available(*, deprecated,renamed: "unsubscribeFromFileEvents(in:)")
-	public func unubscribeFromFileEvents(
-		in storeId: String
-	) throws -> Void {
-		try self.unsubscribeFromFileEvents(in: storeId)
-	}
-}
