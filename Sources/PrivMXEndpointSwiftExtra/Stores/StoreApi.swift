@@ -194,23 +194,44 @@ extension StoreApi : PrivMXStore{
 					   position: position)
 	}
 	
+	public func unsubscribeFrom(
+		_ subscriptionIds: [String]
+	) throws -> Void {
+		var sid = privmx.SubscriptionIdVector()
+		sid.reserve(subscriptionIds.count)
+		for i in subscriptionIds{
+			sid.push_back(std.string(i))
+		}
+		try self.unsubscribeFrom(subscriptionId: sid)
+	}
+	
+	public func subscribeFor(
+		_ subscriptionQueries: [String]
+	) throws -> [String] {
+		var sqv = privmx.SubscriptionQueryVector()
+		sqv.reserve(subscriptionQueries.count)
+		for q in subscriptionQueries{
+			sqv.push_back(std.string(q))
+		}
+		return try subscribeFor(subscriptionQueries: sqv).map({i in String(i)})
+	}
+	
+	/// Generate subscription Query for Store-related events.
 	///
-	@available(*, deprecated, renamed: "unsubscribeFromFileEvents(in:)")
-	public func unubscribeFromFileEvents(
-		in storeId: String
-	) throws -> Void {
-		try unsubscribeFromFileEvents(storeId: std.string(storeId))
-	}
-	
-	public func unsubscribeFromFileEvents(
-		in storeId: String
-	) throws -> Void {
-		try unsubscribeFromFileEvents(storeId: std.string(storeId))
-	}
-	
-	public func subscribeForFileEvents(
-		in storeId: String
-	) throws -> Void {
-		try subscribeForFileEvents(storeId: std.string(storeId))
+	/// - Parameter eventType: type of the event you wish to receive
+	/// - Parameter selectorType: scope on which you listen for events
+	/// - Parameter selectorId: ID of the selector
+	///
+	/// - Throws: When building the subscription Query fails.
+	///
+	/// - Returns: a properly formatted event subscription request.
+	public func buildSubscriptionQuery(
+		forEventType eventType: privmx.endpoint.store.EventType,
+		selectorType: privmx.endpoint.store.EventSelectorType,
+		selectorId: String
+	) throws -> String {
+		try String(self.buildSubscriptionQuery(eventType: eventType,
+											   selectorType: selectorType,
+											   selectorId: std.string(selectorId)))
 	}
 }

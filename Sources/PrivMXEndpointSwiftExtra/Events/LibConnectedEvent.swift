@@ -47,4 +47,9 @@ extension privmx.endpoint.core.LibConnectedEvent: PMXEvent, @unchecked  Sendable
 			await cb(nil)
 		}
 	}
+	
+	public func getSubscribtionList(
+	) -> [String] {
+		return self.subscriptions.map({x in String(x)})
+	}
 }

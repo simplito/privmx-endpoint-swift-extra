@@ -47,5 +47,9 @@ extension privmx.endpoint.kvdb.KvdbDeletedEvent: PMXEvent, @unchecked Sendable {
 	public static func typeStr() -> String {
 		"kvdbDeleted"
 	}
+	public func getSubscribtionList(
+	) -> [String] {
+		return self.subscriptions.map({x in String(x)})
+	}
 }
 

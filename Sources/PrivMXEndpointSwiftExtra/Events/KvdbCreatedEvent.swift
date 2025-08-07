@@ -47,5 +47,9 @@ extension privmx.endpoint.kvdb.KvdbCreatedEvent: PMXEvent, @unchecked Sendable {
 			await cb(data)
 		}
 	}
+	public func getSubscribtionList(
+	) -> [String] {
+		return self.subscriptions.map({x in String(x)})
+	}
 }
 

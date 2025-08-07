@@ -47,4 +47,9 @@ extension privmx.endpoint.store.StoreCreatedEvent: PMXEvent, @unchecked  Sendabl
 	public static func typeStr() -> String {
 		"storeCreated"
 	}
+	
+	public func getSubscribtionList(
+	) -> [String] {
+		return self.subscriptions.map({x in String(x)})
+	}
 }

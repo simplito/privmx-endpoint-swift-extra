@@ -47,4 +47,9 @@ extension privmx.endpoint.thread.ThreadMessageUpdatedEvent: PMXEvent, @unchecked
 	public static func typeStr() -> String {
 		"threadMessageUpdated"
 	}
+	
+	public func getSubscribtionList(
+	) -> [String] {
+		return self.subscriptions.map({x in String(x)})
+	}
 }
