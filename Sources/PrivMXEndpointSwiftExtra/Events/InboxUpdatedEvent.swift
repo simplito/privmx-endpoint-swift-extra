@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `InboxUpdatedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.inbox.InboxUpdatedEvent: PMXEvent, @unchecked  Sendable {
+extension privmx.endpoint.inbox.InboxUpdatedEvent: PMXInboxEvent, @unchecked  Sendable {
 	/// Handles the event by calling the provided callback with an optional argument.
 	///
 	/// This implementation passes the `data` property to the callback.

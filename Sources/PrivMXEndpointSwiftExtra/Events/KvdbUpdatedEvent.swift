@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `KvdbUpdatedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.kvdb.KvdbUpdatedEvent: PMXEvent, @unchecked Sendable {
+extension privmx.endpoint.kvdb.KvdbUpdatedEvent: PMXKvdbEvent, @unchecked Sendable {
 
 	/// Returns the event channel as a string.
 	///
