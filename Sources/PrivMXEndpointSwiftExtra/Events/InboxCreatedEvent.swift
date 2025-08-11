@@ -16,6 +16,9 @@ import PrivMXEndpointSwiftNative
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
 extension privmx.endpoint.inbox.InboxCreatedEvent: PMXInboxEvent, @unchecked  Sendable {
+	public typealias EventType = privmx.endpoint.inbox.EventType
+	
+	public static var typeNum : EventType { privmx.endpoint.inbox.INBOX_CREATE}
 
 	/// Handles the event by calling the provided callback with an optional argument.
 	///

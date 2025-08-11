@@ -15,7 +15,10 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `ThreadStatsChangedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.thread.ThreadStatsChangedEvent: PMXEvent, @unchecked  Sendable { 
+extension privmx.endpoint.thread.ThreadStatsChangedEvent: PMXEvent, @unchecked  Sendable {
+	public typealias EventType = privmx.endpoint.thread.EventType
+	
+	public static var typeNum : EventType { privmx.endpoint.thread.THREAD_STATS}
 
 	/// Returns the event channel as a string.
 	///

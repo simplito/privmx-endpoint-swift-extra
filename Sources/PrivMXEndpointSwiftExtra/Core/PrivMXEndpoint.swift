@@ -37,7 +37,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	/// API for handling KVDBs
 	public private(set) var kvdbApi: KvdbApi?
 	
-	fileprivate var callbacks : [String: [(request:PMXEventRegistration,group:String,cb:(@Sendable @MainActor (_ data:Any?)->Void))]] = [:]
+	fileprivate var callbacks : [String: (cb:(@Sendable @MainActor (_ data:Any?)->Void),registration:PMXEventRegistration,group:String)] = [:]
 	
 	/// Initializes a new instance of `PrivMXEndpoint` with a connection to PrivMX Bridge and optional modules.
     ///
@@ -650,15 +650,100 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		for registration: PMXEventRegistration,
 		inGroup group: String
 	) throws -> Void {
-		
+		registerCallbacksInBulk((cb,registration,group))
 	}
 	
 	@discardableResult
 	public func registerCallbacksInBulk(
 		_ requests:(cb:(@Sendable @MainActor (Any?) -> Void),registration: PMXEventRegistration, group: String)...
-	) -> [Bool] {
-		var results = [Bool](repeating: true, count: requests.count)
-		
+	) -> [(any Error)?] {
+		var results = [(any Error)?](repeating: nil, count: requests.count)
+		var queryDict = [String:[String]]()
+		for i in 0..<requests.count{
+			do{
+				let req = requests[i]
+				switch(req.registration){
+					case .thread(let event, let selector, let selectorId):
+						guard let threadApi
+						else{
+							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Api not Initialised",
+																									  message: "Thread Api was nil",
+																									  description: "You need to enable ThreadApi to register for Thread-related events"))
+						}
+						let sq = try threadApi.buildSubscriptionQuery(
+							forEventType: privmx.endpoint.thread.EventType.init(req.registration.getEventType().typeNum.rawValue),
+							selectorType: privmx.endpoint.thread.EventSelectorType.init(rawValue: req.registration.getSelectorType().rawValue),
+							selectorId: req.registration.getSelectorID())
+						let resv = try threadApi.subscribeFor([sq])
+						for res in resv{
+							callbacks[res] = req
+						}
+					case .store(let event, let selector, let selectorId):
+						guard let storeApi
+						else{
+							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Api not Initialised",
+																									  message: "Store Api was nil",
+																									  description: "You need to enable StoreApi to register for Store-related events"))
+						}
+						let sq = try storeApi.buildSubscriptionQuery(
+							forEventType: privmx.endpoint.store.EventType.init(req.registration.getEventType().typeNum.rawValue),
+							selectorType: privmx.endpoint.store.EventSelectorType.init(rawValue: req.registration.getSelectorType().rawValue),
+							selectorId: req.registration.getSelectorID())
+						let resv = try storeApi.subscribeFor([sq])
+						for res in resv{
+							callbacks[res] = req
+						}
+					case .inbox(let event, let selector, let selectorId):
+						guard let inboxApi
+						else{
+							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Api not Initialised",
+																									  message: "Inbox Api was nil",
+																									  description: "You need to enable InboxApi to register for Inbox-related events"))
+						}
+						let sq = try inboxApi.buildSubscriptionQuery(
+							forEventType: privmx.endpoint.inbox.EventType.init(req.registration.getEventType().typeNum.rawValue),
+							selectorType: privmx.endpoint.inbox.EventSelectorType.init(rawValue: req.registration.getSelectorType().rawValue),
+							selectorId: req.registration.getSelectorID())
+						let resv = try inboxApi.subscribeFor([sq])
+						for res in resv{
+							callbacks[res] = req
+						}
+					case .kvdb(let event, let selector, let selectorId):
+						guard let kvdbApi
+						else{
+							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Api not Initialised",
+																									  message: "Kvdb Api was nil",
+																									  description: "You need to enable KvdbApi to register for KVDB-related events"))
+						}
+						let sq = try kvdbApi.buildSubscriptionQuery(
+							forEventType: privmx.endpoint.kvdb.EventType.init(req.registration.getEventType().typeNum.rawValue),
+							selectorType: privmx.endpoint.kvdb.EventSelectorType.init(rawValue: req.registration.getSelectorType().rawValue),
+							selectorId: req.registration.getSelectorID())
+						let resv = try kvdbApi.subscribeFor([sq])
+						for res in resv{
+							callbacks[res] = req
+						}
+					case .custom(let channelName,let contextId):
+						guard let eventApi
+						else{
+							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Api not Initialised",
+																									  message: "Event Api was nil",
+																									  description: "You need to enable EventApi to register for ContextCustom events"))
+						}
+						let sq = try eventApi.buildSubscriptionQuery(
+							forChannel: channelName,
+							selectorType: privmx.endpoint.event.CONTEXT_ID,
+							selectorId: req.registration.getSelectorID())
+						let resv = try eventApi.subscribeFor([sq])
+						for res in resv{
+							callbacks[res] = req
+						}
+				}
+			} catch {
+				results[i] = error
+			}
+			
+		}
 		return results
 	}
 	
@@ -689,7 +774,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	///
 	/// - Parameter type: the type of Event, for which callbacks should be removed.
 	public func clearCallbacks(
-		for type:PMXEvent.Type
+		for type:any PMXEvent.Type
 	) -> Void {
 		/*for c in callbacks.keys{
 			callbacks[c]!.removeValue(forKey: type.typeStr())
@@ -717,7 +802,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	public func clearAllCallbacks(
 	) -> Void {
 		for c in callbacks.keys{
-			try? unsubscribeFromChannel(c)
+			try? unsubscribeFrom(c)
 		}
 		callbacks.removeAll()
 	}
@@ -725,7 +810,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	/// Removes all registered callbacks for Events from selected Channel
 	///
 	/// - Parameter channel: the EventChannel, from which events should no longer be received
-	private func unsubscribeFromChannel(
+	private func unsubscribeFrom(
 		_ c:String
 	) throws {
 		/*let splitted = c.split(separator: "/",maxSplits: 2)

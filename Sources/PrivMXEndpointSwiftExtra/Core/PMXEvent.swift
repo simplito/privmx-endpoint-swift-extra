@@ -100,7 +100,7 @@ public enum PMXEventRegistration: Hashable{
 	case store(eventType: any PMXStoreEvent.Type,selectorType: PMXEventSelectorType, selectorId:String)
 	case inbox(eventType: any PMXInboxEvent.Type,selectorType: PMXEventSelectorType, selectorId:String)
 	case kvdb(eventType: any PMXKvdbEvent.Type,selectorType: PMXEventSelectorType, selectorId:String)
-	case event(eventType: any PMXCustomEvent.Type,selectorType: PMXEventSelectorType, selectorId:String)
+	case custom(channelName:String, contextId:String)
 	
 	func getSelectorType(
 	) -> PMXEventSelectorType{
@@ -110,7 +110,7 @@ public enum PMXEventRegistration: Hashable{
 					.kvdb(_,let selectorType,_),
 					.store(_,let selectorType,_):
 				selectorType
-			case .event:
+			case .custom(_,_):
 				PMXEventSelectorType.Context
 		}
 	}
@@ -118,14 +118,15 @@ public enum PMXEventRegistration: Hashable{
 	) -> String{
 		return switch(self){
 			case .thread(_,_,let selectorId),
-					.event(_,_,let selectorId),
 					.inbox(_,_,let selectorId),
 					.kvdb(_,_,let selectorId),
-					.store(_,_,let selectorId):
+					.store(_,_,let selectorId),
+					.custom(_,let selectorId):
 				selectorId
 		}
 	}
-	func getEventType()->any PMXEvent.Type{
+	func getEventType(
+	) -> any PMXEvent.Type {
 		switch(self){
 			case .thread(let et,_, _):
 				et
@@ -135,8 +136,8 @@ public enum PMXEventRegistration: Hashable{
 				et
 			case .kvdb(let et,_, _):
 				et
-			case .event(let et,_, _):
-				et
+			case .custom(_,_):
+				privmx.endpoint.event.ContextCustomEvent.self
 		}
 	}
 }
