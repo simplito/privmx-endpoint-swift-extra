@@ -51,7 +51,7 @@ extension privmx.endpoint.thread.ThreadStatsChangedEvent: PMXEvent, @unchecked  
 		}
 	}
 	
-	public func getSubscribtionList(
+	public func getSubscriptionList(
 	) -> [String] {
 		return self.subscriptions.map({x in String(x)})
 	}

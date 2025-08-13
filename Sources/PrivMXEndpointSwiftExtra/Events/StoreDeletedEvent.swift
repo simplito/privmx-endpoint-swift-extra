@@ -51,7 +51,7 @@ extension privmx.endpoint.store.StoreDeletedEvent: PMXStoreEvent, @unchecked  Se
 		"storeDeleted"
 	}
 	
-	public func getSubscribtionList(
+	public func getSubscriptionList(
 	) -> [String] {
 		return self.subscriptions.map({x in String(x)})
 	}

@@ -47,7 +47,7 @@ public protocol PMXEvent: Sendable {
 	func getChannel() -> String
 	
 	/// Retrieves the list of Subscribtion Ids of the Event
-	func getSubscribtionList()->[String]
+	func getSubscriptionList()->[String]
 }
 
 public protocol PMXThreadEvent:PMXEvent{}

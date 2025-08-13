@@ -50,7 +50,7 @@ extension privmx.endpoint.kvdb.KvdbEntryDeletedEvent: PMXKvdbEvent, @unchecked S
 	public static func typeStr() -> String {
 		"kvdbEntryDeleted"
 	}
-	public func getSubscribtionList(
+	public func getSubscriptionList(
 	) -> [String] {
 		return self.subscriptions.map({x in String(x)})
 	}

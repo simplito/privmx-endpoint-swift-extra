@@ -52,7 +52,7 @@ extension  privmx.endpoint.inbox.InboxEntryCreatedEvent: PMXInboxEvent, @uncheck
 		"inbox/\(self.data.inboxId)/entries"
 	}
 	
-	public func getSubscribtionList(
+	public func getSubscriptionList(
 	) -> [String] {
 		return self.subscriptions.map({x in String(x)})
 	}

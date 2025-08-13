@@ -51,7 +51,7 @@ extension privmx.endpoint.inbox.InboxEntryDeletedEvent: PMXInboxEvent, @unchecke
 		"inbox/\(self.data.inboxId)/entries"
 	}
 	
-	public func getSubscribtionList(
+	public func getSubscriptionList(
 	) -> [String] {
 		return self.subscriptions.map({x in String(x)})
 	}

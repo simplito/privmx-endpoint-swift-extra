@@ -50,7 +50,7 @@ extension privmx.endpoint.kvdb.KvdbStatsChangedEvent: PMXKvdbEvent, @unchecked S
 			await cb(data)
 		}
 	}
-	public func getSubscribtionList(
+	public func getSubscriptionList(
 	) -> [String] {
 		return self.subscriptions.map({x in String(x)})
 	}

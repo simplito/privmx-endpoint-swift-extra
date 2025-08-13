@@ -46,7 +46,7 @@ extension privmx.endpoint.event.ContextCustomEvent: PMXCustomEvent, @unchecked S
 		String(privmx.getChannelFrom(self))
 	}
 	
-	public func getSubscribtionList(
+	public func getSubscriptionList(
 	) -> [String] {
 		return self.subscriptions.map({x in String(x)})
 	}
