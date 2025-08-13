@@ -94,12 +94,14 @@ extension StoreApi : PrivMXStore{
 		in storeId: String,
 		withPublicMeta publicMeta: Data,
 		withPrivateMeta privateMeta: Data,
-		ofSize size: Int64
+		ofSize size: Int64,
+		randomWriteSupport: Bool = false
 	) throws -> privmx.StoreFileHandle {
 		try createFile(storeId: std.string(storeId),
 					   publicMeta: publicMeta.asBuffer(),
 					   privateMeta: privateMeta.asBuffer(),
-					   size: size)
+					   size: size,
+					   randomWriteSupport:randomWriteSupport)
 	}
 	
 	
@@ -151,15 +153,18 @@ extension StoreApi : PrivMXStore{
 	/// Writes a chunk of data to an opened file on the Platform.
 	///
 	/// - Parameter handle: the handle to an opened file
-	/// - Parameter dataChunk:  the data to be uploaded
+	/// - Parameter dataChunk: the data to be uploaded
+	/// - Parameter truncate: end the file on this write
 	///
 	/// - Throws: `PrivMXEndpointError.failedWritingToFile` if an exception was thrown in C++ code, or another error occurred.
 	public func writeToFile(
 		withHandle handle: privmx.StoreFileHandle,
-		uploading dataChunk: Data
+		uploading dataChunk: Data,
+		truncate: Bool = false
 	) throws -> Void {
 		try writeToFile(handle: handle,
-						dataChunk: dataChunk.asBuffer())
+						dataChunk: dataChunk.asBuffer(),
+						truncate: truncate)
 	}
 	
 	/// Closes an open File
@@ -192,6 +197,17 @@ extension StoreApi : PrivMXStore{
 	) throws -> Void {
 		try seekInFile(handle: handle,
 					   position: position)
+	}
+	
+	/// Synchronize file handle data with newset data on serwer.
+	///
+	/// - Parameter handle: Store File handle to sync
+	///
+	/// - Throws: if the operation fails.
+	public func syncFile(
+		withHandle handle: privmx.StoreFileHandle
+	) throws -> Void {
+		try self.syncFile(handle: handle)
 	}
 	
 	public func unsubscribeFrom(
