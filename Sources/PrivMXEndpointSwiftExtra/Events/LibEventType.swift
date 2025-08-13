@@ -11,7 +11,7 @@
 
 public struct LibEventType:PMXEventType, Sendable {
 	public init?(rawValue: Int64 = -1) {
-		if rawValue < 0,rawValue >= -4{
+		if rawValue <= 0,rawValue >= -4{
 			self.rawValue = rawValue
 		}else{
 			return nil
@@ -20,6 +20,7 @@ public struct LibEventType:PMXEventType, Sendable {
 	
 	public var rawValue: Int64
 	
+	public static var CONTEXT_CUSTOM :LibEventType { LibEventType(rawValue: 0)!}
 	public static var LIB_CONNECTED :LibEventType { LibEventType(rawValue: -1)!}
 	public static var LIB_BREAK :LibEventType { LibEventType(rawValue: -2)!}
 	public static var LIB_DISCONNECTED :LibEventType { LibEventType(rawValue: -3)!}
