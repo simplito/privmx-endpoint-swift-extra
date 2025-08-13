@@ -15,8 +15,11 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `StoreStatsChangedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.store.StoreStatsChangedEvent: PMXEvent, @unchecked  Sendable { 
-
+extension privmx.endpoint.store.StoreStatsChangedEvent: PMXStoreEvent, @unchecked  Sendable { 
+	public typealias EventType = privmx.endpoint.store.EventType
+	
+	public static var typeNum : EventType { privmx.endpoint.store.STORE_STATS}
+	
 	/// Returns the event channel as a string.
 	///
 	/// This implementation returns the constant string `"store"`,
@@ -46,5 +49,10 @@ extension privmx.endpoint.store.StoreStatsChangedEvent: PMXEvent, @unchecked  Se
 		Task{
 			await cb(data)
 		}
+	}
+	
+	public func getSubscriptionList(
+	) -> [String] {
+		return self.subscriptions.map({x in String(x)})
 	}
 }

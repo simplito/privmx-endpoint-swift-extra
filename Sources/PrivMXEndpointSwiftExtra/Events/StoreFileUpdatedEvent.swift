@@ -15,7 +15,13 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `StoreFileUpdatedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.store.StoreFileUpdatedEvent: PMXEvent, @unchecked  Sendable { 
+extension privmx.endpoint.store.StoreFileUpdatedEvent: PMXStoreEvent, @unchecked  Sendable {
+	public static var typeNum: privmx.endpoint.store.EventType {
+		privmx.endpoint.store.FILE_UPDATE
+	}
+	
+	public typealias EventType = privmx.endpoint.store.EventType
+	
 
 	/// Returns the event channel as a string.
 	///
@@ -23,7 +29,7 @@ extension privmx.endpoint.store.StoreFileUpdatedEvent: PMXEvent, @unchecked  Sen
 	/// where `storeId` is obtained from the `data.info.storeId` property.
 	/// - Returns: A `String` representing the event channel, in this case, `"store/{storeId}/files"`.
 	public func getChannel() -> String {
-		"store/\(self.data.info.storeId)/files"
+		"store/\(self.data.file.info.storeId)/files"
 	}
 
 	/// Returns the event type as a string.
@@ -46,5 +52,10 @@ extension privmx.endpoint.store.StoreFileUpdatedEvent: PMXEvent, @unchecked  Sen
 		Task{
 			await cb(data)
 		}
+	}
+	
+	public func getSubscriptionList(
+	) -> [String] {
+		return self.subscriptions.map({x in String(x)})
 	}
 }

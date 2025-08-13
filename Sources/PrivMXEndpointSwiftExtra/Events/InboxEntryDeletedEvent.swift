@@ -15,8 +15,10 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `InboxEntryDeletedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.inbox.InboxEntryDeletedEvent: PMXEvent, @unchecked  Sendable {
-
+extension privmx.endpoint.inbox.InboxEntryDeletedEvent: PMXInboxEvent, @unchecked  Sendable {
+	public typealias EventType = privmx.endpoint.inbox.EventType
+	
+	public static var typeNum : EventType { privmx.endpoint.inbox.ENTRY_DELETE}
 	/// Handles the event by calling the provided callback with an optional argument.
 	///
 	/// This implementation passes the `data` property to the callback.
@@ -47,5 +49,10 @@ extension privmx.endpoint.inbox.InboxEntryDeletedEvent: PMXEvent, @unchecked  Se
 	///   `"inbox/{inboxId}/entries"`.
 	public func getChannel() -> String {
 		"inbox/\(self.data.inboxId)/entries"
+	}
+	
+	public func getSubscriptionList(
+	) -> [String] {
+		return self.subscriptions.map({x in String(x)})
 	}
 }
