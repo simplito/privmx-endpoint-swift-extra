@@ -150,11 +150,11 @@ public protocol PrivMXStore{
 	/// This method creates a new file handle, which can be used to write data to a new File in the Store. 
 	/// Once the file is created, data can be uploaded using `writeToFile()` and finalized with `closeFile()`.
 	///
-	/// - Parameters:
-	///   - storeId: The unique identifier of the Store in which the File will be created.
-	///   - publicMeta: Public metadata for the File, which will be unencrypted.
-	///   - privateMeta: Private metadata for the File, which will be encrypted.
-	///   - size: The size of the File in bytes.
+	/// - Parameter storeId: The unique identifier of the Store in which the File will be created.
+	/// - Parameter publicMeta: Public metadata for the File, which will be unencrypted.
+	/// - Parameter privateMeta: Private metadata for the File, which will be encrypted.
+	/// - Parameter size: The size of the File in bytes.
+	/// - Parameter randomWriteSupport: whether the file supports RandomWrite functionality
 	///
 	/// - Returns: A `privmx.StoreFileHandle` used for writing data to the File.
 	///
@@ -163,7 +163,8 @@ public protocol PrivMXStore{
 		in storeId: String,
 		withPublicMeta publicMeta: Data,
 		withPrivateMeta privateMeta: Data,
-		ofSize size: Int64
+		ofSize size: Int64,
+		randomWriteSupport: Bool
 	) throws -> privmx.StoreFileHandle
 	
 	/// Updates an existing File by overwriting its content and metadata.
@@ -240,7 +241,8 @@ public protocol PrivMXStore{
 	/// - Throws: An error if the write operation fails.
 	func writeToFile(
 		withHandle handle: privmx.StoreFileHandle,
-		uploading dataChunk: Data
+		uploading dataChunk: Data,
+		truncate: Bool
 	) throws -> Void
 	
 	/// Moves the read/write cursor within an open File.
@@ -281,6 +283,15 @@ public protocol PrivMXStore{
 	/// - Throws: An error if the file deletion fails.
 	func deleteFile(
 		_ fileId: String
+	) throws -> Void
+	
+	/// Synchronize file handle data with newset data on serwer.
+	///
+	/// - Parameter handle: Store File handle to sync
+	///
+	/// - Throws: if the operation fails.
+	func syncFile(
+		withHandle handle: privmx.StoreFileHandle
 	) throws -> Void
 	
 	/// Subscribes to receive events.

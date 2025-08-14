@@ -147,7 +147,8 @@ public class PrivMXStoreFileHandler{
 			if let buf = try localFile?.read(upToCount: Int(chunkSize)){
 				
 				try storesApi.writeToFile(withHandle: handle,
-										  uploading: buf)
+										  uploading: buf,
+										  truncate: false)
 				
 				if buf.count < chunkSize{
 					self.hasDataLeft = false
@@ -157,7 +158,8 @@ public class PrivMXStoreFileHandler{
 		} else if mode == .createFromBuffer || mode == .updateFromBuffer {
 			if let buf = buffer?.prefix(Int(chunkSize)) {
 				try storesApi.writeToFile(withHandle: handle,
-										  uploading: buf)
+										  uploading: buf,
+										  truncate: false)
 				
 				if buf.count < chunkSize{
 					self.hasDataLeft = false
