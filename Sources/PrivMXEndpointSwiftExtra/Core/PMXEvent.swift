@@ -56,8 +56,11 @@ public protocol PMXInboxEvent:PMXEvent{}
 public protocol PMXKvdbEvent:PMXEvent{}
 public protocol PMXCustomEvent:PMXEvent{}
 
+/// Umbrella protocol for EventTypes
 public protocol PMXEventType:RawRepresentable<Int64>{}
-public struct PMXEventSelectorType:RawRepresentable{
+
+/// Unified Event Selector type
+public struct PMXEventSelectorType:RawRepresentable, Sendable{
 	static var Context : Self {PMXEventSelectorType(rawValue: 0)!}
 	static var Container : Self {PMXEventSelectorType(rawValue: 1)!}
 	static var Item : Self {PMXEventSelectorType(rawValue: 2)!}
@@ -71,21 +74,19 @@ public struct PMXEventSelectorType:RawRepresentable{
 		}
 	}
 	
-	public var rawValue: Int64
+	public let rawValue: Int64
 	
 	public typealias RawValue = Int64
 }
 
 extension privmx.endpoint.store.EventType:PMXEventType{}
-
 extension privmx.endpoint.thread.EventType:PMXEventType{}
-
 extension privmx.endpoint.kvdb.EventType:PMXEventType{}
-
 extension privmx.endpoint.inbox.EventType:PMXEventType{}
 
-public enum PMXEventRegistration: Hashable{
-	public static func == (lhs: PMXEventRegistration, rhs: PMXEventRegistration) -> Bool {
+/// Enum handling proper registrations for events.
+public enum PMXEventSubscriptionRequest: Hashable, Sendable{
+	public static func == (lhs: PMXEventSubscriptionRequest, rhs: PMXEventSubscriptionRequest) -> Bool {
 		lhs.getEventType().typeStr() == rhs.getEventType().typeStr() &&
 		lhs.getSelectorType().rawValue == rhs.getSelectorType().rawValue &&
 		lhs.getSelectorID() == rhs.getSelectorID()
@@ -96,6 +97,7 @@ public enum PMXEventRegistration: Hashable{
 		hasher.combine(getSelectorID())
 	}
 	
+	/// Events from the Thread module, holds a tuple of Event.Type
 	case thread(eventType: any PMXThreadEvent.Type, selectorType: PMXEventSelectorType, selectorId:String)
 	case store(eventType: any PMXStoreEvent.Type,selectorType: PMXEventSelectorType, selectorId:String)
 	case inbox(eventType: any PMXInboxEvent.Type,selectorType: PMXEventSelectorType, selectorId:String)

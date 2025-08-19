@@ -20,7 +20,7 @@ final class PrivMXEventLoop: @unchecked Sendable{
 	// MARK: - Properties
 		
 	/// The handler invoked whenever an event is received.
-	let eventHandler:@Sendable @MainActor (PMXEvent, PMXEvent.Type, Int64) async -> Void
+	let eventHandler:@Sendable @MainActor (any PMXEvent, any PMXEvent.Type, Int64) async -> Void
 	
 	/// Indicates whether the event loop is currently listening for events.
 	public var isListening: Bool = false
@@ -30,7 +30,7 @@ final class PrivMXEventLoop: @unchecked Sendable{
 	/// Initializes the `PrivMXEventLoop` with an event handler.
 	///
 	/// - Parameter eventHandler: Closure called when an event is received.
-	init(eventHandler: @escaping @Sendable @MainActor (PMXEvent, PMXEvent.Type, Int64) async -> Void) {
+	init(eventHandler: @escaping @Sendable @MainActor (any PMXEvent, any PMXEvent.Type, Int64) async -> Void) {
 		self.eventHandler = eventHandler
 	}
 	
@@ -88,7 +88,7 @@ final class PrivMXEventLoop: @unchecked Sendable{
 	/// - Parameters:
 	///   - event: The received `PMXEvent`.
 	///   - type: The type of the received event.
-	@MainActor private func publishToMainActor(_ event: PMXEvent, type: PMXEvent.Type) async {
+	@MainActor private func publishToMainActor(_ event: any PMXEvent, type: any PMXEvent.Type) async {
 		await eventHandler(event,type,event.connectionId)
 	}
 	
@@ -175,7 +175,7 @@ final class PrivMXEventLoop: @unchecked Sendable{
 			event = e
 			channel = c
 		}
-		var event:any PMXEvent
+		var event: any PMXEvent
 		var type: any PMXEvent.Type
 		var channel:String
 	}
