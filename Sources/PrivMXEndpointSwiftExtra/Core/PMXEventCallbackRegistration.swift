@@ -13,17 +13,22 @@ import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 
 /// Holds the Event Subscription request as well as the callback and assigned group
-public struct PMXEventRegistration: Sendable{
+public struct PMXEventCallbackRegistration: Sendable{
 	/// Callback that will be executed whenever an appropriate event arrives
 	let cb:(@Sendable @MainActor (Any?) -> Void)
 	
 	/// Enum value representing the particular registration data
-	let registration: PMXEventSubscriptionRequest
+	let request: PMXEventSubscriptionRequest
 	
 	/// Group indicator for management of events, used when deleting events in batches
 	let group: String
 }
 
+struct CallbackRegistration:Sendable, Hashable{
+	let subscriptionId:String
+	let request: PMXEventSubscriptionRequest
+	let group: String
+}
 
 /// Enum handling proper registrations for events.
 public enum PMXEventSubscriptionRequest: Hashable, Sendable{
