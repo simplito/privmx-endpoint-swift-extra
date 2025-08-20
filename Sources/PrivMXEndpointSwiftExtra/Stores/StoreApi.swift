@@ -199,7 +199,7 @@ extension StoreApi : PrivMXStore{
 					   position: position)
 	}
 	
-	/// Synchronize file handle data with newset data on serwer.
+	/// Synchronize file handle data with the newest data on serwer.
 	///
 	/// - Parameter handle: Store File handle to sync
 	///
