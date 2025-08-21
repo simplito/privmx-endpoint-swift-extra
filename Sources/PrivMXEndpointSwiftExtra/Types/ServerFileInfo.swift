@@ -49,6 +49,8 @@ extension privmx.endpoint.store.ServerFileInfo: Identifiable, Hashable, @uncheck
 	/// - Parameter hasher: The `Hasher` instance used to compute the hash value.
 	public func hash(into hasher: inout Hasher) -> Void {
 		hasher.combine(fileId)
+		hasher.combine(storeId)
+		hasher.combine(author)
 		hasher.combine(createDate)
 	}
 }

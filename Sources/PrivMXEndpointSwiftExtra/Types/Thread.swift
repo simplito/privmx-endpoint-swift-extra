@@ -44,7 +44,8 @@ extension privmx.endpoint.thread.Thread: Identifiable, Hashable, @unchecked Send
 			   lhs.users == rhs.users &&
 			   lhs.managers == rhs.managers &&
 			   lhs.version == rhs.version &&
-			   lhs.statusCode == rhs.statusCode
+			   lhs.statusCode == rhs.statusCode &&
+			   lhs.schemaVersion == rhs.schemaVersion
 	}
 
 	/// The unique identifier for the thread.
@@ -61,8 +62,19 @@ extension privmx.endpoint.thread.Thread: Identifiable, Hashable, @unchecked Send
 	/// - Parameter hasher: The `Hasher` instance used to compute the hash value.
 	public func hash(into hasher: inout Hasher) -> Void {
 		hasher.combine(threadId)
+		hasher.combine(contextId)
+		hasher.combine(createDate)
+		hasher.combine(creator)
+		hasher.combine(lastModifier)
 		hasher.combine(lastModificationDate)
+		hasher.combine(messagesCount)
 		hasher.combine(lastMsgDate)
+		hasher.combine(publicMeta)
+		hasher.combine(privateMeta)
+		hasher.combine(users)
+		hasher.combine(managers)
 		hasher.combine(version)
+		hasher.combine(statusCode)
+		hasher.combine(schemaVersion)
 	}
 }

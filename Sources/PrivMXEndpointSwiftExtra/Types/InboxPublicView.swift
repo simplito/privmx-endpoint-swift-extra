@@ -27,6 +27,7 @@ extension privmx.endpoint.inbox.InboxPublicView: Identifiable, Hashable, @unchec
 	) -> Void {
 		hasher.combine(inboxId)
 		hasher.combine(version)
+		hasher.combine(publicMeta)
 	}
 	
 	/// The unique identifier for the inbox.
