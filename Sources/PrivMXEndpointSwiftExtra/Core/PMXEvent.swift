@@ -56,10 +56,16 @@ public protocol PMXInboxEvent:PMXEvent{}
 public protocol PMXKvdbEvent:PMXEvent{}
 public protocol PMXCustomEvent:PMXEvent{}
 
+/// Umbrella protocol for EventTypes
 public protocol PMXEventType:RawRepresentable<Int64>{}
-public struct PMXEventSelectorType:RawRepresentable{
+
+/// Unified Event Selector Type
+public struct PMXEventSelectorType:RawRepresentable, Sendable{
+	/// Computed property returning a SelectorType corresponding to CONTEXT values
 	static var Context : Self {PMXEventSelectorType(rawValue: 0)!}
+	/// Computed property returning a SelectorType corresponding to CONTAINER values (such as Thread, Store, etc.)
 	static var Container : Self {PMXEventSelectorType(rawValue: 1)!}
+	/// Computed property returning a SelectorType corresponding to ITEM values (such as Message, File, etc.)
 	static var Item : Self {PMXEventSelectorType(rawValue: 2)!}
 	
 	public init?(rawValue: Int64) {
@@ -71,73 +77,12 @@ public struct PMXEventSelectorType:RawRepresentable{
 		}
 	}
 	
-	public var rawValue: Int64
+	public let rawValue: Int64
 	
 	public typealias RawValue = Int64
 }
 
 extension privmx.endpoint.store.EventType:PMXEventType{}
-
 extension privmx.endpoint.thread.EventType:PMXEventType{}
-
 extension privmx.endpoint.kvdb.EventType:PMXEventType{}
-
 extension privmx.endpoint.inbox.EventType:PMXEventType{}
-
-public enum PMXEventRegistration: Hashable{
-	public static func == (lhs: PMXEventRegistration, rhs: PMXEventRegistration) -> Bool {
-		lhs.getEventType().typeStr() == rhs.getEventType().typeStr() &&
-		lhs.getSelectorType().rawValue == rhs.getSelectorType().rawValue &&
-		lhs.getSelectorID() == rhs.getSelectorID()
-}
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(getEventType().typeStr())
-		hasher.combine(getSelectorType().rawValue)
-		hasher.combine(getSelectorID())
-	}
-	
-	case thread(eventType: any PMXThreadEvent.Type, selectorType: PMXEventSelectorType, selectorId:String)
-	case store(eventType: any PMXStoreEvent.Type,selectorType: PMXEventSelectorType, selectorId:String)
-	case inbox(eventType: any PMXInboxEvent.Type,selectorType: PMXEventSelectorType, selectorId:String)
-	case kvdb(eventType: any PMXKvdbEvent.Type,selectorType: PMXEventSelectorType, selectorId:String)
-	case custom(channelName:String, contextId:String)
-	
-	func getSelectorType(
-	) -> PMXEventSelectorType{
-		return switch(self){
-			case .thread(_,let selectorType,_),
-					.inbox(_,let selectorType,_),
-					.kvdb(_,let selectorType,_),
-					.store(_,let selectorType,_):
-				selectorType
-			case .custom(_,_):
-				PMXEventSelectorType.Context
-		}
-	}
-	func getSelectorID(
-	) -> String{
-		return switch(self){
-			case .thread(_,_,let selectorId),
-					.inbox(_,_,let selectorId),
-					.kvdb(_,_,let selectorId),
-					.store(_,_,let selectorId),
-					.custom(_,let selectorId):
-				selectorId
-		}
-	}
-	func getEventType(
-	) -> any PMXEvent.Type {
-		switch(self){
-			case .thread(let et,_, _):
-				et
-			case .store(let et,_, _):
-				et
-			case .inbox(let et,_, _):
-				et
-			case .kvdb(let et,_, _):
-				et
-			case .custom(_,_):
-				privmx.endpoint.event.ContextCustomEvent.self
-		}
-	}
-}
