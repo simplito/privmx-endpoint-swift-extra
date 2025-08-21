@@ -12,24 +12,24 @@
 import Foundation
 import PrivMXEndpointSwiftNative
 
-/// An extension for `StringVector` to conform to the `Hashable` protocol.
-/// This extension allows comparing two `StringVector` instances and generating
+/// An extension for `FileVector` to conform to the `Hashable` protocol.
+/// This extension allows comparing two `FileVector` instances and generating
 /// a hash value for usage in hash-based collections, such as dictionaries or sets.
 extension privmx.FileVector: Hashable {
 
 	/// Compares two `FileVector` instances for equality.
 	///
-	/// This function compares the contents of two `StringVector` instances by calling the
+	/// This function compares the contents of two `FileVector` instances by calling the
 	/// `privmx.compareVectors` function.
 	/// - Parameters:
-	///   - lhs: The left-hand side `StringVector` instance.
-	///   - rhs: The right-hand side `StringVector` instance.
+	///   - lhs: The left-hand side `FileVector` instance.
+	///   - rhs: The right-hand side `FileVector` instance.
 	/// - Returns: `true` if both vectors are equal, otherwise `false`.
 	public static func == (lhs: privmx.FileVector, rhs: privmx.FileVector) -> Bool {
 		privmx.compareVectors(lhs, rhs)
 	}
 
-	/// Generates a hash value for the `StringVector`.
+	/// Generates a hash value for the `FileVector`.
 	///
 	/// This function generates the hash based on the `count` of the vector.
 	/// - Parameter hasher: The `Hasher` instance used to compute the hash value.
