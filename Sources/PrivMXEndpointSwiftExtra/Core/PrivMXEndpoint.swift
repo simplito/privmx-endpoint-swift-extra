@@ -665,6 +665,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		queryDict["kvbd"] = [:]
 		queryDict["inbox"] = [:]
 		queryDict["event"] = [:]
+		queryDict["lib"] = [:]
 		for i in 0..<requests.count{
 			do{
 				let req = requests[i]
@@ -749,6 +750,12 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 						} else {
 							queryDict["event"]![sq]!.append(i)
 						}
+					case .library(let eventType):
+						if queryDict["lib"]![eventType.typeStr()] == nil{
+							queryDict["lib"]![eventType.typeStr()] = [i]
+						} else {
+							queryDict["event"]![eventType.typeStr()]!.append(i)
+						}
 				}
 			} catch {
 				results[i] = error
@@ -756,7 +763,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		}
 		if let threadQuery = queryDict["thread"], threadApi != nil{
 			do{
-				let reqv = queryDict["thread"]!.map({x in x})
+				let reqv = threadQuery.map({x in x})
 				let resv = try threadApi!.subscribeFor(reqv.map({x in x.key}))
 				for res in resv{
 					for req in reqv{
@@ -782,8 +789,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		}
 		if let storeQuery = queryDict["store"], storeApi != nil{
 			do{
-				let reqv = queryDict["store"]!.map({x in x})
-				let resv = try storeApi!.subscribeFor(queryDict["store"]!.map({x in x.0}))
+				let reqv = storeQuery.map({x in x})
+				let resv = try storeApi!.subscribeFor(storeQuery.map({x in x.0}))
 				for res in resv{
 					for req in reqv{
 						for i in req.value{
@@ -808,8 +815,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		}
 		if let inboxQuery = queryDict["inbox"], inboxApi != nil{
 			do{
-				let reqv = queryDict["inbox"]!.map({x in x})
-				let resv = try inboxApi!.subscribeFor(queryDict["inbox"]!.map({x in x.0}))
+				let reqv = inboxQuery.map({x in x})
+				let resv = try inboxApi!.subscribeFor(inboxQuery.map({x in x.0}))
 				for res in resv{
 					for req in reqv{
 						for i in req.value{
@@ -834,8 +841,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		}
 		if let kvdbQuery = queryDict["kvdb"], kvdbApi != nil{
 			do{
-				let reqv = queryDict["kvdb"]!.map({x in x})
-				let resv = try kvdbApi!.subscribeFor(queryDict["kvdb"]!.map({x in x.0}))
+				let reqv = kvdbQuery.map({x in x})
+				let resv = try kvdbApi!.subscribeFor(kvdbQuery.map({x in x.0}))
 				for res in resv{
 					for req in reqv{
 						for i in req.value{
@@ -860,8 +867,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		}
 		if let eventQuery = queryDict["event"], eventApi != nil{
 			do{
-				let reqv = queryDict["event"]!.map({x in x})
-				let resv = try eventApi!.subscribeFor(queryDict["event"]!.map({x in x.0}))
+				let reqv = eventQuery.map({x in x})
+				let resv = try eventApi!.subscribeFor(eventQuery.map({x in x.0}))
 				for res in resv{
 					for req in reqv{
 						for i in req.value{
@@ -880,6 +887,25 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 				for q in eventQuery{
 					for i in q.value {
 						results[i] = error
+					}
+				}
+			}
+		}
+		
+		if let libQuery = queryDict["lib"]{
+			let reqv = libQuery.map({x in x})
+			let resv = libQuery.map({x in x.0})
+			for res in resv{
+				for req in reqv{
+					for i in req.value{
+						let r = requests[i]
+						if callbacks[res] == nil {
+							callbacks[res] = (r.request,[:])
+						}
+						if callbacks[res]!.1[r.group] == nil {
+							callbacks[res]!.1[r.group] = []
+						}
+						callbacks[res]!.1[r.group]!.append(r.cb)
 					}
 				}
 			}
@@ -937,19 +963,22 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		queryDict["kvbd"] = []
 		queryDict["inbox"] = []
 		queryDict["event"] = []
+		queryDict["lib"] = []
 		for i in 0..<calls.count{
 			switch calls[i].value.0{
-					case .thread:
-						queryDict["thread"]!.append((keyArr[i],i))
-					case .store:
-						queryDict["store"]!.append((keyArr[i],i))
-					case .inbox:
-						queryDict["inbox"]!.append((keyArr[i],i))
-					case .kvdb:
-						queryDict["kvdb"]!.append((keyArr[i],i))
-					case .custom:
-						queryDict["event"]!.append((keyArr[i],i))
-				}
+				case .thread:
+					queryDict["thread"]!.append((keyArr[i],i))
+				case .store:
+					queryDict["store"]!.append((keyArr[i],i))
+				case .inbox:
+					queryDict["inbox"]!.append((keyArr[i],i))
+				case .kvdb:
+					queryDict["kvdb"]!.append((keyArr[i],i))
+				case .custom:
+					queryDict["event"]!.append((keyArr[i],i))
+				case .library:
+					queryDict["lib"]!.append((keyArr[i],i))
+			}
 		}
 		
 		if let req = queryDict["thread"]?.map({x in x.0}), let threadApi{
@@ -1012,6 +1041,11 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 				}
 				
 			}
+		}
+		if let req = queryDict["lib"]?.map({x in x.0}) {
+				for r in req{
+					callbacks.removeValue(forKey: r)
+				}
 		}
 		return res
 	}
