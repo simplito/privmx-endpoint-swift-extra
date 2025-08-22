@@ -25,12 +25,17 @@ extension PrivMXSnippetClass {
     
     func addEventListener(){
         var storeId = "STORE_ID"
-        _ = try? endpointSession?.registerCallback(
-            for: privmx.endpoint.store.StoreFileUpdatedEvent.self,
-            from: EventChannel.storeFiles(storeID: storeId), identified: "some_id"
-        ) {
-            eventData in
-        }
+        try? endpointSession?.registerCallback(
+			for: .init(
+				cb: {
+					eventData in
+					// some actions to take
+				},
+				request: .store(eventType: privmx.endpoint.store.StoreCreatedEvent.self,
+								selectorType: PMXEventSelectorType.Context,
+								selectorId: CONTEXT_ID),
+				group: "some_group")
+        )
     }
     
     func removeEventListener(){

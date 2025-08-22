@@ -32,11 +32,12 @@ extension PrivMXSnippetClass {
 	
 	func handlingCustomEvents() throws{
 		try endpointSession?.registerCallback(
-			for: privmx.endpoint.event.ContextCustomEvent.self,
-			from: channel,
-			identified: "SOME_UNIQUE_IDENTIFIER",
-			{ data in
-				// some actions when a custom event is received
-			})
+			for: PMXEventCallbackRegistration(
+				cb: { data in
+					//
+				},
+				request: .custom(channelName: CHANNEL_NAME,
+								 contextId: CONTEXT_ID),
+				group: "GROUP"))
 	}
 }
