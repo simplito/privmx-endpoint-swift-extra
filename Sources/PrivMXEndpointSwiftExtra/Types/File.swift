@@ -34,7 +34,7 @@ extension privmx.endpoint.store.File: Hashable, Identifiable, @unchecked Sendabl
 			lhs.authorPubKey == rhs.authorPubKey &&
 			lhs.size == rhs.size &&
 			lhs.statusCode == rhs.statusCode &&
-			lhs.schemaVersion == rhs.schemaVersion
+			lhs.schemaVersion == rhs.schemaVersion 
 	}
 
 	/// The unique identifier for the file.

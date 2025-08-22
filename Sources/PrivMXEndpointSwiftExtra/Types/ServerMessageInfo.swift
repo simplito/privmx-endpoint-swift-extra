@@ -44,5 +44,7 @@ extension privmx.endpoint.thread.ServerMessageInfo: Hashable, Identifiable, @unc
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(self.messageId)
 		hasher.combine(self.threadId)
+		hasher.combine(self.createDate)
+		hasher.combine(self.author)
 	}
 }
