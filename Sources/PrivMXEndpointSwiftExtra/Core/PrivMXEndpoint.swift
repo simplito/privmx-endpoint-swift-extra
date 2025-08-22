@@ -913,16 +913,30 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		return results
 	}
 	
-	/// Removes all callbacks for a particular Event type.
+	/// Removes all callbacks for a particular Request.
 	///
-	/// - Parameter request: the type of Event, for which callbacks should be removed.
+	/// - Parameter request: the request specifying Event Type and Selector
 	public func clearCallbacks(
 		for request: PMXEventSubscriptionRequest
 	) throws -> Void {
 		callbacks.filter({x in x.value.0 == request}).forEach({x in callbacks[x.key]?.1.removeAll()})
 		let errs = unsubscribeFromEmpty()
 		if !errs.allSatisfy({x in x == nil}) {
-			throw PrivMXEndpointError.failedUnsubscribingFromEvents(privmx.InternalError(name: "FailedUnsubscribing", message: "Failed unsubscribing", description: "Not all callbacks have been removed, try again."))
+			var errmsg = "Following errors were thrown:"
+			var errno = 0
+			errs.forEach {
+				x in
+				if x != nil{
+					errmsg += "\(errno):"
+					if let e = x as? PrivMXEndpointError {
+						errmsg += "( Name:\(e.getName()), Description: \(e.getDescription()),Message: \(e.getMessage()),Code(hex): \(String(e.getCode() ?? 0,radix: 16)) )\n"
+					} else {
+						errmsg += "( \(x!) )\n"
+					}
+					errno += 1
+				}
+			}
+			throw PrivMXEndpointError.failedUnsubscribingFromEvents(privmx.InternalError(name: "FailedUnsubscribing", message: "Failed unsubscribing", description: "Callbacks have been removed, but some events may still arrive. \(errmsg)"))
 		}
 	}
 	
@@ -935,7 +949,21 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		callbacks.forEach({x in callbacks[x.key]?.1[group]?.removeAll()})
 		let errs = unsubscribeFromEmpty()
 		if !errs.allSatisfy({x in x == nil}) {
-			throw PrivMXEndpointError.failedUnsubscribingFromEvents(privmx.InternalError(name: "FailedUnsubscribing", message: "Failed unsubscribing", description: "Not all callbacks have been removed, try again."))
+			var errmsg = "Following errors were thrown:"
+			var errno = 0
+			errs.forEach {
+				x in
+				if x != nil{
+					errmsg += "\(errno):"
+					if let e = x as? PrivMXEndpointError {
+						errmsg += "( Name:\(e.getName()), Description: \(e.getDescription()),Message: \(e.getMessage()),Code(hex): \(String(e.getCode() ?? 0,radix: 16)) )\n"
+					} else {
+						errmsg += "( \(x!) )\n"
+					}
+					errno += 1
+				}
+			}
+			throw PrivMXEndpointError.failedUnsubscribingFromEvents(privmx.InternalError(name: "FailedUnsubscribing", message: "Failed unsubscribing", description: "Callbacks have been removed, but some events may still arrive.\(errmsg)"))
 		}
 	}
 	
@@ -945,7 +973,21 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		callbacks.forEach({x in callbacks[x.key]?.1.removeAll()})
 		let errs = unsubscribeFromEmpty()
 		if !errs.allSatisfy({x in x == nil}) {
-			throw PrivMXEndpointError.failedUnsubscribingFromEvents(privmx.InternalError(name: "FailedUnsubscribing", message: "Failed unsubscribing", description: "Not all callbacks have been removed, try again."))
+			var errmsg = "Following errors were thrown:"
+			var errno = 0
+			errs.forEach {
+				x in
+				if x != nil{
+					errmsg += "\(errno):"
+					if let e = x as? PrivMXEndpointError {
+						errmsg += "( Name:\(e.getName()), Description: \(e.getDescription()),Message: \(e.getMessage()),Code(hex): \(String(e.getCode() ?? 0,radix: 16)) )\n"
+					} else {
+						errmsg += "( \(x!) )\n"
+					}
+					errno += 1
+				}
+			}
+			throw PrivMXEndpointError.failedUnsubscribingFromEvents(privmx.InternalError(name: "FailedUnsubscribing", message: "Failed unsubscribing", description: "Callbacks have been removed, but some events may still arrive. \(errmsg)"))
 		}
 	}
 	

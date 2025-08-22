@@ -14,7 +14,11 @@ import PrivMXEndpointSwift
 
 /// Holds the Event Subscription request as well as the callback and assigned group
 public struct PMXEventCallbackRegistration: Sendable{
-	public init(cb: @escaping @Sendable (Any?) -> Void, request: PMXEventSubscriptionRequest, group: String) {
+	public init(
+		request: PMXEventSubscriptionRequest,
+		group: String,
+		cb: @escaping @Sendable (Any?) -> Void
+	) {
 		self.cb = cb
 		self.request = request
 		self.group = group
