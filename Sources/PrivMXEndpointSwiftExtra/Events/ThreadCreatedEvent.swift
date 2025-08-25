@@ -9,8 +9,9 @@
 // limitations under the License.
 //
 
-import Foundation 
 import PrivMXEndpointSwiftNative
+import PrivMXEndpointSwift
+import Foundation
 
 /// A helper extension for `ThreadCreatedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
@@ -53,7 +54,7 @@ extension privmx.endpoint.thread.ThreadCreatedEvent: PMXThreadEvent, @unchecked 
 	
 	public func getSubscriptionList(
 	) -> [String] {
-		return self.subscriptions.map({x in String(x)})
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)})
 	}
 }
 

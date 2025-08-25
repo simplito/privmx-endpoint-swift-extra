@@ -52,6 +52,6 @@ extension privmx.endpoint.kvdb.KvdbNewEntryEvent: PMXKvdbEvent, @unchecked Senda
 	}
 	public func getSubscriptionList(
 	) -> [String] {
-		return self.subscriptions.map({x in String(x)})
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)})
 	}
 }

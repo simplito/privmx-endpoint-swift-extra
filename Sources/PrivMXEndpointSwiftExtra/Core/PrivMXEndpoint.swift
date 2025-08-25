@@ -1095,7 +1095,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	public func handleEvent (
 		_ event: any PMXEvent
 	) async throws {
-		for id in event.getSubscriptionList(){
+		let subscriptionList = event.getSubscriptionList()
+		for id in subscriptionList{
 			for r in callbacks[id]?.1 ?? [:] {
 				for cb in r.value{
 						event.handleWith(cb: cb)
