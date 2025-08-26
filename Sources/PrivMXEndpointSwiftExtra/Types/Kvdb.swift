@@ -59,8 +59,19 @@ extension privmx.endpoint.kvdb.Kvdb: Identifiable, Hashable, @unchecked Sendable
 	/// - Parameter hasher: The `Hasher` instance used to compute the hash value.
 	public func hash(into hasher: inout Hasher) -> Void {
 		hasher.combine(kvdbId)
+		hasher.combine(contextId)
+		hasher.combine(createDate)
+		hasher.combine(creator)
+		hasher.combine(lastModifier)
 		hasher.combine(lastModificationDate)
+		hasher.combine(entries)
 		hasher.combine(lastEntryDate)
+		hasher.combine(publicMeta)
+		hasher.combine(privateMeta)
+		hasher.combine(users)
+		hasher.combine(managers)
 		hasher.combine(version)
+		hasher.combine(statusCode)
+		hasher.combine(schemaVersion)
 	}
 }

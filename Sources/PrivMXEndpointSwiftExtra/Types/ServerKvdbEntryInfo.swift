@@ -49,6 +49,8 @@ extension privmx.endpoint.kvdb.ServerKvdbEntryInfo: Identifiable, Hashable, @unc
 	/// - Parameter hasher: The `Hasher` instance used to compute the hash value.
 	public func hash(into hasher: inout Hasher) -> Void {
 		hasher.combine(key)
+		hasher.combine(kvdbId)
+		hasher.combine(author)
 		hasher.combine(createDate)
 	}
 }
