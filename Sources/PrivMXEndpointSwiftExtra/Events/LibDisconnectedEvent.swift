@@ -36,7 +36,7 @@ extension privmx.endpoint.core.LibDisconnectedEvent: PMXLibraryEvent, @unchecked
 	/// identifying the type of this event.
 	/// - Returns: A `String` representing the event type, derived from the `channel` property.
 	public static func typeStr() -> String {
-		return String(privmx.endpoint.core.LibDisconnectedEvent().channel)
+		"libDisconnected"
 	}
 
 	/// Handles the event by calling the provided callback with an optional argument.
