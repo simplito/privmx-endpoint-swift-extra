@@ -15,7 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `LibBreakEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.core.LibBreakEvent: PMXEvent, @unchecked  Sendable {
+extension privmx.endpoint.core.LibBreakEvent: PMXLibraryEvent, @unchecked  Sendable {
 	public typealias EventType = LibEventType
 	
 	public static var typeNum: EventType{
@@ -54,6 +54,6 @@ extension privmx.endpoint.core.LibBreakEvent: PMXEvent, @unchecked  Sendable {
 	}
 	public func getSubscriptionList(
 	) -> [String] {
-		return self.subscriptions.map({x in String(x)})
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)}) + [Self.typeStr()]
 	}
 }

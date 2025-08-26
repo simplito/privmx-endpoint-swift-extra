@@ -53,6 +53,6 @@ extension privmx.endpoint.thread.ThreadStatsChangedEvent: PMXThreadEvent, @unche
 	
 	public func getSubscriptionList(
 	) -> [String] {
-		return self.subscriptions.map({x in String(x)})
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)})
 	}
 }

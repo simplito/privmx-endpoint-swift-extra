@@ -55,7 +55,7 @@ extension privmx.endpoint.event.ContextCustomEvent: PMXCustomEvent, @unchecked S
 	
 	public func getSubscriptionList(
 	) -> [String] {
-		return self.subscriptions.map({x in String(x)})
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)})
 	}
 }
 

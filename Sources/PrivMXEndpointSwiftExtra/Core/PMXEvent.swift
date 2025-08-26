@@ -55,22 +55,24 @@ public protocol PMXStoreEvent:PMXEvent{}
 public protocol PMXInboxEvent:PMXEvent{}
 public protocol PMXKvdbEvent:PMXEvent{}
 public protocol PMXCustomEvent:PMXEvent{}
+public protocol PMXLibraryEvent:PMXEvent{}
 
 /// Umbrella protocol for EventTypes
 public protocol PMXEventType:RawRepresentable<Int64>{}
 
 /// Unified Event Selector Type
 public struct PMXEventSelectorType:RawRepresentable, Sendable{
+	static var _Platform: Self {PMXEventSelectorType(rawValue: -99999)!}
 	/// Computed property returning a SelectorType corresponding to CONTEXT values
-	static var Context : Self {PMXEventSelectorType(rawValue: 0)!}
+	public static var Context : Self {PMXEventSelectorType(rawValue: 0)!}
 	/// Computed property returning a SelectorType corresponding to CONTAINER values (such as Thread, Store, etc.)
-	static var Container : Self {PMXEventSelectorType(rawValue: 1)!}
+	public static var Container : Self {PMXEventSelectorType(rawValue: 1)!}
 	/// Computed property returning a SelectorType corresponding to ITEM values (such as Message, File, etc.)
-	static var Item : Self {PMXEventSelectorType(rawValue: 2)!}
+	public static var Item : Self {PMXEventSelectorType(rawValue: 2)!}
 	
 	public init?(rawValue: Int64) {
 		switch (rawValue){
-		case 0,1,2:
+		case 0,1,2,-99999:
 			self.rawValue=rawValue
 		default:
 			return nil
