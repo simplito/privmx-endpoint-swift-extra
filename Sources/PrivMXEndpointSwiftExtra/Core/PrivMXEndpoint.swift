@@ -662,10 +662,10 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		var queryDict = [String:[String:[Int]]]()
 		queryDict["thread"] = [:]
 		queryDict["store"] = [:]
-		queryDict["kvbd"] = [:]
+		queryDict["kvdb"] = [:]
 		queryDict["inbox"] = [:]
 		queryDict["event"] = [:]
-		queryDict["lib"] = [:]
+		queryDict["platform"] = [:]
 		for i in 0..<requests.count{
 			do{
 				let req = requests[i]
@@ -751,10 +751,10 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 							queryDict["event"]![sq]!.append(i)
 						}
 					case .library(let eventType):
-						if queryDict["lib"]![eventType.typeStr()] == nil{
-							queryDict["lib"]![eventType.typeStr()] = [i]
+						if queryDict["platform"]![eventType.typeStr()] == nil{
+							queryDict["platform"]![eventType.typeStr()] = [i]
 						} else {
-							queryDict["event"]![eventType.typeStr()]!.append(i)
+							queryDict["platform"]![eventType.typeStr()]!.append(i)
 						}
 				}
 			} catch {
@@ -892,7 +892,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			}
 		}
 		
-		if let libQuery = queryDict["lib"]{
+		if let libQuery = queryDict["platform"]{
 			let reqv = libQuery.map({x in x})
 			let resv = libQuery.map({x in x.0})
 			for res in resv{
@@ -996,16 +996,16 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	/// - Parameter channel: the EventChannel, from which events should no longer be received
 	private func unsubscribeFromEmpty(
 	) -> [(any Error)?] {
-		let calls = callbacks.filter({ x in x.value.1.isEmpty}).map({x in x})
+		let calls = callbacks.filter({ x in x.value.1.isEmpty && x.key != "platform"}).map({x in x})
 		var res = [(any Error)?](repeating: nil, count: calls.count)
 		var queryDict = [String:[(String,Int)]]()
 		let keyArr = calls.map({x in x.key})
 		queryDict["thread"] = []
 		queryDict["store"] = []
-		queryDict["kvbd"] = []
+		queryDict["kvdb"] = []
 		queryDict["inbox"] = []
 		queryDict["event"] = []
-		queryDict["lib"] = []
+		queryDict["platform"] = []
 		for i in 0..<calls.count{
 			switch calls[i].value.0{
 				case .thread:
@@ -1019,7 +1019,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 				case .custom:
 					queryDict["event"]!.append((keyArr[i],i))
 				case .library:
-					queryDict["lib"]!.append((keyArr[i],i))
+					queryDict["platform"]!.append((keyArr[i],i))
 			}
 		}
 		
@@ -1084,7 +1084,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 				
 			}
 		}
-		if let req = queryDict["lib"]?.map({x in x.0}) {
+		if let req = queryDict["platform"]?.map({x in x.0}) {
 				for r in req{
 					callbacks.removeValue(forKey: r)
 				}

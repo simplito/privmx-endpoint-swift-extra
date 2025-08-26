@@ -53,6 +53,6 @@ extension privmx.endpoint.core.LibDisconnectedEvent: PMXLibraryEvent, @unchecked
 	}
 	public func getSubscriptionList(
 	) -> [String] {
-		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)})
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)}) + [Self.typeStr()]
 	}
 }
