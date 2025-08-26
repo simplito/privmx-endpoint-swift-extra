@@ -43,14 +43,20 @@ extension privmx.endpoint.inbox.InboxEntry: Hashable, Identifiable, @unchecked S
 	public var id: String {
 		String(self.entryId)
 	}
-
+	
 	/// Generates a hash value for the `InboxEntry` instance.
 	///
 	/// This function combines the `info` property into the hash to uniquely identify the file.
 	/// - Parameter hasher: The `Hasher` instance used to compute the hash value.
 	public func hash(into hasher: inout Hasher) -> Void {
 		hasher.combine(entryId)
+		hasher.combine(inboxId)
 		hasher.combine(data)
+		hasher.combine(createDate)
+		hasher.combine(authorPubKey)
+		hasher.combine(files)
+		hasher.combine(statusCode)
+		hasher.combine(schemaVersion)
 	}
 }
 

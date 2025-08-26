@@ -44,7 +44,8 @@ extension privmx.endpoint.store.Store: Identifiable, Hashable, @unchecked Sendab
 			   lhs.managers == rhs.managers &&
 			   lhs.users == rhs.users &&
 			   lhs.version == rhs.version &&
-			   lhs.statusCode == rhs.statusCode
+			   lhs.statusCode == rhs.statusCode &&
+			   lhs.schemaVersion == rhs.schemaVersion
 	}
 
 	/// The unique identifier for the store.
@@ -61,7 +62,19 @@ extension privmx.endpoint.store.Store: Identifiable, Hashable, @unchecked Sendab
 	/// - Parameter hasher: The `Hasher` instance used to compute the hash value.
 	public func hash(into hasher: inout Hasher) -> Void {
 		hasher.combine(storeId)
+		hasher.combine(contextId)
+		hasher.combine(createDate)
+		hasher.combine(creator)
+		hasher.combine(privateMeta)
+		hasher.combine(publicMeta)
+		hasher.combine(filesCount)
+		hasher.combine(lastFileDate)
 		hasher.combine(lastModificationDate)
+		hasher.combine(lastModifier)
+		hasher.combine(managers)
+		hasher.combine(users)
 		hasher.combine(version)
+		hasher.combine(statusCode)
+		hasher.combine(schemaVersion)
 	}
 }

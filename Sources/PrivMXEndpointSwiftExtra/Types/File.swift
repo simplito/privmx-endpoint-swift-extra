@@ -34,7 +34,7 @@ extension privmx.endpoint.store.File: Hashable, Identifiable, @unchecked Sendabl
 			lhs.authorPubKey == rhs.authorPubKey &&
 			lhs.size == rhs.size &&
 			lhs.statusCode == rhs.statusCode &&
-			lhs.schemaVersion == rhs.schemaVersion
+			lhs.schemaVersion == rhs.schemaVersion 
 	}
 
 	/// The unique identifier for the file.
@@ -50,6 +50,12 @@ extension privmx.endpoint.store.File: Hashable, Identifiable, @unchecked Sendabl
 	/// - Parameter hasher: The `Hasher` instance used to compute the hash value.
 	public func hash(into hasher: inout Hasher) -> Void {
 		hasher.combine(info)
+		hasher.combine(privateMeta)
+		hasher.combine(publicMeta)
+		hasher.combine(authorPubKey)
+		hasher.combine(size)
+		hasher.combine(statusCode)
+		hasher.combine(schemaVersion)
 	}
 }
 

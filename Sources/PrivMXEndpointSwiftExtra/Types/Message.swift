@@ -49,5 +49,10 @@ extension privmx.endpoint.thread.Message: Identifiable, Hashable, @unchecked Sen
 	/// - Parameter hasher: The `Hasher` instance used to compute the hash value.
 	public func hash(into hasher: inout Hasher) -> Void {
 		hasher.combine(info)
+		hasher.combine(data)
+		hasher.combine(privateMeta)
+		hasher.combine(publicMeta)
+		hasher.combine(authorPubKey)
+		hasher.combine(schemaVersion)
 	}
 }

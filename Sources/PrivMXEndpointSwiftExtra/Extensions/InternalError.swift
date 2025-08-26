@@ -18,9 +18,9 @@ public extension privmx.InternalError {
 		message: String,
 		description: String
 	){
-		self.init(name: std.__1.string(name),
-				  message: std.__1.string(message),
-				  description: std.__1.string(description),
+		self.init(name: std.string(name),
+				  message: std.string(message),
+				  description: std.string(description),
 				  code: nil,
 				  scope: nil)
 		
