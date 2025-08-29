@@ -166,7 +166,7 @@ public final class PrivMXEndpointContainer: Sendable{
 	public func startListening() async throws {
 			if eventLoop == nil {
 				eventLoop = PrivMXEventLoop(){ event, eventType, connectionID in
-						try? await self.endpoints[connectionID]?.handleEvent(event, ofType: eventType)
+						try? await self.endpoints[connectionID]?.handleEvent(event)
 				}
 			}
 			
@@ -183,8 +183,8 @@ public final class PrivMXEndpointContainer: Sendable{
 		}
 	
 	
-	func processEvent(event:PMXEvent, eventType:PMXEvent.Type, connectionID:Int64) async{
-		try? await self.getEndpoint(connectionID)?.handleEvent(event, ofType: eventType)
+	func processEvent(event:any PMXEvent, eventType:any PMXEvent.Type, connectionID:Int64) async{
+		try? await self.getEndpoint(connectionID)?.handleEvent(event)
 	}
     
 	

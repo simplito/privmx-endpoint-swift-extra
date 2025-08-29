@@ -30,9 +30,14 @@ extension PrivMXSnippetClass {
             in: storeID,
             withPublicMeta: Data(),
             withPrivateMeta: Data(),
-            ofSize: Int64(fileContentData.count))
+            ofSize: Int64(fileContentData.count),
+			randomWriteSupport: false)
         else {return}
-        try? endpointSession?.storeApi?.writeToFile(withHandle: storeFileHandle, uploading: fileContentData)
+		try? endpointSession?.storeApi?.writeToFile(
+			withHandle: storeFileHandle,
+			uploading: fileContentData,
+			truncate: false)
+		let storeFileId = try? endpointSession?.storeApi?.closeFile(withHandle: storeFileHandle)
     }
     
     public func uploadWithFileMeta(){
@@ -46,9 +51,15 @@ extension PrivMXSnippetClass {
             in: storeID,
             withPublicMeta: Data(),
             withPrivateMeta: filePrivateMetaData,
-            ofSize: Int64(fileContentData.count))
+            ofSize: Int64(fileContentData.count),
+			randomWriteSupport: false)
         else {return}
-        try? endpointSession?.storeApi?.writeToFile(withHandle: storeFileHandle, uploading: fileContentData)
+        try? endpointSession?.storeApi?.writeToFile(
+			withHandle: storeFileHandle,
+			uploading: fileContentData,
+			truncate: false)
+		
+		let storeFileId = try? endpointSession?.storeApi?.closeFile(withHandle: storeFileHandle)
 
     }
     
@@ -115,16 +126,15 @@ extension PrivMXSnippetClass {
         guard let newFilePrivateMetaData = try? JSONEncoder().encode(newFilePrivateMeta) else {return}
         guard let filePublicMetaData = file.publicMeta.getData() else {return}
         try? endpointSession?.storeApi?
-            .updateFile(fileID,
-                        replacingPublicMeta:  filePublicMetaData,
-                        replacingPrivateMeta: newFilePrivateMetaData,
-                        replacingSize: file.size)
+            .updateFileMeta(
+				of: fileID,
+				replacingPublicMeta:  filePublicMetaData,
+				replacingPrivateMeta: newFilePrivateMetaData)
     }
     
     func deletingFile(){
         var fileID = "FILE_ID"
         try? endpointSession?.storeApi?.deleteFile(fileID)
-
 
     }
 }

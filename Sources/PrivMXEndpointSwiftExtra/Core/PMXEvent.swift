@@ -11,6 +11,7 @@
 
 import Foundation
 import PrivMXEndpointSwift
+import PrivMXEndpointSwiftNative
 
 /// Protocol for managing events within PrivMX Endpoint. Provides a standardized interface for handling and processing events with Swift Types.
 public protocol PMXEvent: Sendable {
@@ -30,6 +31,9 @@ public protocol PMXEvent: Sendable {
 	/// - Returns: A `String` representing the type of the event.
 	static func typeStr() -> String
 	
+	associatedtype EventType: PMXEventType
+	static var typeNum:EventType {get}
+	
 	/// Unique identifier for the connection associated with this event.
 	///
 	/// This property stores an `Int64` identifier that can be used to associate the event with a specific connection instance.
@@ -41,4 +45,46 @@ public protocol PMXEvent: Sendable {
 	///
 	/// - Returns: A `String` representing the event's associated channel.
 	func getChannel() -> String
+	
+	/// Retrieves the list of Subscribtion Ids of the Event
+	func getSubscriptionList()->[String]
 }
+
+public protocol PMXThreadEvent:PMXEvent{}
+public protocol PMXStoreEvent:PMXEvent{}
+public protocol PMXInboxEvent:PMXEvent{}
+public protocol PMXKvdbEvent:PMXEvent{}
+public protocol PMXCustomEvent:PMXEvent{}
+public protocol PMXLibraryEvent:PMXEvent{}
+
+/// Umbrella protocol for EventTypes
+public protocol PMXEventType:RawRepresentable<Int64>{}
+
+/// Unified Event Selector Type
+public struct PMXEventSelectorType:RawRepresentable, Sendable{
+	static var _Platform: Self {PMXEventSelectorType(rawValue: -99999)!}
+	/// Computed property returning a SelectorType corresponding to CONTEXT values
+	public static var Context : Self {PMXEventSelectorType(rawValue: 0)!}
+	/// Computed property returning a SelectorType corresponding to CONTAINER values (such as Thread, Store, etc.)
+	public static var Container : Self {PMXEventSelectorType(rawValue: 1)!}
+	/// Computed property returning a SelectorType corresponding to ITEM values (such as Message, File, etc.)
+	public static var Item : Self {PMXEventSelectorType(rawValue: 2)!}
+	
+	public init?(rawValue: Int64) {
+		switch (rawValue){
+		case 0,1,2,-99999:
+			self.rawValue=rawValue
+		default:
+			return nil
+		}
+	}
+	
+	public let rawValue: Int64
+	
+	public typealias RawValue = Int64
+}
+
+extension privmx.endpoint.store.EventType:PMXEventType{}
+extension privmx.endpoint.thread.EventType:PMXEventType{}
+extension privmx.endpoint.kvdb.EventType:PMXEventType{}
+extension privmx.endpoint.inbox.EventType:PMXEventType{}

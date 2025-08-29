@@ -15,8 +15,12 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `LibDisconnectedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.core.LibDisconnectedEvent: PMXEvent, @unchecked  Sendable { 
-
+extension privmx.endpoint.core.LibDisconnectedEvent: PMXLibraryEvent, @unchecked  Sendable {
+	public typealias EventType = LibEventType
+	
+	public static var typeNum: EventType{
+		LibEventType.LIB_DISCONNECTED
+	}
 	/// Returns the event channel as a string.
 	///
 	/// This implementation returns the constant string `"platform"`,
@@ -32,7 +36,7 @@ extension privmx.endpoint.core.LibDisconnectedEvent: PMXEvent, @unchecked  Senda
 	/// identifying the type of this event.
 	/// - Returns: A `String` representing the event type, derived from the `channel` property.
 	public static func typeStr() -> String {
-		return String(privmx.endpoint.core.LibDisconnectedEvent().channel)
+		"libDisconnected"
 	}
 
 	/// Handles the event by calling the provided callback with an optional argument.
@@ -46,5 +50,9 @@ extension privmx.endpoint.core.LibDisconnectedEvent: PMXEvent, @unchecked  Senda
 		Task{
 			await cb(nil)
 		}
+	}
+	public func getSubscriptionList(
+	) -> [String] {
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)}) + [Self.typeStr()]
 	}
 }

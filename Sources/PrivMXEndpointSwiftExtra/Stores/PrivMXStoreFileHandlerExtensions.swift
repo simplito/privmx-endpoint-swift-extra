@@ -74,7 +74,8 @@ extension PrivMXStoreFileHandler{
 		let handle = try storesApi.createFile(in: storeId,
 											  withPublicMeta: publicMeta,
 											  withPrivateMeta: privateMeta,
-											  ofSize: fileSize)
+											  ofSize: fileSize,
+											  randomWriteSupport: false)
 		return try PrivMXStoreFileHandler(StoreFileHandle: handle,
 										  storesApi: storesApi,
 										  localFile:sourceFile,
@@ -139,7 +140,8 @@ extension PrivMXStoreFileHandler{
 		let handle = try storesApi.createFile(in: storeId,
 											  withPublicMeta: publicMeta,
 											  withPrivateMeta: privateMeta,
-											  ofSize: fileSize)
+											  ofSize: fileSize,
+											  randomWriteSupport: false)
 		return try PrivMXStoreFileHandler(StoreFileHandle: handle,
 										  storesApi: storesApi,
 										  buffer: sourceBuffer,

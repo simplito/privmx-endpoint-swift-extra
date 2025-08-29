@@ -83,7 +83,6 @@ extension PrivMXSnippetClass {
 
         //3
         try? publicEndpointSession?.inboxApi?.writeToFile(inboxFileHandle, of: entryHandle, uploading: data)
-        try? publicEndpointSession?.inboxApi?.closeFile(withHandle: inboxFileHandle)
 
         //4
         try? publicEndpointSession?.inboxApi?.sendEntry(entryHandle)
