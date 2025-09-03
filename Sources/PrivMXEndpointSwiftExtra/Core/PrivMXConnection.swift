@@ -96,12 +96,13 @@ public protocol PrivMXConnection{
 	/// Retrieves a list of Users from a particular Context.
 	///
 	/// - parameter contextId: Id of the Context.
-	///
+	/// - parameter query:
 	/// - throws: When the operation fails.
 	///
-	/// - returns: a list of UserInfo objects.
+	/// - returns: a `PagingList` of UserInfo objects.
 	func getContextUsers(
-		of contextId: String
-	) throws -> [privmx.endpoint.core.UserInfo]
+		of contextId: String,
+		basedOn query: privmx.endpoint.core.PagingQuery
+	) throws -> privmx.UserInfoList
 }
 
