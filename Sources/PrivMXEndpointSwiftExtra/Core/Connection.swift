@@ -103,8 +103,11 @@ extension Connection: PrivMXConnection {
 	///
 	/// - returns: a list of UserInfo objects.
 	public func getContextUsers(
-		of contextId: String
-	) throws -> [privmx.endpoint.core.UserInfo] {
-		try self.getContextUsers(contextId:std.string(contextId)).map({ x in x})
+		of contextId: String,
+		basedOn query: privmx.endpoint.core.PagingQuery
+	) throws -> privmx.UserInfoList {
+		try self.getContextUsers(
+			contextId:std.string(contextId),
+			query:query)
 	}
 }

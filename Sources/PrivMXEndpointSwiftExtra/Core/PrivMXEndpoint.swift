@@ -13,6 +13,7 @@ import Foundation
 import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 
+
 /// A wrapper class that manages a connection to PrivMX Bridge and provides access to various APIs, including Threads, Stores, and Inboxes.
 ///
 /// The `PrivMXEndpoint` class is designed to encapsulate and manage a single connection to PrivMX. It provides
