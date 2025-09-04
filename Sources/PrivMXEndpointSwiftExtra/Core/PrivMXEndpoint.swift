@@ -664,6 +664,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		queryDict["thread"] = [:]
 		queryDict["store"] = [:]
 		queryDict["kvdb"] = [:]
+		queryDict["kvdbEntry"] = [:]
 		queryDict["inbox"] = [:]
 		queryDict["event"] = [:]
 		queryDict["platform"] = [:]
@@ -679,19 +680,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 																									  message: "Thread Api was nil",
 																									  description: "You need to enable ThreadApi to register for Thread-related events"))
 						}
-						let tetype:privmx.endpoint.thread.EventType = switch event.typeStr(){
-							case "threadCreated":privmx.endpoint.thread.THREAD_CREATE
-							case "threadUpdated":privmx.endpoint.thread.THREAD_UPDATE
-							case "threadDeleted":privmx.endpoint.thread.THREAD_DELETE
-							case "threadStats":privmx.endpoint.thread.THREAD_STATS
-							case "messageCreated":privmx.endpoint.thread.MESSAGE_CREATE
-							case "messageDeleted":privmx.endpoint.thread.MESSAGE_DELETE
-							case "messageUpdated":privmx.endpoint.thread.MESSAGE_UPDATE
-							case "collectionChanged":privmx.endpoint.thread.COLLECTION_CHANGE
-							default: throw PrivMXEndpointError.failedBuildingSubscriptionQuery(privmx.InternalError(name: "Unexpected Event Type", message: "", description: ""))
-						}
+						
 						let sq = try threadApi.buildSubscriptionQuery(
-							forEventType: tetype,
+							forEventType: event,
 							selectorType: privmx.endpoint.thread.EventSelectorType.init(rawValue: selector.rawValue),
 							selectorId: selectorId)
 						if queryDict["thread"]![sq] == nil{
@@ -706,19 +697,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 																									  message: "Store Api was nil",
 																									  description: "You need to enable StoreApi to register for Store-related events"))
 						}
-						let setype:privmx.endpoint.store.EventType = switch event.typeStr(){
-							case "storeCreated":privmx.endpoint.store.STORE_CREATE
-							case "storeUpdated":privmx.endpoint.store.STORE_UPDATE
-							case "storeDeleted":privmx.endpoint.store.STORE_DELETE
-							case "storeStats":privmx.endpoint.store.STORE_STATS
-							case "fileCreated":privmx.endpoint.store.FILE_CREATE
-							case "fileDeleted":privmx.endpoint.store.FILE_DELETE
-							case "fileUpdated":privmx.endpoint.store.FILE_UPDATE
-							case "collectionChanged":privmx.endpoint.store.COLLECTION_CHANGE
-							default: throw PrivMXEndpointError.failedBuildingSubscriptionQuery(privmx.InternalError(name: "Unexpected Event Type", message: "", description: ""))
-						}
+						
 						let sq = try storeApi.buildSubscriptionQuery(
-							forEventType: setype,
+							forEventType: event,
 							selectorType: privmx.endpoint.store.EventSelectorType.init(rawValue: selector.rawValue),
 							selectorId: selectorId)
 						if queryDict["store"]![sq] == nil{
@@ -733,17 +714,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 																									  message: "Inbox Api was nil",
 																									  description: "You need to enable InboxApi to register for Inbox-related events"))
 						}
-						let ietype:privmx.endpoint.inbox.EventType = switch event.typeStr(){
-							case "inboxCreated":privmx.endpoint.inbox.INBOX_CREATE
-							case "inboxUpdated":privmx.endpoint.inbox.INBOX_UPDATE
-							case "inboxDeleted":privmx.endpoint.inbox.INBOX_DELETE
-							case "entryCreated":privmx.endpoint.inbox.ENTRY_CREATE
-							case "entryDeleted":privmx.endpoint.inbox.ENTRY_DELETE
-							case "collectionChanged":privmx.endpoint.inbox.COLLECTION_CHANGE
-							default: throw PrivMXEndpointError.failedBuildingSubscriptionQuery(privmx.InternalError(name: "Unexpected Event Type", message: "", description: ""))
-						}
 						let sq = try inboxApi.buildSubscriptionQuery(
-							forEventType: ietype,
+							forEventType: event,
 							selectorType: privmx.endpoint.inbox.EventSelectorType.init(rawValue: selector.rawValue),
 							selectorId: selectorId)
 						if queryDict["inbox"]![sq] == nil{
@@ -758,19 +730,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 																									  message: "Kvdb Api was nil",
 																									  description: "You need to enable KvdbApi to register for KVDB-related events"))
 						}
-						let ketype:privmx.endpoint.kvdb.EventType = switch event.typeStr(){
-							case "threadCreated":privmx.endpoint.kvdb.KVDB_CREATE
-							case "threadUpdated":privmx.endpoint.kvdb.KVDB_UPDATE
-							case "threadDeleted":privmx.endpoint.kvdb.KVDB_DELETE
-							case "threadStats":privmx.endpoint.kvdb.KVDB_STATS
-							case "messageCreated":privmx.endpoint.kvdb.ENTRY_CREATE
-							case "messageDeleted":privmx.endpoint.kvdb.ENTRY_DELETE
-							case "messageUpdated":privmx.endpoint.kvdb.ENTRY_UPDATE
-							case "collectionChanged":privmx.endpoint.kvdb.COLLECTION_CHANGE
-							default: throw PrivMXEndpointError.failedBuildingSubscriptionQuery(privmx.InternalError(name: "Unexpected Event Type", message: "", description: ""))
-						}
 						let sq = try kvdbApi.buildSubscriptionQuery(
-							forEventType: ketype,
+							forEventType: event,
 							selectorType: privmx.endpoint.kvdb.EventSelectorType.init(rawValue: selector.rawValue),
 							selectorId: selectorId)
 						if queryDict["kvdb"]![sq] == nil{
@@ -795,38 +756,30 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 							queryDict["event"]![sq]!.append(i)
 						}
 					case .library(let eventType):
-						if queryDict["platform"]![eventType.typeStr()] == nil{
-							queryDict["platform"]![eventType.typeStr()] = [i]
+						if queryDict["platform"]![String(eventType.rawValue)] == nil{
+							queryDict["platform"]![String(eventType.rawValue)] = [i]
 						} else {
-							queryDict["platform"]![eventType.typeStr()]!.append(i)
+							queryDict["platform"]![String(eventType.rawValue)]!.append(i)
 						}
-					case .thread(let event, let selector, let selectorId):
-						guard let threadApi
+					case .kvdbEntry(let event, let kvdb, let key):
+						guard let kvdbApi
 						else{
 							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Api not Initialised",
 																									  message: "Thread Api was nil",
 																									  description: "You need to enable ThreadApi to register for Thread-related events"))
 						}
-						let tetype:privmx.endpoint.thread.EventType = switch event.typeStr(){
-							case "threadCreated":privmx.endpoint.thread.THREAD_CREATE
-							case "threadUpdated":privmx.endpoint.thread.THREAD_UPDATE
-							case "threadDeleted":privmx.endpoint.thread.THREAD_DELETE
-							case "threadStats":privmx.endpoint.thread.THREAD_STATS
-							case "messageCreated":privmx.endpoint.thread.MESSAGE_CREATE
-							case "messageDeleted":privmx.endpoint.thread.MESSAGE_DELETE
-							case "messageUpdated":privmx.endpoint.thread.MESSAGE_UPDATE
-							case "collectionChanged":privmx.endpoint.thread.COLLECTION_CHANGE
-							default: throw PrivMXEndpointError.failedBuildingSubscriptionQuery(privmx.InternalError(name: "Unexpected Event Type", message: "", description: ""))
-						}
-						let sq = try threadApi.buildSubscriptionQuery(
-							forEventType: tetype,
-							selectorType: privmx.endpoint.thread.EventSelectorType.init(rawValue: selector.rawValue),
-							selectorId: selectorId)
-						if queryDict["thread"]![sq] == nil{
-							queryDict["thread"]![sq]=[i]
+						
+						let sq = try kvdbApi.buildSubscriptionQueryForSelectedEntry(
+							key,
+							from: kvdb,
+							for: event)
+						if queryDict["kvdbEntry"]![sq] == nil{
+							queryDict["kvdbEntry"]![sq]=[i]
 						} else {
-							queryDict["thread"]![sq]!.append(i)
+							queryDict["kvdbEntry"]![sq]!.append(i)
 						}
+					case .core(let eventType,let  contextId):
+						connection
 				}
 			} catch {
 				results[i] = error
@@ -1074,9 +1027,11 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		queryDict["thread"] = []
 		queryDict["store"] = []
 		queryDict["kvdb"] = []
+		queryDict["kvdbEntry"] = []
 		queryDict["inbox"] = []
 		queryDict["event"] = []
 		queryDict["platform"] = []
+		queryDict["core"] = []
 		for i in 0..<calls.count{
 			switch calls[i].value.0{
 				case .thread:
@@ -1085,12 +1040,14 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 					queryDict["store"]!.append((keyArr[i],i))
 				case .inbox:
 					queryDict["inbox"]!.append((keyArr[i],i))
-				case .kvdb:
+				case .kvdb,.kvdbEntry:
 					queryDict["kvdb"]!.append((keyArr[i],i))
 				case .custom:
 					queryDict["event"]!.append((keyArr[i],i))
 				case .library:
 					queryDict["platform"]!.append((keyArr[i],i))
+				case .core:
+					queryDict["core"]!.append((keyArr[i],i))
 			}
 		}
 		
@@ -1159,6 +1116,19 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 				for r in req{
 					callbacks.removeValue(forKey: r)
 				}
+		}
+		if let req = queryDict["core"]?.map({x in x.0}){
+			do{
+				try connection.unsubscribeFrom(req)
+				for r in req{
+					callbacks.removeValue(forKey: r)
+				}
+			} catch {
+				for q in queryDict["core"] ?? []{
+					res[q.1] = error
+				}
+				
+			}
 		}
 		return res
 	}

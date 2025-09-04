@@ -315,4 +315,24 @@ extension KvdbApi {
 											   selectorType: selectorType,
 											   selectorId: std.string(selectorId)))
 	}
+
+	/// Generate subscription Query for KVDB-related events.
+	///
+	/// - Parameter eventType: type of the event you wish to receive
+	/// - Parameter kvdbId: id of the KVDB
+	/// - Parameter kvdbEntryKey: key of the entry
+	///
+	/// - Throws: When building the subscription Query fails.
+	///
+	/// - Returns: a properly formatted event subscription request.
+	func buildSubscriptionQueryForSelectedEntry(
+		_ kvdbEntryKey: String,
+		from kvdbId: String,
+		for eventType: privmx.endpoint.kvdb.EventType
+	) throws -> String {
+		try String(self.buildSubscriptionQueryForSelectedEntry(
+			eventType: eventType,
+			kvdbId: std.string(kvdbId),
+			kvdbEntryKey: std.string(kvdbEntryKey)))
+	}
 }
