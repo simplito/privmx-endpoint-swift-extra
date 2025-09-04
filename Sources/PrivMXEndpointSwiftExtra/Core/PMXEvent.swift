@@ -48,34 +48,3 @@ public protocol PMXCustomEvent:PMXEvent{}
 public protocol PMXCoreEvent:PMXEvent{}
 public protocol PMXLibraryEvent:PMXEvent{}
 
-/// Umbrella protocol for EventTypes
-public protocol PMXEventType:RawRepresentable<Int64>{}
-
-/// Unified Event Selector Type
-public struct PMXEventSelectorType:RawRepresentable, Sendable{
-	static var _Platform: Self {PMXEventSelectorType(rawValue: -99999)!}
-	/// Computed property returning a SelectorType corresponding to CONTEXT values
-	public static var Context : Self {PMXEventSelectorType(rawValue: 0)!}
-	/// Computed property returning a SelectorType corresponding to CONTAINER values (such as Thread, Store, etc.)
-	public static var Container : Self {PMXEventSelectorType(rawValue: 1)!}
-	/// Computed property returning a SelectorType corresponding to ITEM values (such as Message, File, etc.)
-	public static var Item : Self {PMXEventSelectorType(rawValue: 2)!}
-	
-	public init?(rawValue: Int64) {
-		switch (rawValue){
-		case 0,1,2,-99999:
-			self.rawValue=rawValue
-		default:
-			return nil
-		}
-	}
-	
-	public let rawValue: Int64
-	
-	public typealias RawValue = Int64
-}
-
-extension privmx.endpoint.store.EventType:PMXEventType{}
-extension privmx.endpoint.thread.EventType:PMXEventType{}
-extension privmx.endpoint.kvdb.EventType:PMXEventType{}
-extension privmx.endpoint.inbox.EventType:PMXEventType{}
