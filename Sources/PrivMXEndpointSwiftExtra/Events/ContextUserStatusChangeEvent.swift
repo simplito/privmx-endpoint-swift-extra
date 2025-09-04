@@ -1,4 +1,5 @@
 //
+//
 // PrivMX Endpoint Swift Extra
 // Copyright © 2024 Simplito sp. z o.o.
 //
@@ -12,34 +13,41 @@
 import Foundation
 import PrivMXEndpointSwiftNative
 
-/// A helper extension for `KvdbUpdatedEvent` to conform to the `PMXEvent` protocol.
+
+
+/// A helper extension for `ContextCustomEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.kvdb.KvdbUpdatedEvent: PMXKvdbEvent, @unchecked Sendable {
+extension privmx.endpoint.core.ContextUsersStatusChangeEvent: PMXCustomEvent, @unchecked Sendable {
 	
-	/// Returns the event type as a string.
-	///
-	/// This method returns the constant string `"kvdbUpdated"`, identifying the type
-	/// of this event as `kvdbUpdated`.
-	/// - Returns: A `String` representing the event type, in this case, `"kvdbUpdated"`.
-	public static func typeStr() -> String {
-		"kvdbUpdated"
-	}
-
 	/// Handles the event by calling the provided callback with an optional argument.
 	///
 	/// This implementation passes the `data` property to the callback.
 	/// - Parameter cb: A closure that accepts an optional `Any?` argument,
 	///   representing the data to be passed when the event is handled.
 	public func handleWith(
-		cb: @escaping (@MainActor @Sendable (_ data: Any?) async  -> Void)
-	) -> Void {
+		cb: (@escaping @Sendable @MainActor (Any?) async -> Void)
+	) {
 		Task{
 			await cb(data)
 		}
 	}
+
+	/// Returns the event type as a string.
+	/// - Returns: A `String` representing the event type, in this case, `"contextCustom"`.
+	public static func typeStr() -> String {
+		"contextUserStatusChanged"
+	}
+
 	public func getSubscriptionList(
 	) -> [String] {
 		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)})
 	}
 }
+
+
+
+
+
+
+

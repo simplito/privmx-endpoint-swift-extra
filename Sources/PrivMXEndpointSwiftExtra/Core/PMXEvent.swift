@@ -31,20 +31,10 @@ public protocol PMXEvent: Sendable {
 	/// - Returns: A `String` representing the type of the event.
 	static func typeStr() -> String
 	
-	associatedtype EventType: PMXEventType
-	static var typeNum:EventType {get}
-	
 	/// Unique identifier for the connection associated with this event.
 	///
 	/// This property stores an `Int64` identifier that can be used to associate the event with a specific connection instance.
 	var connectionId: Int64 { get }
-	
-	/// Retrieves the communication channel associated with this event.
-	///
-	/// This method provides the name or identifier of the channel related to the event, which can be useful for directing or filtering event handling based on channel context.
-	///
-	/// - Returns: A `String` representing the event's associated channel.
-	func getChannel() -> String
 	
 	/// Retrieves the list of Subscribtion Ids of the Event
 	func getSubscriptionList()->[String]
@@ -55,6 +45,7 @@ public protocol PMXStoreEvent:PMXEvent{}
 public protocol PMXInboxEvent:PMXEvent{}
 public protocol PMXKvdbEvent:PMXEvent{}
 public protocol PMXCustomEvent:PMXEvent{}
+public protocol PMXCoreEvent:PMXEvent{}
 public protocol PMXLibraryEvent:PMXEvent{}
 
 /// Umbrella protocol for EventTypes

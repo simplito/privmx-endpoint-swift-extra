@@ -61,10 +61,12 @@ public enum PMXEventSubscriptionRequest: Hashable, Sendable{
 	case inbox(eventType: any PMXInboxEvent.Type,selectorType: PMXEventSelectorType, selectorId:String)
 	/// Events form the KVDB module on a corresponding selector
 	case kvdb(eventType: any PMXKvdbEvent.Type,selectorType: PMXEventSelectorType, selectorId:String)
+	case kvdbEntry(eventType: any PMXKvdbEvent.Type, kvdbId:String,entryKey:String)
 	/// Events form the Event module, from provided channelName
 	case custom(channelName:String, contextId:String)
 	/// Events that are emitted by the endpoint library itself
 	case library(eventType: any PMXLibraryEvent.Type)
+	case core(eventType: any PMXLibraryEvent.Type)
 	
 	/// Retreives the PMXEventSelectorType of the request.
 	func getSelectorType(
@@ -75,6 +77,8 @@ public enum PMXEventSubscriptionRequest: Hashable, Sendable{
 					.kvdb(_,let selectorType,_),
 					.store(_,let selectorType,_):
 				selectorType
+			case .kvdbEntry(_,_,_):
+				PMXEventSelectorType.Item
 			case .custom(_,_):
 				PMXEventSelectorType.Context
 			case .library(_):
@@ -94,6 +98,8 @@ public enum PMXEventSubscriptionRequest: Hashable, Sendable{
 				selectorId
 			case .library:
 				""
+			case .kvdbEntry(_,let kvdbId,let entryKey):
+				"\(kvdbId)/\(entryKey)"
 		}
 	}
 	
@@ -107,7 +113,8 @@ public enum PMXEventSubscriptionRequest: Hashable, Sendable{
 				et
 			case .inbox(let et,_, _):
 				et
-			case .kvdb(let et,_, _):
+			case .kvdb(let et,_, _),
+					.kvdbEntry(let et,_,_):
 				et
 			case .custom(_,_):
 				privmx.endpoint.event.ContextCustomEvent.self

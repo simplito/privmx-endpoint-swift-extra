@@ -16,11 +16,6 @@ import PrivMXEndpointSwiftNative
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
 extension privmx.endpoint.core.LibPlatformDisconnectedEvent: PMXLibraryEvent, @unchecked  Sendable { 
-	public typealias EventType = LibEventType
-	
-	public static var typeNum: EventType{
-		LibEventType.LIB_PLATFORM_DISCONNECTED
-	}
 	
 	/// Returns the event channel as a string.
 	///
