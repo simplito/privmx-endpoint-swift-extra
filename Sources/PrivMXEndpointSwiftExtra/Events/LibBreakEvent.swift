@@ -41,6 +41,6 @@ extension privmx.endpoint.core.LibBreakEvent: PMXLibraryEvent, @unchecked  Senda
 	}
 	public func getSubscriptionList(
 	) -> [String] {
-		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)}) + [Self.typeStr()]
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)}) + [String(LibEventType.LIB_BREAK.rawValue)]
 	}
 }
