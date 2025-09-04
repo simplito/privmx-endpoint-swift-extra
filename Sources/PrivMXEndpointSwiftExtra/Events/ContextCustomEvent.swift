@@ -18,10 +18,6 @@ import PrivMXEndpointSwiftNative
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
 extension privmx.endpoint.event.ContextCustomEvent: PMXCustomEvent, @unchecked Sendable {
-	public typealias EventType = LibEventType
-	
-	public static var typeNum: EventType { LibEventType.CONTEXT_CUSTOM}
-	
 	
 	/// Handles the event by calling the provided callback with an optional argument.
 	///

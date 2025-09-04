@@ -16,19 +16,7 @@ import PrivMXEndpointSwiftNative
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
 extension privmx.endpoint.thread.ThreadMessageUpdatedEvent: PMXThreadEvent, @unchecked  Sendable {
-	public typealias EventType = privmx.endpoint.thread.EventType
 	
-	public static var typeNum : EventType { privmx.endpoint.thread.MESSAGE_UPDATE}
-
-	/// Returns the event channel as a string.
-	///
-	/// This implementation returns the string in the format `"thread/{threadId}/messages"`,
-	/// where `threadId` is obtained from the `data.threadId` property.
-	/// - Returns: A `String` representing the event channel, in this case, `"thread/{threadId}/messages"`.
-	public func getChannel() -> String {
-		"thread/\(self.data.info.threadId)/messages"
-	}
-
 	/// Handles the event by calling the provided callback with an optional argument.
 	///
 	/// This implementation passes the `data` property to the callback.

@@ -16,9 +16,6 @@ import PrivMXEndpointSwiftNative
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
 extension privmx.endpoint.inbox.InboxUpdatedEvent: PMXInboxEvent, @unchecked  Sendable {
-	public typealias EventType = privmx.endpoint.inbox.EventType
-	
-	public static var typeNum : EventType { privmx.endpoint.inbox.INBOX_UPDATE}
 	
 	/// Handles the event by calling the provided callback with an optional argument.
 	///
@@ -42,15 +39,6 @@ extension privmx.endpoint.inbox.InboxUpdatedEvent: PMXInboxEvent, @unchecked  Se
 		"inboxUpdated"
 	}
 
-	/// Returns the event channel as a string.
-	///
-	/// This implementation returns the constant string `"inbox"`,
-	/// identifying the channel associated with `InboxUpdatedEvent`.
-	/// - Returns: A `String` representing the event channel, in this case, `"inbox"`.
-	public func getChannel() -> String {
-		"inbox"
-	}
-	
 	public func getSubscriptionList(
 	) -> [String] {
 		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)})

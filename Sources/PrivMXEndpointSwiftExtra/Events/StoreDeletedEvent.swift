@@ -16,18 +16,6 @@ import PrivMXEndpointSwiftNative
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
 extension privmx.endpoint.store.StoreDeletedEvent: PMXStoreEvent, @unchecked  Sendable { 
-	public typealias EventType = privmx.endpoint.store.EventType
-	
-	public static var typeNum : EventType { privmx.endpoint.store.STORE_DELETE}
-	
-	/// Returns the event channel as a string.
-	///
-	/// This implementation returns the constant string `"store"`,
-	/// identifying the channel associated with `StoreDeletedEvent`.
-	/// - Returns: A `String` representing the event channel, in this case, `"store"`.
-	public func getChannel() -> String {
-		"store"
-	}
 
 	/// Handles the event by calling the provided callback with an optional argument.
 	///

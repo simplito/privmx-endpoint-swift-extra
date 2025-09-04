@@ -16,9 +16,7 @@ import PrivMXEndpointSwiftNative
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
 extension privmx.endpoint.inbox.InboxEntryDeletedEvent: PMXInboxEvent, @unchecked  Sendable {
-	public typealias EventType = privmx.endpoint.inbox.EventType
 	
-	public static var typeNum : EventType { privmx.endpoint.inbox.ENTRY_DELETE}
 	/// Handles the event by calling the provided callback with an optional argument.
 	///
 	/// This implementation passes the `data` property to the callback.
@@ -39,16 +37,6 @@ extension privmx.endpoint.inbox.InboxEntryDeletedEvent: PMXInboxEvent, @unchecke
 	/// - Returns: A `String` representing the event type, in this case, `"inboxEntryDeleted"`.
 	public static func typeStr() -> String {
 		"inboxEntryDeleted"
-	}
-
-	/// Returns the event channel as a string.
-	///
-	/// This implementation returns the string in the format `"inbox/{inboxId}/entries"`,
-	/// where `inboxId` is obtained from the `data` property.
-	/// - Returns: A `String` representing the event channel, in this case,
-	///   `"inbox/{inboxId}/entries"`.
-	public func getChannel() -> String {
-		"inbox/\(self.data.inboxId)/entries"
 	}
 	
 	public func getSubscriptionList(

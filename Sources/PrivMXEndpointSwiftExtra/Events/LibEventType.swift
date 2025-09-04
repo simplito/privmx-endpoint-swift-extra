@@ -9,7 +9,7 @@
 // limitations under the License.
 //
 
-public struct LibEventType:PMXEventType, Sendable {
+struct LibEventType:PMXEventType, Sendable {
 	public init?(rawValue: Int64 = -1) {
 		if rawValue <= 0,rawValue >= -4{
 			self.rawValue = rawValue

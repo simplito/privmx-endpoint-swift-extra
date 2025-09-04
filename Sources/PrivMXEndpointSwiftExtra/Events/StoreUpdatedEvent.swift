@@ -16,19 +16,7 @@ import PrivMXEndpointSwiftNative
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
 extension privmx.endpoint.store.StoreUpdatedEvent: PMXStoreEvent, @unchecked  Sendable { 
-	public typealias EventType = privmx.endpoint.store.EventType
 	
-	public static var typeNum : EventType { privmx.endpoint.store.STORE_UPDATE}
-	
-	/// Returns the event channel as a string.
-	///
-	/// This implementation returns the constant string `"store"`,
-	/// identifying the channel associated with `StoreUpdatedEvent`.
-	/// - Returns: A `String` representing the event channel, in this case, `"store"`.
-	public func getChannel() -> String {
-		"store"
-	}
-
 	/// Returns the event type as a string.
 	///
 	/// This method returns the constant string `"storeUpdated"`, identifying the type

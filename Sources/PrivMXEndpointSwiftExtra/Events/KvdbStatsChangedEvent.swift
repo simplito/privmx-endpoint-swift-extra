@@ -16,18 +16,6 @@ import PrivMXEndpointSwiftNative
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
 extension privmx.endpoint.kvdb.KvdbStatsChangedEvent: PMXKvdbEvent, @unchecked Sendable {
-	public typealias EventType = privmx.endpoint.kvdb.EventType
-	
-	public static var typeNum : EventType { privmx.endpoint.kvdb.KVDB_STATS}
-	
-	/// Returns the event channel as a string.
-	///
-	/// This implementation returns the constant string `"kvdb"`,
-	/// identifying the channel associated with `KvdbStatsChangedEvent`.
-	/// - Returns: A `String` representing the event channel, in this case, `"kvdb"`.
-	public func getChannel() -> String {
-		return "kvdb"
-	}
 
 	/// Returns the event type as a string.
 	///
