@@ -42,7 +42,6 @@ public struct PMXEventSelectorType:RawRepresentable, Sendable{
 }
 
 public enum LibEventType: Int64, PMXEventType, Sendable {
-	 case CONTEXT_CUSTOM = 0
 	 case LIB_CONNECTED = -1
 	 case LIB_BREAK = -2
 	 case LIB_DISCONNECTED = -3
@@ -169,63 +168,4 @@ public enum PMXEventSubscriptionRequest: Hashable, Sendable{
 	/// Events that are emitted by the endpoint library itself
 	case library(eventType: LibEventType)
 	case core(eventType: privmx.endpoint.core.EventType, contextId:String)
-	
-	/// Retreives the PMXEventSelectorType of the request.
-	func getSelectorType(
-	) -> PMXEventSelectorType{
-		return switch(self){
-			case .thread(_,let selectorType,_),
-					.inbox(_,let selectorType,_),
-					.kvdb(_,let selectorType,_),
-					.store(_,let selectorType,_):
-				selectorType
-			case .kvdbEntry(_,_,_):
-				PMXEventSelectorType.Item
-			case .custom(_,_),
-					.core(_,_):
-				PMXEventSelectorType.Context
-			case .library(_):
-				PMXEventSelectorType._Platform
-		}
 	}
-	
-	/// Retreives the id of the request, if `self` == `.custom` the selector is always equal to `PMXEventSelectorType.Context`
-	func getSelectorId(
-	) -> String{
-		return switch(self){
-			case .thread(_,_,let selectorId),
-					.inbox(_,_,let selectorId),
-					.kvdb(_,_,let selectorId),
-					.store(_,_,let selectorId),
-					.custom(_,let selectorId),
-					.core(_,let selectorId):
-				selectorId
-			case .library:
-				""
-			case .kvdbEntry(_,let kvdbId,let entryKey):
-				"\(kvdbId)/\(entryKey)"
-		}
-	}
-	
-	/// Retrieves the associated Event type of the request
-	func getEventType(
-	) -> any PMXEventType {
-		switch(self){
-			case .thread(let et,_, _):
-				et
-			case .store(let et,_, _):
-				et
-			case .inbox(let et,_, _):
-				et
-			case .kvdb(let et,_, _),
-					.kvdbEntry(let et,_,_):
-				et
-			case .custom(_,_):
-				LibEventType.CONTEXT_CUSTOM
-			case .library(let et):
-				et
-			case .core(let et,_):
-				et
-		}
-	}
-}
