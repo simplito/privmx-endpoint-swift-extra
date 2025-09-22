@@ -778,8 +778,16 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 						} else {
 							queryDict["kvdbEntry"]![sq]!.append(i)
 						}
-					case .core(let eventType,let  contextId):
-						connection
+					case .core(let eventType, let contextId):
+						let sq = try connection.buildSubscriptionQuery(
+							forEventType: eventType,
+							selectorType: .Context,
+							selectorId: contextId)
+						if queryDict["core"]![sq] == nil{
+							queryDict["core"]![sq]=[i]
+						} else {
+							queryDict["core"]![sq]!.append(i)
+						}
 				}
 			} catch {
 				results[i] = error
@@ -915,6 +923,32 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 				}
 			}
 		}
+		if let coreQuery = queryDict["core"]{
+			do{
+				let reqv = coreQuery.map({x in x})
+				let resv = try connection.subscribeFor(coreQuery.map({x in x.0}))
+				for res in resv{
+					for req in reqv{
+						for i in req.value{
+							let r = requests[i]
+							if callbacks[res] == nil {
+								callbacks[res] = (r.request,[:])
+							}
+							if callbacks[res]!.1[r.group] == nil {
+								callbacks[res]!.1[r.group] = []
+							}
+							callbacks[res]!.1[r.group]!.append(r.cb)
+						}
+					}
+				}
+			} catch {
+				for q in coreQuery{
+					for i in q.value {
+						results[i] = error
+					}
+				}
+			}
+		}
 		
 		if let libQuery = queryDict["platform"]{
 			let reqv = libQuery.map({x in x})
@@ -970,8 +1004,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	public func clearCallbacks(
 		in group:String
 	) throws -> Void {
-		callbacks.forEach({x in callbacks[x.key]?.1[group]?.removeAll()})
+		callbacks.forEach({x in callbacks[x.key]?.1.removeValue(forKey: group)})
 		let errs = unsubscribeFromEmpty()
+		
 		if !errs.allSatisfy({x in x == nil}) {
 			var errmsg = "Following errors were thrown:"
 			var errno = 0
