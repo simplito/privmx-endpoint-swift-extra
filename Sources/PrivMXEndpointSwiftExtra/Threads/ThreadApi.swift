@@ -160,7 +160,7 @@ extension ThreadApi:PrivMXThread{
 		for i in subscriptionIds{
 			sid.push_back(std.string(i))
 		}
-		try self.unsubscribeFrom(subscriptionId: sid)
+		try self.unsubscribeFrom(subscriptionIds: sid)
 	}
 	
 	/// Generate subscription Query for Thread-related events.

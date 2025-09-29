@@ -669,6 +669,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		queryDict["event"] = [:]
 		queryDict["platform"] = [:]
 		queryDict["core"] = [:]
+		
+		// Maps requests to Apis
 		for i in 0..<requests.count{
 			do{
 				let req = requests[i]
@@ -793,6 +795,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 				results[i] = error
 			}
 		}
+		
+		
+		// actual subscriptions
 		if let threadQuery = queryDict["thread"], threadApi != nil{
 			do{
 				let reqv = threadQuery.map({x in x})
@@ -974,6 +979,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	/// Removes all callbacks for a particular Request.
 	///
 	/// - Parameter request: the request specifying Event Type and Selector
+	@available(*, deprecated, message: "Removing part of the callbacks causes Undefined Behaviour in 2.6.0, please use clearAllCallbacks() instead")
 	public func clearCallbacks(
 		for request: PMXEventSubscriptionRequest
 	) throws -> Void {
@@ -1001,6 +1007,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	/// Removes all registered callbacks assigned to `group`.
 	///
 	/// - Parameter group: the group that has been assigned when registering callbacks
+	@available(*, deprecated, message: "Removing part of the callbacks causes Undefined Behaviour in 2.6.0, please use clearAllCallbacks() instead")
 	public func clearCallbacks(
 		in group:String
 	) throws -> Void {

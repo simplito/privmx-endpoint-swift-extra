@@ -18,7 +18,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `ContextCustomEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.core.ContextUsersStatusChangeEvent: PMXCustomEvent, @unchecked Sendable {
+extension privmx.endpoint.core.ContextUsersStatusChangedEvent: PMXCustomEvent, @unchecked Sendable {
 	
 	/// Handles the event by calling the provided callback with an optional argument.
 	///

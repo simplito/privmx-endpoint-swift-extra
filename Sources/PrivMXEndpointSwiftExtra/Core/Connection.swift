@@ -144,7 +144,7 @@ extension Connection: PrivMXConnection {
 		for q in subscriptionIds{
 			sq.push_back(std.string(q))
 		}
-		try unsubscribeFrom(subscriptionId: sq)
+		try unsubscribeFrom(subscriptionIds: sq)
 	}
 	
 	
