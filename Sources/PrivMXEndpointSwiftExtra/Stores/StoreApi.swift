@@ -218,7 +218,7 @@ extension StoreApi : PrivMXStore{
 		for i in subscriptionIds{
 			sid.push_back(std.string(i))
 		}
-		try self.unsubscribeFrom(subscriptionId: sid)
+		try self.unsubscribeFrom(subscriptionIds: sid)
 	}
 	
 	public func subscribeFor(

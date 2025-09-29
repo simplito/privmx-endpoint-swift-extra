@@ -162,21 +162,18 @@ final class PrivMXEventLoop: @unchecked Sendable{
 			x = try EventHandler.extractKvdbEntryUpdatedEvent(eventHolder: eh)
 		} else if try EventHandler.isKvdbEntryDeletedEvent(eventHolder: eh){
 			x = try EventHandler.extractKvdbEntryDeletedEvent(eventHolder: eh)
+		}else if try EventHandler.isContextUserAddedEvent(eventHolder: eh){
+			x = try EventHandler.extractContextUserAddedEvent(eventHolder: eh)
+		}else if try EventHandler.isContextUserRemovedEvent(eventHolder: eh){
+			x = try EventHandler.extractContextUserRemovedEvent(eventHolder: eh)
+		}else if try EventHandler.isContextUsersStatusChangedEvent(eventHolder: eh){
+			x = try EventHandler.extractContextUsersStatusChangedEvent(eventHolder: eh)
+		}else if try EventHandler.isCollectionChangedEvent(eventHolder: eh){
+			x = try EventHandler.extractCollectionChangedEvent(eventHolder: eh)
 		} else {
 			return nil
 		}
 		return (event:x,type: type(of: x))
 	}
 	
-	/// Represents a parsed event with its type and associated channel.
-    private struct ParsedEvent{
-		init(_ e:any PMXEvent, _ t: any PMXEvent.Type,_ c : String){
-			type = t
-			event = e
-			channel = c
-		}
-		var event: any PMXEvent
-		var type: any PMXEvent.Type
-		var channel:String
-	}
 }

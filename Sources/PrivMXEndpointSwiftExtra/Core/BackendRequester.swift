@@ -32,6 +32,21 @@ extension BackendRequester {
 	/// - Throws: An error if the request fails, such as network issues or invalid parameters.
 	public static func backendRequest(
 		serverUrl: String,
+		accessToken: String,
+		method: String,
+		paramsAsJson: String
+	) throws -> String {
+		try String(
+			Self.backendRequest(
+				serverUrl: std.string(serverUrl),
+				accessToken: std.string(accessToken),
+				method: std.string(method),
+				paramsAsJson: std.string(paramsAsJson)))
+	}
+
+	@available(*, deprecated, renamed: "backendRequest(serverUrl:memberToken:method:paramsAsJson:)")
+	public static func backendRequest(
+		serverUrl: String,
 		memberToken: String,
 		method: String,
 		paramsAsJson: String
@@ -39,7 +54,7 @@ extension BackendRequester {
 		try String(
 			Self.backendRequest(
 				serverUrl: std.string(serverUrl),
-				memberToken: std.string(memberToken),
+				accessToken: std.string(memberToken),
 				method: std.string(method),
 				paramsAsJson: std.string(paramsAsJson)))
 	}
