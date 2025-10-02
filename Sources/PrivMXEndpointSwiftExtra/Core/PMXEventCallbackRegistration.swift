@@ -18,8 +18,6 @@ public protocol PMXEventType:RawRepresentable<Int64>{}
 
 /// Unified Event Selector Type
 public struct PMXEventSelectorType:RawRepresentable, Sendable{
-	/// Don't.
-	static var _Platform: Self {PMXEventSelectorType(rawValue: -99999)!}
 	/// Computed property returning a SelectorType corresponding to CONTEXT values
 	public static var Context : Self {PMXEventSelectorType(rawValue: 0)!}
 	/// Computed property returning a SelectorType corresponding to CONTAINER values (such as Thread, Store, etc.)
