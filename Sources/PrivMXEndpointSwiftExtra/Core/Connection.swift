@@ -98,6 +98,7 @@ extension Connection: PrivMXConnection {
 	/// Retrieves a list of Users from a particular Context.
 	///
 	/// - parameter contextId: Id of the Context.
+	/// - parameter query: object containing parameters of the Query
 	///
 	/// - throws: When the operation fails.
 	///

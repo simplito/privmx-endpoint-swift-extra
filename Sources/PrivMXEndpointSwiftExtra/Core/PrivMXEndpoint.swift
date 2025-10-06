@@ -642,9 +642,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	///
 	/// Whenever possible preffer using `registerCallbacksInBulk(_:)` to minimise the amount of server requests.
 	///
-	/// - Parameter cb: the callback that will be executed
-	/// - Parameter type: type of Event
-	/// - Parameter group: Custom group for managing Callbacks
+	/// - Parameter request: `PMXEventCallbackRegistration` instance describing EventType and Scope of the callback; as well as assigning it to a group.
+	///
+	/// - Throws: When the request is malformed, or subscribing fails.
 	public func registerCallback(
 		for request: PMXEventCallbackRegistration
 	) throws -> Void {
@@ -653,9 +653,11 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		}
 	}
 	
-	/// Mass registration for Events, this method optimises the amount of server requests made and is the recommended way to subscribe for events
+	/// Mass registration for Events, this method optimises the amount of server requests made and is the recommended way to subscribe for events.
 	///
-	/// - Parameter requests: an arrays of tuples consisting of the callback that will be called when the event arrives, `PMXEventRegistration` value that describes the particular event and a string representing a group of callbacks.
+	/// - Parameter requests: an arrays of tuples consisting of the callback that will be called when the event arrives, `PMXEventRegistration` value that describes the particular event and a string representing a group of callbacks
+	///
+	/// - Returns: array of optional Errors corresponding to the provided requests. If the reques was succesfull the associated index will be `nil` otherwise it will have the error thrown.
 	public func registerCallbacksInBulk(
 		_ requests:[PMXEventCallbackRegistration]
 	) -> [(any Error)?] {
@@ -978,7 +980,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	
 	/// Removes all callbacks for a particular Request.
 	///
-	/// - Parameter request: the request specifying Event Type and Selector
+	/// - Parameter request: the request specifying Event Type and Scope
+	///
+	/// - Throws: When unsubscribing fails.
 	@available(*, deprecated, message: "Removing part of the callbacks causes Undefined Behaviour in 2.6.0, please use clearAllCallbacks() instead")
 	public func clearCallbacks(
 		for request: PMXEventSubscriptionRequest
@@ -1006,7 +1010,11 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	
 	/// Removes all registered callbacks assigned to `group`.
 	///
-	/// - Parameter group: the group that has been assigned when registering callbacks
+	/// If this removes the last callback for a subscription, it will automatically unsubscribe.
+	///
+	/// - Parameter group: the group that has been assigned when registering callbacks.
+	///
+	/// - Throws: when unsubscribing fails.
 	@available(*, deprecated, message: "Removing part of the callbacks causes Undefined Behaviour in 2.6.0, please use clearAllCallbacks() instead")
 	public func clearCallbacks(
 		in group:String
@@ -1033,7 +1041,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		}
 	}
 	
-	/// Removes all registered callbacks and subscriptions for Events
+	/// Removes all registered callbacks and subscriptions for Events.
 	public func clearAllCallbacks(
 	) throws -> Void {
 		callbacks.forEach({x in callbacks[x.key]?.1.removeAll()})
@@ -1057,9 +1065,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		}
 	}
 	
-	/// Removes all registered callbacks for Events from selected Channel
-	///
-	/// - Parameter channel: the EventChannel, from which events should no longer be received
+	/// Removes all subscripitons that do not have any callbacks.
 	private func unsubscribeFromEmpty(
 	) -> [(any Error)?] {
 		let calls = callbacks.filter({ x in x.value.1.isEmpty && x.key != "platform"}).map({x in x})

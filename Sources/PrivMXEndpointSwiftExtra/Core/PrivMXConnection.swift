@@ -104,6 +104,7 @@ public protocol PrivMXConnection{
 		of contextId: String,
 		basedOn query: privmx.endpoint.core.PagingQuery
 	) throws -> privmx.UserInfoList
+	
 	/// Subscribe for the events on the given subscription query.
 	///
 	/// - Parameter subscriptionQueries: list of queries
@@ -114,6 +115,7 @@ public protocol PrivMXConnection{
 	func subscribeFor(
 		_ subscriptionQueries: [String]
 	) throws -> [String]
+	
 	/// Unsubscribe from events for the given subscriptionId.
 	///
 	/// - Parameter subscriptionIds: list of subscriptionId
