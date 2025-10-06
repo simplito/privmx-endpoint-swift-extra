@@ -23,7 +23,7 @@ extension BackendRequester {
 	///
 	/// - Parameters:
 	///   - serverUrl: The URL of PrivMX Bridge server.
-	///   - memberToken: The authentication token provided by the server.
+	///   - accessToken: The authentication token provided by the server.
 	///   - method: The API endpoint to be called (HTTP method, such as POST, GET, etc.).
 	///   - paramsAsJson: The parameters to be sent with the request, formatted as a JSON string.
 	///

@@ -197,7 +197,7 @@ public protocol PrivMXThread{
 	///
 	/// - Throws: `PrivMXEndpointError.failedSubscribing` if the subscription process fails.
 	func subscribeFor(
-		_ queries: [String]
+		_ subscriptionQueries: [String]
 	) throws -> [String]
 	
 	/// Revokes selected Subscriptions.

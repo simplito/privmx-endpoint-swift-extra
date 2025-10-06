@@ -84,7 +84,7 @@ final class PrivMXEventLoop: @unchecked Sendable{
 	}
 
 	/// Publishes the received event to the main actor.
-	///
+	/// 
 	/// - Parameters:
 	///   - event: The received `PMXEvent`.
 	///   - type: The type of the received event.

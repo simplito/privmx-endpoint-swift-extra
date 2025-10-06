@@ -44,11 +44,11 @@ public extension EventApi{
 	///
 	/// - Returns: list of subscriptionIds in maching order to subscriptionQueries.
 	func subscribeFor(
-		_ queries: [String]
+		_ subscriptionQueries: [String]
 	) throws -> [String] {
 		var sqv = privmx.SubscriptionQueryVector()
-		sqv.reserve(queries.count)
-		for q in queries{
+		sqv.reserve(subscriptionQueries.count)
+		for q in subscriptionQueries{
 			sqv.push_back(std.string(q))
 		}
 		return try self.subscribeFor(subscriptionQueries:sqv).map({x in String(x)})

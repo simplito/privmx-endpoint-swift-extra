@@ -234,9 +234,10 @@ public protocol PrivMXStore{
 	///
 	/// This method uploads a chunk of data to a file that has been opened for writing using a file handle.
 	///
-	/// - Parameters:
-	///   - handle: The handle of the opened File.
-	///   - dataChunk: The data to write to the File.
+	/// - Parameter handle: The handle of the opened File.
+	/// - Parameter dataChunk: The data to write to the File.
+	/// - Parameter truncate: wheteher this write should discard all data after this position in the File.
+	///
 	///
 	/// - Throws: An error if the write operation fails.
 	func writeToFile(
@@ -300,7 +301,7 @@ public protocol PrivMXStore{
 	///
 	/// - Throws: `PrivMXEndpointError.failedSubscribing` if the subscription process fails.
 	func subscribeFor(
-		_ queries: [String]
+		_ subscriptionQueries: [String]
 	) throws -> [String]
 	
 	/// Revokes selected Subscriptions.
