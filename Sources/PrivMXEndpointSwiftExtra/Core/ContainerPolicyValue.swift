@@ -12,7 +12,7 @@
 import Foundation
 import PrivMXEndpointSwiftNative
 
-/// Enumeration of values available for configuring Policies for Containers
+/// Enumeration of values available for configuring Policies for Containers.
 public enum ContainerPolicyValue: RawRepresentable{
 	public var rawValue: std.string {
 		switch self{
