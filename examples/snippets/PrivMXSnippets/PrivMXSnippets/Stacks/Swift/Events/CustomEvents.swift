@@ -17,7 +17,6 @@ import PrivMXEndpointSwiftNative
 
 extension PrivMXSnippetClass {
 	var CHANNEL_NAME: String  {"CUSTOM_CHANNEL"}
-	var channel: EventChannel { EventChannel.custom(contextId: CONTEXT_ID , name: CHANNEL_NAME)}
 	
 	
 	func emittingCustomEvents() throws {
@@ -26,18 +25,21 @@ extension PrivMXSnippetClass {
 			to: [privmx.endpoint.core.UserWithPubKey(userId: USER1_ID, pubKey: USER1_PUBLIC_KEY),
 				 privmx.endpoint.core.UserWithPubKey(userId: USER2_ID, pubKey: USER2_PUBLIC_KEY),
 				],
-			on: channel.name,
+			on: CHANNEL_NAME,
 			containing: Data())
 	}
 	
 	func handlingCustomEvents() throws{
+
 		try endpointSession?.registerCallback(
 			for: PMXEventCallbackRegistration(
-				cb: { data in
-					//
-				},
-				request: .custom(channelName: CHANNEL_NAME,
-								 contextId: CONTEXT_ID),
-				group: "GROUP"))
+				request: .custom(
+					channelName: CHANNEL_NAME,
+					contextId: CONTEXT_ID),
+				group: "some_group",
+				cb: {data in
+					
+				})
+		)
 	}
 }

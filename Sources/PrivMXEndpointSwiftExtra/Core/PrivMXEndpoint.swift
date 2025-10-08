@@ -983,7 +983,6 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	/// - Parameter request: the request specifying Event Type and Scope
 	///
 	/// - Throws: When unsubscribing fails.
-	@available(*, deprecated, message: "Removing part of the callbacks causes Undefined Behaviour in 2.6.0, please use clearAllCallbacks() instead")
 	public func clearCallbacks(
 		for request: PMXEventSubscriptionRequest
 	) throws -> Void {
@@ -1015,7 +1014,6 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	/// - Parameter group: the group that has been assigned when registering callbacks.
 	///
 	/// - Throws: when unsubscribing fails.
-	@available(*, deprecated, message: "Removing part of the callbacks causes Undefined Behaviour in 2.6.0, please use clearAllCallbacks() instead")
 	public func clearCallbacks(
 		in group:String
 	) throws -> Void {
