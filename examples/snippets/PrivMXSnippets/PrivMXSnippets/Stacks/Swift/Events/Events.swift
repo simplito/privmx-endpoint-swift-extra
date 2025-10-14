@@ -16,55 +16,42 @@ import PrivMXEndpointSwiftNative
 
 extension PrivMXSnippetClass {
     
-    
-    func startListening(){
-        Task{
-            try? await endpointContainer?.startListening()
-        }
-    }
-    
-    func addEventListener(){
-        let storeId = "STORE_ID"
-        try? endpointSession?.registerCallback(
-			for: .init(
-				request: .store(eventType: privmx.endpoint.store.STORE_CREATE,
-								selectorType: PMXEventSelectorType.Context,
-								selectorId: CONTEXT_ID),
-				group: "some_group",
-			cb: {
-				eventData in
-				// some actions to take
-			})
-        )
-    }
-    
-	func removeEventListenerByGroup(){
-		let storeId = "STORE_ID"
-		do{
-			try endpointSession?.registerCallback(
-				for: PMXEventCallbackRegistration(
-					request: .store(eventType: privmx.endpoint.store.FILE_CREATE,
-									selectorType: PMXEventSelectorType.Container,
-									selectorId: storeId),
-					group: "some_group",
-					cb: {
-						eventData in
-						// some actions to take
-					})
-			)
-			
-			try endpointContainer?
-				.getEndpoint(endpointId)?
-				.clearCallbacks(in: "some_group")
-		} catch {
-			print(error)
+	func quickstartEvents(){
+		//1
+		Task{
+			try? await endpointContainer?.startListening()
 		}
+		
+		//2
+		let storeId = "STORE_ID"
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.FILE_CREATE,
+					selectorType: PMXEventSelectorType.Container,
+					selectorId: storeId),
+				group: "some_group"){
+					eventData in
+					// some actions to take
+				}
+		)
+		
+		//3
+		try? endpointContainer?
+			.getEndpoint(endpointId)?
+			.clearCallbacks(in: "some_group")
 		
 	}
     
+	func unregisterByGroup(){
+		try? endpointContainer?
+			.getEndpoint(endpointId)?
+			.clearCallbacks(in: "some_group")
+	}
+	
 	func unregisterCallbacksByRequest(){
-		let threadId = "THREAD_ID"
 		
+		let threadId = "THREAD_ID"
 		
 		try? endpointContainer?.getEndpoint(endpointId)?.clearCallbacks(
 			for: .thread(

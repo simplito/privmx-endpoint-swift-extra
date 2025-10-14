@@ -46,8 +46,41 @@ extension PrivMXSnippetClass {
 					// some actions when disconect method was called
 				}))
 	}
+	
+	func handlingUserEvents(){
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .core(
+					eventType: privmx.endpoint.core.USER_ADD,
+					contextId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when new User is added to context
+				}))
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .core(
+					eventType: privmx.endpoint.core.USER_REMOVE,
+					contextId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a User is removed from context
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .core(
+					eventType: privmx.endpoint.core.USER_STATUS,
+					contextId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when the status of Users changes
+				}))
+		
+		
+	}
     
-    func handlingThreadEvents(){		
+    func handlingThreadEvents(){
 		let threadId = "THREAD_ID"
 		
         try? endpointSession?.registerCallback(
