@@ -16,7 +16,7 @@ import Foundation
 
 extension PrivMXSnippetClass{
 
-	func createInboxStart(){
+	func createKvdbStart(){
 		
 		let users: [privmx.endpoint.core.UserWithPubKey] = [
 			.init(userId: USER1_ID, pubKey: USER1_PUBLIC_KEY),
@@ -28,37 +28,36 @@ extension PrivMXSnippetClass{
 		let publicMeta = Data("Some Public Metadata".utf8)
 		let privateMeta = Data("Some Private Metadata".utf8)
 		 
-		let newInboxId = try? endpointSession?.inboxApi?.createInbox(
+		let newKvdbId = try? endpointSession?.kvdbApi?.createKvdb(
 			in: CONTEXT_ID,
 			for: users,
 			managedBy: managers,
 			withPublicMeta: publicMeta,
 			withPrivateMeta: privateMeta,
-			withFilesConfig:nil,
 			withPolicies: nil)
 		
 	}
 	
-	func listInboxsStart(){
+	func listKvdbsStart(){
 		let query = privmx.endpoint.core.PagingQuery(
 			skip: 0,
 			limit: 10,
 			sortOrder: .desc)
 		  
-		let pagedList = try? endpointSession?.inboxApi?.listInboxes(
+		let pagedList = try? endpointSession?.kvdbApi?.listKvdbs(
 			from: CONTEXT_ID,
 			basedOn: query)
 		 
 		pagedList?.readItems.forEach {
-			print($0.inboxId)
+			print($0.kvdbId)
 		}
 	}
 	
-	func updateInboxStart(){
+	func updateKvdbStart(){
 		
-		let inboxId = "THREAD_ID"
+		let kvdbId = "THREAD_ID"
 		 
-		guard let inboxInfo = try? endpointSession?.inboxApi?.getInbox(inboxId)
+		guard let kvdbInfo = try? endpointSession?.kvdbApi?.getKvdb(kvdbId)
 		else {return}
 		 
 		let newUsers: [privmx.endpoint.core.UserWithPubKey] = [
@@ -73,27 +72,19 @@ extension PrivMXSnippetClass{
 		let newPublicMeta = Data("Some New Public Metadata".utf8)
 		let newPrivateMeta = Data("Some New Private Metadata".utf8)
 		 
-		try? endpointSession?.inboxApi?.updateInbox(
-			inboxId,
+		try? endpointSession?.kvdbApi?.updateKvdb(
+			kvdbId,
+			atVersion: kvdbInfo.version,
 			replacingUsers: newUsers,
 			replacingManagers: newManagers,
 			replacingPublicMeta: newPublicMeta,
 			replacingPrivateMeta: newPrivateMeta,
-			replacingFilesConfig: nil,
-			atVersion: inboxInfo.version,
 			force: false,
 			forceGenerateNewKey: false,
-			replacingPolicies: inboxInfo.policy)
+			replacingPolicies: kvdbInfo.policy)
 	}
 	
-	func deleteInboxStart(){
-		try? endpointSession?.inboxApi?.deleteInbox("YOUR_INBOX_ID")
-	}
-	
-	func startInboxPublicView(){
-		
-		let publicView = try? publicEndpointSession?.inboxApi?.getInboxPublicView(for: "YOUR INBOS ID")
-		
-		print("Public Meta:", publicView?.publicMeta.getString())
+	func deleteKvdbStart(){
+		try? endpointSession?.kvdbApi?.deleteKvdb("YOUR_KVDB_ID")
 	}
 }

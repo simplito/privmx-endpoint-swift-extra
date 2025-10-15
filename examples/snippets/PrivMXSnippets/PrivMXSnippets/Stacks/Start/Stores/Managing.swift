@@ -15,8 +15,8 @@ import PrivMXEndpointSwiftExtra
 import Foundation
 
 extension PrivMXSnippetClass{
-
-	func createInboxStart(){
+	
+	func createStoreStart(){
 		
 		let users: [privmx.endpoint.core.UserWithPubKey] = [
 			.init(userId: USER1_ID, pubKey: USER1_PUBLIC_KEY),
@@ -27,38 +27,37 @@ extension PrivMXSnippetClass{
 		]
 		let publicMeta = Data("Some Public Metadata".utf8)
 		let privateMeta = Data("Some Private Metadata".utf8)
-		 
-		let newInboxId = try? endpointSession?.inboxApi?.createInbox(
+		
+		let newStoreId = try? endpointSession?.storeApi?.createStore(
 			in: CONTEXT_ID,
 			for: users,
 			managedBy: managers,
 			withPublicMeta: publicMeta,
 			withPrivateMeta: privateMeta,
-			withFilesConfig:nil,
 			withPolicies: nil)
 		
 	}
 	
-	func listInboxsStart(){
+	func listStoresStart(){
 		let query = privmx.endpoint.core.PagingQuery(
 			skip: 0,
 			limit: 10,
 			sortOrder: .desc)
-		  
-		let pagedList = try? endpointSession?.inboxApi?.listInboxes(
+		 
+		let pagedList = try? endpointSession?.storeApi?.listStores(
 			from: CONTEXT_ID,
 			basedOn: query)
-		 
+		
 		pagedList?.readItems.forEach {
-			print($0.inboxId)
+			print($0.storeId)
 		}
 	}
 	
-	func updateInboxStart(){
+	func updateStoreStart(){
 		
-		let inboxId = "THREAD_ID"
+		let storeId = "THREAD_ID"
 		 
-		guard let inboxInfo = try? endpointSession?.inboxApi?.getInbox(inboxId)
+		guard let storeInfo = try? endpointSession?.storeApi?.getStore(storeId)
 		else {return}
 		 
 		let newUsers: [privmx.endpoint.core.UserWithPubKey] = [
@@ -73,27 +72,19 @@ extension PrivMXSnippetClass{
 		let newPublicMeta = Data("Some New Public Metadata".utf8)
 		let newPrivateMeta = Data("Some New Private Metadata".utf8)
 		 
-		try? endpointSession?.inboxApi?.updateInbox(
-			inboxId,
+		try? endpointSession?.storeApi?.updateStore(
+			storeId,
+			atVersion: storeInfo.version,
 			replacingUsers: newUsers,
 			replacingManagers: newManagers,
 			replacingPublicMeta: newPublicMeta,
 			replacingPrivateMeta: newPrivateMeta,
-			replacingFilesConfig: nil,
-			atVersion: inboxInfo.version,
 			force: false,
 			forceGenerateNewKey: false,
-			replacingPolicies: inboxInfo.policy)
+			replacingPolicies: storeInfo.policy)
 	}
 	
-	func deleteInboxStart(){
-		try? endpointSession?.inboxApi?.deleteInbox("YOUR_INBOX_ID")
-	}
-	
-	func startInboxPublicView(){
-		
-		let publicView = try? publicEndpointSession?.inboxApi?.getInboxPublicView(for: "YOUR INBOS ID")
-		
-		print("Public Meta:", publicView?.publicMeta.getString())
+	func deleteStoreStart(){
+		try? endpointSession?.storeApi?.deleteStore("YOUR_STORE_ID")
 	}
 }
