@@ -16,44 +16,52 @@ import PrivMXEndpointSwiftNative
 
 extension PrivMXSnippetClass {
     
+	func quickstartEvents(){
+		//1
+		Task{
+			try? await endpointContainer?.startListening()
+		}
+		
+		//2
+		let storeId = "STORE_ID"
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.FILE_CREATE,
+					selectorType: PMXEventSelectorType.Container,
+					selectorId: storeId),
+				group: "some_group"){
+					eventData in
+					// some actions to take
+				}
+		)
+		
+		//3
+		try? endpointContainer?
+			.getEndpoint(endpointId)?
+			.clearCallbacks(in: "some_group")
+		
+	}
     
-    func startListening(){
-        Task{
-            try? await endpointContainer?.startListening()
-        }
-    }
-    
-    func addEventListener(){
-        var storeId = "STORE_ID"
-        _ = try? endpointSession?.registerCallback(
-            for: privmx.endpoint.store.StoreFileUpdatedEvent.self,
-            from: EventChannel.storeFiles(storeID: storeId), identified: "some_id"
-        ) {
-            eventData in
-        }
-    }
-    
-    func removeEventListener(){
-        var storeId = "STORE_ID"
-        guard let callbackId = try? endpointSession?.registerCallback(
-            for: privmx.endpoint.store.StoreFileUpdatedEvent.self,
-            from: EventChannel.storeFiles(storeID: storeId), identified: "some_id",
-            { eventData in
-            }
-        ) else {return}
-
-        endpointContainer?.getEndpoint(endpointId)?.deleteCallbacks(identified: "some_id")
-        
-    }
-    
-    func unregisterCallbacks(){
-        endpointContainer?.getEndpoint(endpointId)?.clearCallbacks(for: .platform )
-
-
-    }
+	func unregisterByGroup(){
+		try? endpointContainer?
+			.getEndpoint(endpointId)?
+			.clearCallbacks(in: "some_group")
+	}
+	
+	func unregisterCallbacksByRequest(){
+		
+		let threadId = "THREAD_ID"
+		
+		try? endpointContainer?.getEndpoint(endpointId)?.clearCallbacks(
+			for: .thread(
+				eventType: privmx.endpoint.thread.MESSAGE_UPDATE,
+				selectorType: PMXEventSelectorType.Container,
+				selectorId: threadId))
+	}
     
     func unregisterAllCallbacks(){
-        endpointContainer?.getEndpoint(endpointId)?.clearAllCallbacks()
+		try? endpointContainer?.getEndpoint(endpointId)?.clearAllCallbacks()
     }
     
     
