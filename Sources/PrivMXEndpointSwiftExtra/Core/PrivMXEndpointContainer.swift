@@ -128,8 +128,9 @@ public final class PrivMXEndpointContainer: Sendable{
 	/// - Throws: An error if disconnecting any endpoint fails.
 	public func disconnectAll(
 	) throws -> Void {
-		for e in endpoints.values {
-			try e.connection.disconnect()
+		let ids = endpoints.keys
+		for e in ids {
+			try disconnect(endpoint: e)
 		}
 	}
 	
