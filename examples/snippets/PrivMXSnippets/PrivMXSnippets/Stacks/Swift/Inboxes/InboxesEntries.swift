@@ -83,15 +83,32 @@ extension PrivMXSnippetClass {
 
         //3
         try? publicEndpointSession?.inboxApi?.writeToFile(inboxFileHandle, of: entryHandle, uploading: data)
-        try? publicEndpointSession?.inboxApi?.closeFile(withHandle: inboxFileHandle)
 
         //4
         try? publicEndpointSession?.inboxApi?.sendEntry(entryHandle)
-
-
-        
-        
     }
+	
+	func sendingEntriesReccomendedBasic(){
+		//1
+		let inboxID = "INBOX_ID"
+		
+		let inboxPublicEntry = InboxPublicEntry(
+			name: "name",
+			surname: "surname",
+			email: "email",
+			comment: "comment")
+		
+		guard let inboxApi = publicEndpointSession?.inboxApi else {return}
+		var handler = try? InboxEntryHandler.prepareInboxEntryHandler(
+			using: inboxApi,
+			in: inboxID,
+			containing: JSONEncoder().encode(inboxPublicEntry),
+			sending: [],
+			derivingPublicKeyFrom: nil)
+		
+		try? handler?.sendEntry()
+		
+	}
 
     
     public func readingNewestEntries(){

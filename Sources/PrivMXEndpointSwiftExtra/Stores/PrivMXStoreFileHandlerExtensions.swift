@@ -74,7 +74,8 @@ extension PrivMXStoreFileHandler{
 		let handle = try storesApi.createFile(in: storeId,
 											  withPublicMeta: publicMeta,
 											  withPrivateMeta: privateMeta,
-											  ofSize: fileSize)
+											  ofSize: fileSize,
+											  randomWriteSupport: false)
 		return try PrivMXStoreFileHandler(StoreFileHandle: handle,
 										  storesApi: storesApi,
 										  localFile:sourceFile,
@@ -115,7 +116,7 @@ extension PrivMXStoreFileHandler{
 										  chunkSize: chunkSize)
 	}
 
-	/// Creates a handler for updating a file with a new data buffer.
+	/// Creates a handler for creating a file with a new data buffer.
 	///
 	/// - Parameters:
 	///   - storeId: The ID of the Store in which the file is to be created.
@@ -125,7 +126,7 @@ extension PrivMXStoreFileHandler{
 	///   - privateMeta: The new private metadata for the file.
 	///   - fileSize: The size of the file to be updated.
 	///   - chunkSize: The size of the chunks for the upload. Defaults to the recommended chunk size.
-	/// - Returns: A new `PrivMXStoreFileHandler` instance configured for updating the file.
+	/// - Returns: A new `PrivMXStoreFileHandler` instance configured for creating the file.
 	/// - Throws: An error if the file cannot be opened or updated.
 	public static func getStoreFileCreator(
 		inStore storeId:String,
@@ -139,7 +140,8 @@ extension PrivMXStoreFileHandler{
 		let handle = try storesApi.createFile(in: storeId,
 											  withPublicMeta: publicMeta,
 											  withPrivateMeta: privateMeta,
-											  ofSize: fileSize)
+											  ofSize: fileSize,
+											  randomWriteSupport: false)
 		return try PrivMXStoreFileHandler(StoreFileHandle: handle,
 										  storesApi: storesApi,
 										  buffer: sourceBuffer,

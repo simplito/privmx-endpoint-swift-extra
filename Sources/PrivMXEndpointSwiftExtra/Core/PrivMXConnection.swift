@@ -96,12 +96,40 @@ public protocol PrivMXConnection{
 	/// Retrieves a list of Users from a particular Context.
 	///
 	/// - parameter contextId: Id of the Context.
-	///
+	/// - parameter query:
 	/// - throws: When the operation fails.
 	///
-	/// - returns: a list of UserInfo objects.
-	func getContextUsers(
-		of contextId: String
-	) throws -> [privmx.endpoint.core.UserInfo]
+	/// - returns: a `PagingList` of UserInfo objects.
+	func listContextUsers(
+		of contextId: String,
+		basedOn query: privmx.endpoint.core.PagingQuery
+	) throws -> privmx.UserInfoList
+	
+	/// Subscribe for the events on the given subscription query.
+	///
+	/// - Parameter subscriptionQueries: list of queries
+	///
+	/// - Throws: When subscribing for events fails.
+	///
+	/// - Returns: list of subscriptionIds in maching order to subscriptionQueries.
+	func subscribeFor(
+		_ subscriptionQueries: [String]
+	) throws -> [String]
+	
+	/// Unsubscribe from events for the given subscriptionId.
+	///
+	/// - Parameter subscriptionIds: list of subscriptionId
+	///
+	/// - Throws: When unsubscribing fails.
+	func unsubscribeFrom(
+		_ subscriptionIds: [String]
+	) throws -> Void
+	
+	/// Builds subscription query
+	func buildSubscriptionQuery(
+		forEventType eventType: privmx.endpoint.core.EventType,
+		selectorType: PMXEventSelectorType,
+		selectorId: String
+	) throws -> String
 }
 

@@ -94,7 +94,7 @@ extension PrivMXSnippetClass {
 		let currentKvdb = try kvdbApi.getKvdb(KVDB_ID)
 		
 		try kvdbApi.updateKvdb(
-			kvdbId,
+			KVDB_ID,
 			atVersion: currentKvdb.version,
 			replacingUsers: [privmx.endpoint.core.UserWithPubKey(
 				userId: USER1_ID,
@@ -128,6 +128,6 @@ extension PrivMXSnippetClass {
 	func gettingKvdb() throws{
 		let KVDB_ID = "ID of your KVDB"
 		
-		let kvdb = kvdbApi.getKvdb(KVDB_ID)
+		let kvdb = try kvdbApi.getKvdb(KVDB_ID)
 	}
 }

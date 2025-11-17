@@ -275,24 +275,64 @@ extension KvdbApi {
 		return result
 	}
 	
-	/// Subscribes for events in given KVDB.
-	///
-	/// - Parameter kvdbId: ID of the KVDB to subscribe
-	/// - Throws: `PrivMXEndpointError.failedSubscribingForEvents` if the operation fails.
-	public func subscribeForEntryEvents(
-		in kvdbId: String
-	) throws -> Void {
-		try self.subscribeForEntryEvents(kvdbId: std.string(kvdbId))
+	public func subscribeFor(
+		_ queries: [String]
+	) throws -> [String] {
+		var sqv = privmx.SubscriptionQueryVector()
+		sqv.reserve(queries.count)
+		for q in queries{
+			sqv.push_back(std.string(q))
+		}
+		return try self.subscribeFor(subscriptionQueries:sqv).map({x in String(x)})
 	}
 	
-	/// Unsubscribes from events in given KVDB.
-	///
-	/// - Parameter kvdbId: ID of the KVDB to unsubscribe
-	///
-	/// - Throws: `PrivMXEndpointError.failedUnsubscribingFromEvents` if the operation fails.
-	public func unsubscribeFromEntryEvents(
-		in kvdbId: String
+	public func unsubscribeFrom(
+		_ subscriptionIds: [String]
 	) throws -> Void {
-		try self.unsubscribeFromEntryEvents(kvdbId: std.string(kvdbId))
+		var sid = privmx.SubscriptionIdVector()
+		sid.reserve(subscriptionIds.count)
+		for i in subscriptionIds{
+			sid.push_back(std.string(i))
+		}
+		try self.unsubscribeFrom(subscriptionIds: sid)
+	}
+	
+	/// Generate subscription Query for KVDB-related events.
+	///
+	/// - Parameter eventType: type of the event you wish to receive
+	/// - Parameter selectorType: scope on which you listen for events
+	/// - Parameter selectorId: ID of the selector
+	///
+	/// - Throws: When building the subscription Query fails.
+	///
+	/// - Returns: a properly formatted event subscription request.
+	func buildSubscriptionQuery(
+		forEventType eventType: privmx.endpoint.kvdb.EventType,
+		selectorType: privmx.endpoint.kvdb.EventSelectorType,
+		selectorId: String
+	) throws -> String {
+		try String(self.buildSubscriptionQuery(eventType: eventType,
+											   selectorType: selectorType,
+											   selectorId: std.string(selectorId)))
+	}
+
+	/// Generate subscription Query for KVDB-related events.
+	///
+	/// - Parameter eventType: type of the event you wish to receive
+	/// - Parameter kvdbId: id of the KVDB
+	/// - Parameter kvdbEntryKey: key of the entry
+	///
+	/// - Throws: When building the subscription Query fails.
+	///
+	/// - Returns: a properly formatted event subscription request.
+	func buildSubscriptionQueryForSelectedEntry(
+		_ kvdbEntryKey: String,
+		from kvdbId: String,
+		for eventType: privmx.endpoint.kvdb.EventType
+	) throws -> String {
+		try String(self.buildSubscriptionQueryForSelectedEntry(
+			eventType: eventType,
+			kvdbId: std.string(kvdbId),
+			kvdbEntryKey: std.string(kvdbEntryKey)))
 	}
 }

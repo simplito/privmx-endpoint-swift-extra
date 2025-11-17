@@ -15,17 +15,8 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `ThreadNewMessageEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.thread.ThreadNewMessageEvent: PMXEvent, @unchecked  Sendable { 
-
-	/// Returns the event channel as a string.
-	///
-	/// This implementation returns the string in the format `"thread/{threadId}/messages"`,
-	/// where `threadId` is obtained from the `data.info.threadId` property.
-	/// - Returns: A `String` representing the event channel, in this case, `"thread/{threadId}/messages"`.
-	public func getChannel() -> String {
-		return "thread/\(self.data.info.threadId)/messages"
-	}
-
+extension privmx.endpoint.thread.ThreadNewMessageEvent: PMXThreadEvent, @unchecked  Sendable { 
+	
 	/// Returns the event type as a string.
 	///
 	/// This method returns the constant string `"threadNewMessage"`, identifying the type
@@ -46,5 +37,10 @@ extension privmx.endpoint.thread.ThreadNewMessageEvent: PMXEvent, @unchecked  Se
 		Task{
 			await cb(data)
 		}
+	}
+	
+	public func getSubscriptionList(
+	) -> [String] {
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)})
 	}
 }

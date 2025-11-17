@@ -20,7 +20,7 @@ final class PrivMXEventLoop: @unchecked Sendable{
 	// MARK: - Properties
 		
 	/// The handler invoked whenever an event is received.
-	let eventHandler:@Sendable @MainActor (PMXEvent, PMXEvent.Type, Int64) async -> Void
+	let eventHandler:@Sendable @MainActor (any PMXEvent, any PMXEvent.Type, Int64) async -> Void
 	
 	/// Indicates whether the event loop is currently listening for events.
 	public var isListening: Bool = false
@@ -30,7 +30,7 @@ final class PrivMXEventLoop: @unchecked Sendable{
 	/// Initializes the `PrivMXEventLoop` with an event handler.
 	///
 	/// - Parameter eventHandler: Closure called when an event is received.
-	init(eventHandler: @escaping @Sendable @MainActor (PMXEvent, PMXEvent.Type, Int64) async -> Void) {
+	init(eventHandler: @escaping @Sendable @MainActor (any PMXEvent, any PMXEvent.Type, Int64) async -> Void) {
 		self.eventHandler = eventHandler
 	}
 	
@@ -84,11 +84,11 @@ final class PrivMXEventLoop: @unchecked Sendable{
 	}
 
 	/// Publishes the received event to the main actor.
-	///
+	/// 
 	/// - Parameters:
 	///   - event: The received `PMXEvent`.
 	///   - type: The type of the received event.
-	@MainActor private func publishToMainActor(_ event: PMXEvent, type: PMXEvent.Type) async {
+	@MainActor private func publishToMainActor(_ event: any PMXEvent, type: any PMXEvent.Type) async {
 		await eventHandler(event,type,event.connectionId)
 	}
 	
@@ -162,21 +162,18 @@ final class PrivMXEventLoop: @unchecked Sendable{
 			x = try EventHandler.extractKvdbEntryUpdatedEvent(eventHolder: eh)
 		} else if try EventHandler.isKvdbEntryDeletedEvent(eventHolder: eh){
 			x = try EventHandler.extractKvdbEntryDeletedEvent(eventHolder: eh)
+		}else if try EventHandler.isContextUserAddedEvent(eventHolder: eh){
+			x = try EventHandler.extractContextUserAddedEvent(eventHolder: eh)
+		}else if try EventHandler.isContextUserRemovedEvent(eventHolder: eh){
+			x = try EventHandler.extractContextUserRemovedEvent(eventHolder: eh)
+		}else if try EventHandler.isContextUsersStatusChangedEvent(eventHolder: eh){
+			x = try EventHandler.extractContextUsersStatusChangedEvent(eventHolder: eh)
+		}else if try EventHandler.isCollectionChangedEvent(eventHolder: eh){
+			x = try EventHandler.extractCollectionChangedEvent(eventHolder: eh)
 		} else {
 			return nil
 		}
 		return (event:x,type: type(of: x))
 	}
 	
-	/// Represents a parsed event with its type and associated channel.
-    private struct ParsedEvent{
-		init(_ e:any PMXEvent, _ t: any PMXEvent.Type,_ c : String){
-			type = t
-			event = e
-			channel = c
-		}
-		var event:any PMXEvent
-		var type: any PMXEvent.Type
-		var channel:String
-	}
 }

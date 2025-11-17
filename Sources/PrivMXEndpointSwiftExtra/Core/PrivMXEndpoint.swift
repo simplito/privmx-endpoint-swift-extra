@@ -13,6 +13,7 @@ import Foundation
 import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 
+
 /// A wrapper class that manages a connection to PrivMX Bridge and provides access to various APIs, including Threads, Stores, and Inboxes.
 ///
 /// The `PrivMXEndpoint` class is designed to encapsulate and manage a single connection to PrivMX. It provides
@@ -37,7 +38,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	/// API for handling KVDBs
 	public private(set) var kvdbApi: KvdbApi?
 	
-	fileprivate var callbacks : [String:[String: [String :  [(@Sendable @MainActor (_ data:Any?)->Void)]]]] = [:]
+	fileprivate var callbacks : [String :(PMXEventSubscriptionRequest, [String :[(@Sendable @MainActor (Any?) -> Void)]])] = [:]
 	
 	/// Initializes a new instance of `PrivMXEndpoint` with a connection to PrivMX Bridge and optional modules.
     ///
@@ -637,178 +638,558 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		}
 	}
 	
-	/// Registers a callback for an Event from a particular Channel.
+	/// Registers a callback for a particular event type from a particular scope.
 	///
-	/// This also causes events to start arriving from that channel.
+	/// Whenever possible preffer using `registerCallbacksInBulk(_:)` to minimise the amount of server requests.
 	///
-	/// - Parameter type: type of Event
-	/// - Parameter channel: Endpoint defined event channel such as `.platform` or `.thread`
-	/// - Parameter id: Custom identifier for managing Callbacks
-	/// - Parameter cb: the callback that will be executed
+	/// - Parameter request: `PMXEventCallbackRegistration` instance describing EventType and Scope of the callback; as well as assigning it to a group.
+	///
+	/// - Throws: When the request is malformed, or subscribing fails.
 	public func registerCallback(
-		for type: PMXEvent.Type,
-		from channel:EventChannel,
-		identified id:String,
-		_ cb: (@escaping @Sendable @MainActor (Any?) -> Void) = {_ in}
+		for request: PMXEventCallbackRegistration
 	) throws -> Void {
-		if callbacks[channel.name] == nil{
-			callbacks[channel.name] = [:]
-			switch channel{
-				case .store:
-					try self.storeApi?.subscribeForStoreEvents()
-				case .thread:
-					try self.threadApi?.subscribeForThreadEvents()
-				case .threadMessages(let threadID):
-					try self.threadApi?.subscribeForMessageEvents(in: threadID)
-				case .storeFiles(let storeID):
-					try self.storeApi?.subscribeForFileEvents(in: storeID)
-				case .platform:
-					break
-				case .inbox:
-					try self.inboxApi?.subscribeForInboxEvents()
-				case .inboxEntries(let inboxID):
-					try self.inboxApi?.subscribeForEntryEvents(in: inboxID)
-				case .custom(let cid,let cname):
-					try self.eventApi?.subscribeForCustomEvents(contextId: std.string(cid), channelName: std.string(cname))
-				case .kvdb:
-					try self.kvdbApi?.subscribeForKvdbEvents()
-				case .kvdbEntries(let kvdbId):
-					try self.kvdbApi?.subscribeForEntryEvents(kvdbId: std.string(kvdbId))
-			}
+		if let e = registerCallbacksInBulk([request]).first,let e, let e = (e as? PrivMXEndpointError){
+			throw e
 		}
-		if callbacks[channel.name]?[type.typeStr()] == nil{
-			callbacks[channel.name]?[type.typeStr()] = [:]
-		}
-		if callbacks[channel.name]?[type.typeStr()]?[id] == nil{
-			callbacks[channel.name]?[type.typeStr()]?[id] = []
-			
-		}
-		callbacks[channel.name]?[type.typeStr()]?[id]?.append(cb)
 	}
 	
-	/// Deletes a specific Callback.
+	/// Mass registration for Events, this method optimises the amount of server requests made and is the recommended way to subscribe for events.
 	///
-	/// Note that this is an expensive operation.
-	/// If there are no callbacks left for events from a particular channel, `Connection.unsubscribeFromChannel(_:)` is called, which means no Events from that Channel will arrive.
+	/// - Parameter requests: an arrays of tuples consisting of the callback that will be called when the event arrives, `PMXEventRegistration` value that describes the particular event and a string representing a group of callbacks
 	///
-	/// - Parameter id: ID of the callback to be deleted
+	/// - Returns: array of optional Errors corresponding to the provided requests. If the reques was succesfull the associated index will be `nil` otherwise it will have the error thrown.
+	public func registerCallbacksInBulk(
+		_ requests:[PMXEventCallbackRegistration]
+	) -> [(any Error)?] {
+		var results = [(any Error)?](repeating: nil, count: requests.count)
+		var queryDict = [String:[String:[Int]]]()
+		queryDict["thread"] = [:]
+		queryDict["store"] = [:]
+		queryDict["kvdb"] = [:]
+		queryDict["kvdbEntry"] = [:]
+		queryDict["inbox"] = [:]
+		queryDict["event"] = [:]
+		queryDict["platform"] = [:]
+		queryDict["core"] = [:]
+		
+		// Maps requests to Apis
+		for i in 0..<requests.count{
+			do{
+				let req = requests[i]
+				switch(req.request){
+					case .thread(let event, let selector, let selectorId):
+						guard let threadApi
+						else{
+							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Api not Initialised",
+																									  message: "Thread Api was nil",
+																									  description: "You need to enable ThreadApi to register for Thread-related events"))
+						}
+						
+						let sq = try threadApi.buildSubscriptionQuery(
+							forEventType: event,
+							selectorType: privmx.endpoint.thread.EventSelectorType.init(rawValue: selector.rawValue),
+							selectorId: selectorId)
+						if queryDict["thread"]![sq] == nil{
+							queryDict["thread"]![sq]=[i]
+						} else {
+							queryDict["thread"]![sq]!.append(i)
+						}
+					case .store(let event, let selector, let selectorId):
+						guard let storeApi
+						else{
+							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Api not Initialised",
+																									  message: "Store Api was nil",
+																									  description: "You need to enable StoreApi to register for Store-related events"))
+						}
+						
+						let sq = try storeApi.buildSubscriptionQuery(
+							forEventType: event,
+							selectorType: privmx.endpoint.store.EventSelectorType.init(rawValue: selector.rawValue),
+							selectorId: selectorId)
+						if queryDict["store"]![sq] == nil{
+							queryDict["store"]![sq] = [i]
+						} else {
+							queryDict["store"]![sq]!.append(i)
+						}
+					case .inbox(let event, let selector, let selectorId):
+						guard let inboxApi
+						else{
+							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Api not Initialised",
+																									  message: "Inbox Api was nil",
+																									  description: "You need to enable InboxApi to register for Inbox-related events"))
+						}
+						let sq = try inboxApi.buildSubscriptionQuery(
+							forEventType: event,
+							selectorType: privmx.endpoint.inbox.EventSelectorType.init(rawValue: selector.rawValue),
+							selectorId: selectorId)
+						if queryDict["inbox"]![sq] == nil{
+							queryDict["inbox"]![sq]=[i]
+						} else {
+							queryDict["inbox"]![sq]!.append(i)
+						}
+					case .kvdb(let event, let selector, let selectorId):
+						guard let kvdbApi
+						else{
+							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Api not Initialised",
+																									  message: "Kvdb Api was nil",
+																									  description: "You need to enable KvdbApi to register for KVDB-related events"))
+						}
+						let sq = try kvdbApi.buildSubscriptionQuery(
+							forEventType: event,
+							selectorType: privmx.endpoint.kvdb.EventSelectorType.init(rawValue: selector.rawValue),
+							selectorId: selectorId)
+						if queryDict["kvdb"]![sq] == nil{
+							queryDict["kvdb"]![sq]=[i]
+						} else {
+							queryDict["kvdb"]![sq]!.append(i)
+						}
+					case .custom(let channelName,let contextId):
+						guard let eventApi
+						else{
+							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Api not Initialised",
+																									  message: "Event Api was nil",
+																									  description: "You need to enable EventApi to register for ContextCustom events"))
+						}
+						let sq = try eventApi.buildSubscriptionQuery(
+							forChannel: channelName,
+							selectorType: privmx.endpoint.event.CONTEXT_ID,
+							selectorId: contextId)
+						if queryDict["event"]![sq] == nil{
+							queryDict["event"]![sq]=[i]
+						} else {
+							queryDict["event"]![sq]!.append(i)
+						}
+					case .library(let eventType):
+						if queryDict["platform"]![String(eventType.rawValue)] == nil{
+							queryDict["platform"]![String(eventType.rawValue)] = [i]
+						} else {
+							queryDict["platform"]![String(eventType.rawValue)]!.append(i)
+						}
+					case .kvdbEntry(let event, let kvdb, let key):
+						guard let kvdbApi
+						else{
+							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Api not Initialised",
+																									  message: "Thread Api was nil",
+																									  description: "You need to enable ThreadApi to register for Thread-related events"))
+						}
+						
+						let sq = try kvdbApi.buildSubscriptionQueryForSelectedEntry(
+							key,
+							from: kvdb,
+							for: event)
+						if queryDict["kvdbEntry"]![sq] == nil{
+							queryDict["kvdbEntry"]![sq]=[i]
+						} else {
+							queryDict["kvdbEntry"]![sq]!.append(i)
+						}
+					case .core(let eventType, let contextId):
+						let sq = try connection.buildSubscriptionQuery(
+							forEventType: eventType,
+							selectorType: .Context,
+							selectorId: contextId)
+						if queryDict["core"]![sq] == nil{
+							queryDict["core"]![sq]=[i]
+						} else {
+							queryDict["core"]![sq]!.append(i)
+						}
+				}
+			} catch {
+				results[i] = error
+			}
+		}
+		
+		
+		// actual subscriptions
+		if let threadQuery = queryDict["thread"], threadApi != nil{
+			do{
+				let reqv = threadQuery.map({x in x})
+				let resv = try threadApi!.subscribeFor(reqv.map({x in x.key}))
+				for res in resv{
+					for req in reqv{
+						for i in req.value{
+							let r = requests[i]
+							if callbacks[res] == nil {
+								callbacks[res] = (r.request,[:])
+							}
+							if callbacks[res]!.1[r.group] == nil {
+								callbacks[res]!.1[r.group] = []
+							}
+							callbacks[res]!.1[r.group]!.append(r.cb)
+						}
+					}
+				}
+			} catch {
+				for q in threadQuery{
+					for i in q.value {
+						results[i] = error
+					}
+				}
+			}
+		}
+		if let storeQuery = queryDict["store"], storeApi != nil{
+			do{
+				let reqv = storeQuery.map({x in x})
+				let resv = try storeApi!.subscribeFor(storeQuery.map({x in x.0}))
+				for res in resv{
+					for req in reqv{
+						for i in req.value{
+							let r = requests[i]
+							if callbacks[res] == nil {
+								callbacks[res] = (r.request,[:])
+							}
+							if callbacks[res]!.1[r.group] == nil {
+								callbacks[res]!.1[r.group] = []
+							}
+							callbacks[res]!.1[r.group]!.append(r.cb)
+						}
+					}
+				}
+			} catch {
+				for q in storeQuery{
+					for i in q.value {
+						results[i] = error
+					}
+				}
+			}
+		}
+		if let inboxQuery = queryDict["inbox"], inboxApi != nil{
+			do{
+				let reqv = inboxQuery.map({x in x})
+				let resv = try inboxApi!.subscribeFor(inboxQuery.map({x in x.0}))
+				for res in resv{
+					for req in reqv{
+						for i in req.value{
+							let r = requests[i]
+							if callbacks[res] == nil {
+								callbacks[res] = (r.request,[:])
+							}
+							if callbacks[res]!.1[r.group] == nil {
+								callbacks[res]!.1[r.group] = []
+							}
+							callbacks[res]!.1[r.group]!.append(r.cb)
+						}
+					}
+				}
+			} catch {
+				for q in inboxQuery{
+					for i in q.value {
+						results[i] = error
+					}
+				}
+			}
+		}
+		if let kvdbQuery = queryDict["kvdb"], kvdbApi != nil{
+			do{
+				let reqv = kvdbQuery.map({x in x})
+				let resv = try kvdbApi!.subscribeFor(kvdbQuery.map({x in x.0}))
+				for res in resv{
+					for req in reqv{
+						for i in req.value{
+							let r = requests[i]
+							if callbacks[res] == nil {
+								callbacks[res] = (r.request,[:])
+							}
+							if callbacks[res]!.1[r.group] == nil {
+								callbacks[res]!.1[r.group] = []
+							}
+							callbacks[res]!.1[r.group]!.append(r.cb)
+						}
+					}
+				}
+			} catch {
+				for q in kvdbQuery{
+					for i in q.value {
+						results[i] = error
+					}
+				}
+			}
+		}
+		if let eventQuery = queryDict["event"], eventApi != nil{
+			do{
+				let reqv = eventQuery.map({x in x})
+				let resv = try eventApi!.subscribeFor(eventQuery.map({x in x.0}))
+				for res in resv{
+					for req in reqv{
+						for i in req.value{
+							let r = requests[i]
+							if callbacks[res] == nil {
+								callbacks[res] = (r.request,[:])
+							}
+							if callbacks[res]!.1[r.group] == nil {
+								callbacks[res]!.1[r.group] = []
+							}
+							callbacks[res]!.1[r.group]!.append(r.cb)
+						}
+					}
+				}
+			} catch {
+				for q in eventQuery{
+					for i in q.value {
+						results[i] = error
+					}
+				}
+			}
+		}
+		if let coreQuery = queryDict["core"]{
+			do{
+				let reqv = coreQuery.map({x in x})
+				let resv = try connection.subscribeFor(coreQuery.map({x in x.0}))
+				for res in resv{
+					for req in reqv{
+						for i in req.value{
+							let r = requests[i]
+							if callbacks[res] == nil {
+								callbacks[res] = (r.request,[:])
+							}
+							if callbacks[res]!.1[r.group] == nil {
+								callbacks[res]!.1[r.group] = []
+							}
+							callbacks[res]!.1[r.group]!.append(r.cb)
+						}
+					}
+				}
+			} catch {
+				for q in coreQuery{
+					for i in q.value {
+						results[i] = error
+					}
+				}
+			}
+		}
+		
+		if let libQuery = queryDict["platform"]{
+			let reqv = libQuery.map({x in x})
+			let resv = libQuery.map({x in x.0})
+			for res in resv{
+				for req in reqv{
+					for i in req.value{
+						let r = requests[i]
+						if callbacks[res] == nil {
+							callbacks[res] = (r.request,[:])
+						}
+						if callbacks[res]!.1[r.group] == nil {
+							callbacks[res]!.1[r.group] = []
+						}
+						callbacks[res]!.1[r.group]!.append(r.cb)
+					}
+				}
+			}
+		}
+		return results
+	}
+	
+	/// Removes all callbacks for a particular Request.
+	///
+	/// - Parameter request: the request specifying Event Type and Scope
+	///
+	/// - Throws: When unsubscribing fails.
 	public func clearCallbacks(
-		identified id:String
-	) -> Void {
-		for c in callbacks.keys{
-			for t in callbacks[c]!.keys{
-				callbacks[c]?[t]?.removeValue(forKey: id)
+		for request: PMXEventSubscriptionRequest
+	) throws -> Void {
+		callbacks.filter({x in x.value.0 == request}).forEach({x in callbacks[x.key]?.1.removeAll()})
+		let errs = unsubscribeFromEmpty()
+		if !errs.allSatisfy({x in x == nil}) {
+			var errmsg = "Following errors were thrown:"
+			var errno = 0
+			errs.forEach {
+				x in
+				if x != nil{
+					errmsg += "\(errno):"
+					if let e = x as? PrivMXEndpointError {
+						errmsg += "( Name:\(e.getName()), Description: \(e.getDescription()),Message: \(e.getMessage()),Code(hex): \(String(e.getCode() ?? 0,radix: 16)) )\n"
+					} else {
+						errmsg += "( \(x!) )\n"
+					}
+					errno += 1
+				}
 			}
-			if nil != callbacks[c], (callbacks[c] ?? [:]).isEmpty{
-				callbacks.removeValue(forKey: c)
-				try? unsubscribeFromChannel(c)
-			}
+			throw PrivMXEndpointError.failedUnsubscribingFromEvents(privmx.InternalError(name: "FailedUnsubscribing", message: "Failed unsubscribing", description: "Callbacks have been removed, but some events may still arrive. \(errmsg)"))
 		}
 	}
 	
-	@available(*, deprecated, renamed: "clearCallbacks(identified:)")
-	public func deleteCallbacks(
-		identified id:String
-	) -> Void {
-		for c in callbacks.keys{
-			for t in callbacks[c]!.keys{
-				callbacks[c]?[t]?.removeValue(forKey: id)
+	/// Removes all registered callbacks assigned to `group`.
+	///
+	/// If this removes the last callback for a subscription, it will automatically unsubscribe.
+	///
+	/// - Parameter group: the group that has been assigned when registering callbacks.
+	///
+	/// - Throws: when unsubscribing fails.
+	public func clearCallbacks(
+		in group:String
+	) throws -> Void {
+		callbacks.forEach({x in callbacks[x.key]?.1.removeValue(forKey: group)})
+		let errs = unsubscribeFromEmpty()
+		
+		if !errs.allSatisfy({x in x == nil}) {
+			var errmsg = "Following errors were thrown:"
+			var errno = 0
+			errs.forEach {
+				x in
+				if x != nil{
+					errmsg += "\(errno):"
+					if let e = x as? PrivMXEndpointError {
+						errmsg += "( Name:\(e.getName()), Description: \(e.getDescription()),Message: \(e.getMessage()),Code(hex): \(String(e.getCode() ?? 0,radix: 16)) )\n"
+					} else {
+						errmsg += "( \(x!) )\n"
+					}
+					errno += 1
+				}
 			}
-			if nil != callbacks[c], (callbacks[c] ?? [:]).isEmpty{
-				callbacks.removeValue(forKey: c)
-				try? unsubscribeFromChannel(c)
-			}
+			throw PrivMXEndpointError.failedUnsubscribingFromEvents(privmx.InternalError(name: "FailedUnsubscribing", message: "Failed unsubscribing", description: "Callbacks have been removed, but some events may still arrive.\(errmsg)"))
 		}
 	}
 	
-	/// Removes all callbacks for a particular Event type.
-	///
-	/// If there are no callbacks left for events from a particular channel, `Connection.unsubscribeFromChannel(_:)` is called, which means no Events from that Channel will arrive.
-	///
-	/// - Parameter type: the type of Event, for which callbacks should be removed.
-	public func clearCallbacks(
-		for type:PMXEvent.Type
-	) -> Void {
-		for c in callbacks.keys{
-			callbacks[c]!.removeValue(forKey: type.typeStr())
-			if nil != callbacks[c], (callbacks[c] ?? [:]).isEmpty{
-				try? unsubscribeFromChannel(c)
-				callbacks.removeValue(forKey: c)
-			}
-		}
-	}
-	
-	/// Removes all registered callbacks for Events from selected Channel
-	///
-	/// Once all callbacks are removed, `Connection.unsubscribeFromChannel(_:)` is called, which means no Events from that Channel will arrive.
-	///
-	/// - Parameter channel: the EventChannel, from which events should no longer be received
-	public func clearCallbacks(
-		from channel:EventChannel
-	) -> Void {
-		callbacks.removeValue(forKey: channel.name)
-		try? unsubscribeFromChannel(channel.name)
-	}
-	
-	@available(*, deprecated, renamed: "clearCallbacks(from:)")
-	public func clearCallbacks(
-		for channel:EventChannel
-	) -> Void {
-		callbacks.removeValue(forKey: channel.name)
-		try? unsubscribeFromChannel(channel.name)
-	}
-	
-	/// Removes all registered callbacks for Events and unsubscribes from all channels
+	/// Removes all registered callbacks and subscriptions for Events.
 	public func clearAllCallbacks(
-	) -> Void {
-		for c in callbacks.keys{
-			try? unsubscribeFromChannel(c)
+	) throws -> Void {
+		callbacks.forEach({x in callbacks[x.key]?.1.removeAll()})
+		let errs = unsubscribeFromEmpty()
+		if !errs.allSatisfy({x in x == nil}) {
+			var errmsg = "Following errors were thrown:"
+			var errno = 0
+			errs.forEach {
+				x in
+				if x != nil{
+					errmsg += "\(errno):"
+					if let e = x as? PrivMXEndpointError {
+						errmsg += "( Name:\(e.getName()), Description: \(e.getDescription()),Message: \(e.getMessage()),Code(hex): \(String(e.getCode() ?? 0,radix: 16)) )\n"
+					} else {
+						errmsg += "( \(x!) )\n"
+					}
+					errno += 1
+				}
+			}
+			throw PrivMXEndpointError.failedUnsubscribingFromEvents(privmx.InternalError(name: "FailedUnsubscribing", message: "Failed unsubscribing", description: "Callbacks have been removed, but some events may still arrive. \(errmsg)"))
 		}
-		callbacks.removeAll()
 	}
-	/// Removes all registered callbacks for Events from selected Channel
-	///
-	/// - Parameter channel: the EventChannel, from which events should no longer be received
-	private func unsubscribeFromChannel(
-		_ c:String
-	) throws {
-		let splitted = c.split(separator: "/",maxSplits: 2)
-		switch splitted{
-			case _ where splitted.count == 1:
-				let s = String(splitted[0])
-				if s == "thread"{
-					try threadApi?.unsubscribeFromThreadEvents()
-				}else if s == "store"{
-					try storeApi?.unsubscribeFromStoreEvents()
-				} else if s == "inbox" {
-					try inboxApi?.unsubscribeFromInboxEvents()
-				}
-			case _ where splitted.count == 3:
-				let s = String(splitted[0])
-				let id = String(splitted[1])
-				let n = String(splitted[2])
-				if s == "thread"{
-					try threadApi?.unsubscribeFromMessageEvents(in: id)
-				}else if s == "store"{
-					try storeApi?.unsubscribeFromFileEvents(in: id)
-				}else if s == "inbox"{
-					try inboxApi?.unsubscribeFromEntryEvents(in: id)
-				}else if s == "context"{
-					try eventApi?.unsubscribeFromCustomEvents(in: id, onChannel: n)
-				}
-			default:
-				break
+	
+	/// Removes all subscripitons that do not have any callbacks.
+	private func unsubscribeFromEmpty(
+	) -> [(any Error)?] {
+		let calls = callbacks.filter({ x in x.value.1.isEmpty && x.key != "platform"}).map({x in x})
+		var res = [(any Error)?](repeating: nil, count: calls.count)
+		var queryDict = [String:[(String,Int)]]()
+		let keyArr = calls.map({x in x.key})
+		queryDict["thread"] = []
+		queryDict["store"] = []
+		queryDict["kvdb"] = []
+		queryDict["kvdbEntry"] = []
+		queryDict["inbox"] = []
+		queryDict["event"] = []
+		queryDict["platform"] = []
+		queryDict["core"] = []
+		for i in 0..<calls.count{
+			switch calls[i].value.0{
+				case .thread:
+					queryDict["thread"]!.append((keyArr[i],i))
+				case .store:
+					queryDict["store"]!.append((keyArr[i],i))
+				case .inbox:
+					queryDict["inbox"]!.append((keyArr[i],i))
+				case .kvdb,.kvdbEntry:
+					queryDict["kvdb"]!.append((keyArr[i],i))
+				case .custom:
+					queryDict["event"]!.append((keyArr[i],i))
+				case .library:
+					queryDict["platform"]!.append((keyArr[i],i))
+				case .core:
+					queryDict["core"]!.append((keyArr[i],i))
+			}
 		}
+		
+		if let req = queryDict["thread"]?.map({x in x.0}), let threadApi{
+			do{
+				try threadApi.unsubscribeFrom(req)
+				for r in req{
+					callbacks.removeValue(forKey: r)
+				}
+			} catch {
+				for q in queryDict["thread"] ?? []{
+					res[q.1] = error
+				}
+			}
+		}
+		if let req = queryDict["store"]?.map({x in x.0}), let storeApi{
+			do{
+				try storeApi.unsubscribeFrom(req)
+				for r in req{
+					callbacks.removeValue(forKey: r)
+				}
+			} catch {
+				for q in queryDict["store"] ?? []{
+					res[q.1] = error
+				}
+			}
+		}
+		if let req = queryDict["kvdb"]?.map({x in x.0}), let kvdbApi{
+			do{
+				try kvdbApi.unsubscribeFrom(req)
+				for r in req{
+					callbacks.removeValue(forKey: r)
+				}
+			} catch {
+				for q in queryDict["kvdb"] ?? []{
+					res[q.1] = error
+				}
+			}
+		}
+		if let req = queryDict["inbox"]?.map({x in x.0}), let inboxApi{
+			do{
+				try inboxApi.unsubscribeFrom(req)
+				for r in req{
+					callbacks.removeValue(forKey: r)
+				}
+			} catch {
+				for q in queryDict["inbox"] ?? []{
+					res[q.1] = error
+				}
+			}
+		}
+		if let req = queryDict["event"]?.map({x in x.0}), let eventApi{
+			do{
+				try eventApi.unsubscribeFrom(req)
+				for r in req{
+					callbacks.removeValue(forKey: r)
+				}
+			} catch {
+				for q in queryDict["event"] ?? []{
+					res[q.1] = error
+				}
+				
+			}
+		}
+		if let req = queryDict["platform"]?.map({x in x.0}) {
+				for r in req{
+					callbacks.removeValue(forKey: r)
+				}
+		}
+		if let req = queryDict["core"]?.map({x in x.0}){
+			do{
+				try connection.unsubscribeFrom(req)
+				for r in req{
+					callbacks.removeValue(forKey: r)
+				}
+			} catch {
+				for q in queryDict["core"] ?? []{
+					res[q.1] = error
+				}
+				
+			}
+		}
+		return res
 	}
 	
 	public func handleEvent (
-		_ event: any PMXEvent,
-		ofType t: any PMXEvent.Type
+		_ event: any PMXEvent
 	) async throws {
-		for id in self.callbacks[event.getChannel()]?[t.typeStr()] ?? [:]{
-			for cb in id.value{
-				 event.handleWith(cb:cb)
+		let subscriptionList = event.getSubscriptionList()
+		for id in subscriptionList{
+			for r in callbacks[id]?.1 ?? [:] {
+				for cb in r.value{
+						event.handleWith(cb: cb)
+				}
 			}
 		}
 	}
 }
+

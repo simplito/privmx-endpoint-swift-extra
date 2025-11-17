@@ -191,32 +191,36 @@ public protocol PrivMXThread{
 		_ messageId: String
 	) throws -> Void
 	
-	func subscribeForThreadEvents(
-	) throws -> Void
-	
-	func unsubscribeFromThreadEvents(
-	) throws -> Void
-	
-	/// Subscribes to receive events related to Messages in a specific Thread.
+	/// Subscribes to receive events.
 	///
-	/// This method subscribes to message-related events, allowing the client to receive notifications about changes
-	/// in the Messages of the specified Thread.
-	///
-	/// - Parameter threadId: The unique identifier of the Thread for which to subscribe to message events.
+	/// - Parameter subscriptionQueries: listof properly formatted subscription query strings
 	///
 	/// - Throws: `PrivMXEndpointError.failedSubscribing` if the subscription process fails.
-	func subscribeForMessageEvents(
-		in threadId: String
-	) throws -> Void
+	func subscribeFor(
+		_ subscriptionQueries: [String]
+	) throws -> [String]
 	
-	/// Unsubscribes from receiving events related to Messages in a specific Thread.
+	/// Revokes selected Subscriptions.
 	///
-	/// This method unsubscribes from message-related events for the specified Thread, stopping further notifications.
-	///
-	/// - Parameter threadId: The unique identifier of the Thread for which to unsubscribe from message events.
+	/// - Parameter subscriptionIds: List of subscription identifiers to annul
 	///
 	/// - Throws: `PrivMXEndpointError.failedUnsubscribing` if the unsubscribing process fails.
-	func unsubscribeFromMessageEvents(
-		in threadId: String
+	func unsubscribeFrom(
+		_ subscriptionIds: [String]
 	) throws -> Void
+	
+	/// Generate subscription Query for KVDB-related events.
+	///
+	/// - Parameter eventType: type of the event you wish to receive
+	/// - Parameter selectorType: scope on which you listen for events
+	/// - Parameter selectorId: ID of the selector
+	///
+	/// - Throws: When building the subscription Query fails.
+	///
+	/// - Returns: a properly formatted event subscription request.
+	func buildSubscriptionQuery(
+		forEventType eventType: privmx.endpoint.thread.EventType,
+		selectorType: privmx.endpoint.thread.EventSelectorType,
+		selectorId: String
+	) throws -> String
 }

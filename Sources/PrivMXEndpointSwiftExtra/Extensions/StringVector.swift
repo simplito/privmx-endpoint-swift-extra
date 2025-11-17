@@ -35,5 +35,8 @@ extension privmx.StringVector: Hashable {
 	/// - Parameter hasher: The `Hasher` instance used to compute the hash value.
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(self.count)
+		for i in self{
+			hasher.combine(i)
+		}
 	}
 }

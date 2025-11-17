@@ -49,9 +49,15 @@ extension privmx.endpoint.kvdb.KvdbEntry: Hashable, Identifiable, @unchecked Sen
 	/// This function combines the `info` property into the hash to uniquely identify the file.
 	/// - Parameter hasher: The `Hasher` instance used to compute the hash value.
 	public func hash(into hasher: inout Hasher) -> Void {
-		hasher.combine(info.kvdbId)
-		hasher.combine(info.key)
+		hasher.combine(info)
 		hasher.combine(data)
+		hasher.combine(publicMeta)
+		hasher.combine(privateMeta)
+		hasher.combine(authorPubKey)
+		hasher.combine(data)
+		hasher.combine(statusCode)
+		hasher.combine(schemaVersion)
+		hasher.combine(version)
 	}
 }
 

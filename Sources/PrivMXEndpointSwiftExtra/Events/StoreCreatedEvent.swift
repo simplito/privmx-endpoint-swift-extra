@@ -15,16 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `StoreCreatedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.store.StoreCreatedEvent: PMXEvent, @unchecked  Sendable { 
-
-	/// Returns the event channel as a string.
-	///
-	/// This implementation returns the constant string `"store"`,
-	/// identifying the channel associated with `StoreCreatedEvent`.
-	/// - Returns: A `String` representing the event channel, in this case, `"store"`.
-	public func getChannel() -> String {
-		"store"
-	}
+extension privmx.endpoint.store.StoreCreatedEvent: PMXStoreEvent, @unchecked  Sendable { 
 
 	/// Handles the event by calling the provided callback with an optional argument.
 	///
@@ -46,5 +37,10 @@ extension privmx.endpoint.store.StoreCreatedEvent: PMXEvent, @unchecked  Sendabl
 	/// - Returns: A `String` representing the event type, in this case, `"storeCreated"`.
 	public static func typeStr() -> String {
 		"storeCreated"
+	}
+	
+	public func getSubscriptionList(
+	) -> [String] {
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)})
 	}
 }

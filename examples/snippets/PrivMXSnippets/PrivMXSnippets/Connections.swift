@@ -122,7 +122,13 @@ class PrivMXSnippetClass {
 	}
 	
 	func gettingContextUsers() throws{
-		let contextUserInfo = try endpointSession?.connection.getContextUsers(of: CONTEXT_ID)
+		let contextUserInfo = try endpointSession?.connection.listContextUsers(
+			of: CONTEXT_ID,
+			basedOn: privmx.endpoint.core.PagingQuery(
+				skip: 0,
+				limit: 100,
+				sortOrder: .asc)
+			)
 	}
 	
     func teardown() {

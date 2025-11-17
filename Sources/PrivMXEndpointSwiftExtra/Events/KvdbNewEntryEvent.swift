@@ -15,17 +15,8 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `KvdbNewEntryEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.kvdb.KvdbNewEntryEvent: PMXEvent, @unchecked Sendable {
-
-	/// Returns the event channel as a string.
-	///
-	/// This implementation returns the string in the format `"kvdb/{kvdbId}/entries"`,
-	/// where `kvdbId` is obtained from the `data.info.kvdbId` property.
-	/// - Returns: A `String` representing the event channel, in this case, `"kvdb/{kvdbId}/entries"`.
-	public func getChannel() -> String {
-		return "kvdb/\(self.data.info.kvdbId)/entries"
-	}
-
+extension privmx.endpoint.kvdb.KvdbNewEntryEvent: PMXKvdbEvent, @unchecked Sendable {
+	
 	/// Returns the event type as a string.
 	///
 	/// This method returns the constant string `"kvdbNewEntry"`, identifying the type
@@ -46,5 +37,9 @@ extension privmx.endpoint.kvdb.KvdbNewEntryEvent: PMXEvent, @unchecked Sendable 
 		Task{
 			await cb(data)
 		}
+	}
+	public func getSubscriptionList(
+	) -> [String] {
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)})
 	}
 }

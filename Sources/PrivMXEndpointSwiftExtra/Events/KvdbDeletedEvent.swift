@@ -15,16 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `KvdbDeletedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.kvdb.KvdbDeletedEvent: PMXEvent, @unchecked Sendable {
-
-	/// Returns the event channel as a string.
-	///
-	/// This implementation returns the constant string `"kvdb"`,
-	/// identifying the channel associated with `KvdbDeletedEvent`.
-	/// - Returns: A `String` representing the event channel, in this case, `"kvdb"`.
-	public func getChannel() -> String {
-		"kvdb"
-	}
+extension privmx.endpoint.kvdb.KvdbDeletedEvent: PMXKvdbEvent, @unchecked Sendable {
 
 	/// Handles the event by calling the provided callback with an optional argument.
 	///
@@ -46,6 +37,10 @@ extension privmx.endpoint.kvdb.KvdbDeletedEvent: PMXEvent, @unchecked Sendable {
 	/// - Returns: A `String` representing the event type, in this case, `"kvdbDeleted"`.
 	public static func typeStr() -> String {
 		"kvdbDeleted"
+	}
+	public func getSubscriptionList(
+	) -> [String] {
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)})
 	}
 }
 

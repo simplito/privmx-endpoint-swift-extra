@@ -12,6 +12,7 @@
 import PrivMXEndpointSwiftNative
 import PrivMXEndpointSwift
 
+/// Provides a builder for configuring  Container Policies
 public class ContainerPolicyBuilder{
 	
 	private var cpwi = privmx.endpoint.core.ContainerPolicyWithoutItem()

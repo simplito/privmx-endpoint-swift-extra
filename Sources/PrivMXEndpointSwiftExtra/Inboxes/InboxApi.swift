@@ -202,17 +202,44 @@ extension InboxApi: PrivMXInbox, @retroactive @unchecked Sendable{
 		try String(self.closeFile(fileHandle: fileHandle))
 	}
 	
-	public func subscribeForEntryEvents(
-		in inboxId: String
-	) throws -> Void {
-		try self.subscribeForEntryEvents(inboxId: std.string(inboxId))
+	public func subscribeFor(
+		_ queries: [String]
+	) throws -> [String] {
+		var sqv = privmx.SubscriptionQueryVector()
+		sqv.reserve(queries.count)
+		for q in queries{
+			sqv.push_back(std.string(q))
+		}
+		return try self.subscribeFor(subscriptionQueries:sqv).map({x in String(x)})
 	}
 	
-	public func unsubscribeFromEntryEvents(
-		in inboxId: String
+	public func unsubscribeFrom(
+		_ subscriptionIds: [String]
 	) throws -> Void {
-		try self.unsubscribeFromEntryEvents(inboxId: std.string(inboxId))
+		var sid = privmx.SubscriptionIdVector()
+		sid.reserve(subscriptionIds.count)
+		for i in subscriptionIds{
+			sid.push_back(std.string(i))
+		}
+		try self.unsubscribeFrom(subscriptionIds: sid)
 	}
 	
-	
+	/// Generate subscription Query for the Custom events.
+	///
+	/// - Parameter eventType: type of event which you listen for
+	/// - Parameter selectorType: scope on which you listen for events
+	/// - Parameter selectorId: ID of the selector
+	///
+	/// - Throws: When building the subscription Query fails.
+	///
+	/// - Returns: a properly formatted event subscription request.
+	public func buildSubscriptionQuery(
+		forEventType eventType: privmx.endpoint.inbox.EventType,
+		selectorType: privmx.endpoint.inbox.EventSelectorType,
+		selectorId: String
+	) throws -> String {
+		try String(self.buildSubscriptionQuery(eventType: eventType,
+											   selectorType: selectorType,
+											   selectorId: std.string(selectorId)))
+	}
 }

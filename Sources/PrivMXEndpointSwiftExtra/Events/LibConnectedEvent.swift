@@ -15,16 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `LibConnectedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.core.LibConnectedEvent: PMXEvent, @unchecked  Sendable { 
-
-	/// Returns the event channel as a string.
-	///
-	/// This implementation returns the constant string `"platform"`,
-	/// identifying the channel associated with `LibConnectedEvent`.
-	/// - Returns: A `String` representing the event channel, in this case, `"platform"`.
-	public func getChannel() -> String {
-		"platform"
-	}
+extension privmx.endpoint.core.LibConnectedEvent: PMXLibraryEvent, @unchecked  Sendable { 
 
 	/// Returns the event type as a string.
 	///
@@ -46,5 +37,10 @@ extension privmx.endpoint.core.LibConnectedEvent: PMXEvent, @unchecked  Sendable
 		Task{
 			await cb(nil)
 		}
+	}
+	
+	public func getSubscriptionList(
+	) -> [String] {
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)}) + [String(LibEventType.LIB_CONNECTED.rawValue)]
 	}
 }

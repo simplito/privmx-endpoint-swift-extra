@@ -23,13 +23,28 @@ extension BackendRequester {
 	///
 	/// - Parameters:
 	///   - serverUrl: The URL of PrivMX Bridge server.
-	///   - memberToken: The authentication token provided by the server.
+	///   - accessToken: The authentication token provided by the server.
 	///   - method: The API endpoint to be called (HTTP method, such as POST, GET, etc.).
 	///   - paramsAsJson: The parameters to be sent with the request, formatted as a JSON string.
 	///
 	/// - Returns: The result body as a `String`, representing the response from the backend.
 	///
 	/// - Throws: An error if the request fails, such as network issues or invalid parameters.
+	public static func backendRequest(
+		serverUrl: String,
+		accessToken: String,
+		method: String,
+		paramsAsJson: String
+	) throws -> String {
+		try String(
+			Self.backendRequest(
+				serverUrl: std.string(serverUrl),
+				accessToken: std.string(accessToken),
+				method: std.string(method),
+				paramsAsJson: std.string(paramsAsJson)))
+	}
+
+	@available(*, deprecated, renamed: "backendRequest(serverUrl:memberToken:method:paramsAsJson:)")
 	public static func backendRequest(
 		serverUrl: String,
 		memberToken: String,
@@ -39,7 +54,7 @@ extension BackendRequester {
 		try String(
 			Self.backendRequest(
 				serverUrl: std.string(serverUrl),
-				memberToken: std.string(memberToken),
+				accessToken: std.string(memberToken),
 				method: std.string(method),
 				paramsAsJson: std.string(paramsAsJson)))
 	}

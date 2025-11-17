@@ -16,235 +16,778 @@ import PrivMXEndpointSwiftNative
 
 extension PrivMXSnippetClass {
 
-    func handlingConnectionEvents(){
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.core.LibConnectedEvent.self,
-            from: .platform, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when lib connect
-            })
-            
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.core.LibDisconnectedEvent.self,
-            from: .platform, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when lib disconnects
-            })
-    }
+	func handlingConnectionEvents(){
+		let request : PMXEventSubscriptionRequest = PMXEventSubscriptionRequest.library(
+			eventType:LibEventType.LIB_CONNECTED)
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: request,
+				group: "SOME_GROUP",
+				cb: {_ in
+					// Some actions to perform after connecting
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .library(
+					eventType: .LIB_DISCONNECTED),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when lib disconnects
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .library(
+					eventType: .LIB_PLATFORM_DISCONNECTED),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when disconect method was called
+				}))
+	}
+	
+	func handlingUserEvents(){
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .core(
+					eventType: privmx.endpoint.core.USER_ADD,
+					contextId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when new User is added to context
+				}))
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .core(
+					eventType: privmx.endpoint.core.USER_REMOVE,
+					contextId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a User is removed from context
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .core(
+					eventType: privmx.endpoint.core.USER_STATUS,
+					contextId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when the status of Users changes
+				}))
+		
+		
+	}
     
     func handlingThreadEvents(){
+		let threadId = "THREAD_ID"
+		
         try? endpointSession?.registerCallback(
-            for: privmx.endpoint.thread.ThreadCreatedEvent.self,
-            from: .thread, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when new thread created
-            })
+			for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.THREAD_CREATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+                // some actions when a new thread created
+            }))
             
         try? endpointSession?.registerCallback(
-            for: privmx.endpoint.thread.ThreadUpdatedEvent.self,
-            from: .thread, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when thread updated
-            })
+            for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.THREAD_UPDATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+                // some actions when a thread is updated
+            }))
+		
+		try? endpointSession?.registerCallback(
+            for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.THREAD_UPDATE,
+					selectorType: .Container,
+					selectorId: threadId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+                // some actions when a thread is updated
+            }))
 
         try? endpointSession?.registerCallback(
-            for: privmx.endpoint.thread.ThreadStatsChangedEvent.self,
-            from: .thread, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when  thread stats changes
-            })
+            for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.THREAD_STATS,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+                // some actions when a thread's stats change
+            }))
+		try? endpointSession?.registerCallback(
+            for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.THREAD_STATS,
+					selectorType: .Container,
+					selectorId: threadId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+                // some actions when a thread's stats change
+            }))
             
         try? endpointSession?.registerCallback(
-            for: privmx.endpoint.thread.ThreadDeletedEvent.self,
-            from: .thread, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when thread deleted
-            })
+            for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.THREAD_DELETE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+                // some actions when a thread is deleted
+            }))
+		try? endpointSession?.registerCallback(
+            for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.THREAD_DELETE,
+					selectorType: .Container,
+					selectorId: threadId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+                // some actions when a thread is deleted
+            }))
+		
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.COLLECTION_CHANGE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when any thread's contents change
+			}))
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.COLLECTION_CHANGE,
+					selectorType: .Container,
+					selectorId: threadId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when a particular thread's contents change
+			}))
     }
     
-    func handlingMessagesEvents(){
-        var threadId = "THREAD_ID"
-                        
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.thread.ThreadNewMessageEvent.self,
-            from: .threadMessages(threadID: threadId), identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions on new message
-            })
-            
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.thread.ThreadMessageDeletedEvent.self,
-            from: .threadMessages(threadID: threadId), identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when message deleted
-            })
-
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.thread.ThreadMessageDeletedEvent.self,
-            from: .threadMessages(threadID: threadId), identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when message updated
-            })
-
-
-
-    }
+	func handlingMessagesEvents(){
+		let threadId = "THREAD_ID"
+		let messageId = "MESSAGE_ID"
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.MESSAGE_CREATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions on new message
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.MESSAGE_CREATE,
+					selectorType: .Container,
+					selectorId: threadId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions on new message in a particular thread
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.MESSAGE_UPDATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a message is updated
+				}))
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.MESSAGE_UPDATE,
+					selectorType: .Container,
+					selectorId: threadId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a message is updated in a particular thread
+				}))
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.MESSAGE_UPDATE,
+					selectorType: .Item,
+					selectorId: messageId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a message is updated
+				}))
+	
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.MESSAGE_DELETE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a message is deleted
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.MESSAGE_DELETE,
+					selectorType: .Container,
+					selectorId: threadId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a message is deleted in a particular thread
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .thread(
+					eventType: privmx.endpoint.thread.MESSAGE_DELETE,
+					selectorType: .Item,
+					selectorId: messageId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a particular message is deleted
+				}))
+	}
     
     func handlingStoresEvents(){
+		let storeId = "STORE_ID"
+		
         try? endpointSession?.registerCallback(
-            for: privmx.endpoint.store.StoreCreatedEvent.self,
-            from: .store, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when new store created
-            })
-            
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.store.StoreUpdatedEvent.self,
-            from: .store, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when store updated
-            })
+            for:PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.STORE_CREATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+                // some actions when a new store is created
+            }))
 
         try? endpointSession?.registerCallback(
-            for: privmx.endpoint.store.StoreStatsChangedEvent.self,
-            from: .store, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when store stats changes
-            })
-            
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.store.StoreDeletedEvent.self,
-            from: .store, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when store deleted
-            })
+            for:PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.STORE_UPDATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when any store is updated
+			}))
+		
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.STORE_UPDATE,
+					selectorType: .Container,
+					selectorId: storeId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when a particular store is updated
+			}))
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.STORE_DELETE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when any store is deleted
+			}))
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.STORE_DELETE,
+					selectorType: .Container,
+					selectorId: storeId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when a particular store is deleted
+			}))
+		
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.STORE_STATS,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when any store's stats change
+			}))
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.STORE_STATS,
+					selectorType: .Container,
+					selectorId: storeId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when a particular store's stats change
+			}))
+		
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.COLLECTION_CHANGE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when any store's contents change
+			}))
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.COLLECTION_CHANGE,
+					selectorType: .Container,
+					selectorId: storeId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when a particular store's contents change
+			}))
     }
     
     func handlingFilesEvents(){
         
-        var storeId = "STORE_ID"
-                        
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.store.StoreFileCreatedEvent.self,
-            from: .storeFiles(storeID: storeId), identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions on new file
-            })
-            
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.store.StoreFileUpdatedEvent.self,
-            from: .storeFiles(storeID: storeId), identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when file updated
-            })
-
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.store.StoreFileDeletedEvent.self,
-            from: .storeFiles(storeID: storeId), identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when message updated
-            })
-
-
+        let storeId = "STORE_ID"
+		let fileId = "FILE_ID"
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.FILE_CREATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a file is cerated
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.FILE_CREATE,
+					selectorType: .Container,
+					selectorId: storeId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions on new file in a particular store
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.FILE_UPDATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a file is updated
+				}))
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.FILE_UPDATE,
+					selectorType: .Container,
+					selectorId: storeId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a file is updated in a particular store
+				}))
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.FILE_UPDATE,
+					selectorType: .Item,
+					selectorId: fileId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a file is updated
+				}))
+	
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.FILE_DELETE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a file is deleted
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.FILE_DELETE,
+					selectorType: .Container,
+					selectorId: storeId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a file is deleted in a particular store
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .store(
+					eventType: privmx.endpoint.store.FILE_DELETE,
+					selectorType: .Item,
+					selectorId: fileId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a particular message is deleted
+				}))
+       
     }
     
     func handlingInboxesEvents(){
         
+		let inboxId = "INBOX_ID"
+		
         try? endpointSession?.registerCallback(
-            for: privmx.endpoint.inbox.InboxCreatedEvent.self,
-            from: .inbox, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when new inbox created
-            })
+            for: PMXEventCallbackRegistration(
+				request: .inbox(
+					eventType: privmx.endpoint.inbox.INBOX_CREATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a new inbox is created
+				}))
             
         try? endpointSession?.registerCallback(
-            for: privmx.endpoint.inbox.InboxUpdatedEvent.self,
-            from: .inbox, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when inbox updated
-            })
+            for: PMXEventCallbackRegistration(
+				request: .inbox(
+					eventType: privmx.endpoint.inbox.INBOX_UPDATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when any inbox is updated
+				}))
 
         try? endpointSession?.registerCallback(
-            for: privmx.endpoint.inbox.InboxDeletedEvent.self,
-            from: .inbox, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when inbox deleted
-            })
+            for: PMXEventCallbackRegistration(
+				request: .inbox(
+					eventType: privmx.endpoint.inbox.INBOX_UPDATE,
+					selectorType: .Container,
+					selectorId: inboxId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a particular inbox is updated
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .inbox(
+					eventType: privmx.endpoint.inbox.INBOX_DELETE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when any inbox is deleted
+				}))
+
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .inbox(
+					eventType: privmx.endpoint.inbox.INBOX_DELETE,
+					selectorType: .Container,
+					selectorId: inboxId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a particular inbox is deleted
+				}))
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .inbox(
+					eventType: privmx.endpoint.inbox.COLLECTION_CHANGE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when any inbox's contents chenge
+				}))
+
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .inbox(
+					eventType: privmx.endpoint.inbox.COLLECTION_CHANGE,
+					selectorType: .Container,
+					selectorId: inboxId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a particular inbox's contents change
+				}))
     }
     
     func handlingEntriesEvents(){
-        var inboxId = "INBOX_ID"
-                        
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.inbox.InboxEntryCreatedEvent.self,
-            from: .inboxEntries(inboxID: inboxId), identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions on new inbox entry
-            })
-            
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.inbox.InboxEntryDeletedEvent.self,
-            from: .inboxEntries(inboxID: inboxId), identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when inbox entry deleted
-            })
+        let inboxId = "INBOX_ID"
+        let entryId = "ENTRY_ID"
+		
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .inbox(
+					eventType: privmx.endpoint.inbox.ENTRY_CREATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when an inbox entry is created
+			}))
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .inbox(
+					eventType: privmx.endpoint.inbox.ENTRY_CREATE,
+					selectorType: .Container,
+					selectorId: inboxId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when an inbox entry is created in a particular inbox
+			}))
+		
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .inbox(
+					eventType: privmx.endpoint.inbox.ENTRY_DELETE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when an inbox entry is deleted
+			}))
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .inbox(
+					eventType: privmx.endpoint.inbox.ENTRY_DELETE,
+					selectorType: .Container,
+					selectorId: inboxId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when an inbox entry is deleted in a particular inbox
+			}))
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .inbox(
+					eventType: privmx.endpoint.inbox.ENTRY_DELETE,
+					selectorType: .Item,
+					selectorId: entryId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when a particular inbox entry is deleted
+			}))
     }
 
 	func handlingKvdbsEvents(){
-        
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.kvdb.KvdbCreatedEvent.self,
-            from: .kvdb, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when new kvdb created
-            })
-            
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.kvdb.KvdbUpdatedEvent.self,
-            from: .kvdb, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when kvdb updated
-            })
+		let kvdbId = "KVDB_ID"
 		
 		try? endpointSession?.registerCallback(
-			for: privmx.endpoint.kvdb.KvdbStatsChangedEvent.self,
-			from: .kvdb, identified: "SOME_UNIQUE_IDENTIFIER",
-			{ eventData in
-				// some actions when kvdb stats changed
-			})
+			for:PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.KVDB_CREATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when a new kvdb is created
+			}))
 
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.kvdb.KvdbDeletedEvent.self,
-            from: .kvdb, identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when kvdb deleted
-            })
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.KVDB_UPDATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when any kvdb is updated
+			}))
 		
-    }
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.KVDB_UPDATE,
+					selectorType: .Container,
+					selectorId: kvdbId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when a particular kvdb is updated
+			}))
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.KVDB_DELETE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when any kvdb is deleted
+			}))
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.KVDB_DELETE,
+					selectorType: .Container,
+					selectorId: kvdbId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when a particular kvdb is deleted
+			}))
+		
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.KVDB_STATS,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when any kvdb's stats change
+			}))
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.KVDB_STATS,
+					selectorType: .Container,
+					selectorId: kvdbId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when a particular kvdb's stats change
+			}))
+		
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.COLLECTION_CHANGE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when any kvdb's contents change
+			}))
+		try? endpointSession?.registerCallback(
+			for:PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.COLLECTION_CHANGE,
+					selectorType: .Container,
+					selectorId: kvdbId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+				// some actions when a particular kvdb's contents change
+			}))
+	}
     
     func handlingkvdbEntriesEvents(){
-        var kvdbId = "KVDB_ID"
+        let kvdbId = "KVDB_ID"
+		let entryKey = "ENTRY_KEY"
                         
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.kvdb.KvdbNewEntryEvent.self,
-            from: .kvdbEntries(kvdbId: kvdbId), identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when new kvdb entry created
-            })
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.ENTRY_CREATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when new entry is created
+				}))
 		
 		try? endpointSession?.registerCallback(
-            for: privmx.endpoint.kvdb.KvdbEntryUpdatedEvent.self,
-            from: .kvdbEntries(kvdbId: kvdbId), identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when kvdb entry updated
-            })
-            
-        try? endpointSession?.registerCallback(
-            for: privmx.endpoint.kvdb.KvdbEntryDeletedEvent.self,
-            from: .kvdbEntries(kvdbId: kvdbId), identified: "SOME_UNIQUE_IDENTIFIER",
-            { eventData in
-                // some actions when kvdb entry deleted
-            })
-    }
+			for: PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.ENTRY_CREATE,
+					selectorType: .Container,
+					selectorId: kvdbId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a new entry is created in a particular kvdb
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.ENTRY_UPDATE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when an entry is updated
+				}))
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.ENTRY_UPDATE,
+					selectorType: .Container,
+					selectorId: kvdbId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when an entry is updated in a particular kvdb
+				}))
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .kvdbEntry(
+					eventType: privmx.endpoint.kvdb.ENTRY_UPDATE,
+					kvdbId: kvdbId,
+					entryKey: entryKey),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when an entry is updated
+				}))
 	
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.ENTRY_DELETE,
+					selectorType: .Context,
+					selectorId: CONTEXT_ID),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when an entry is deleted
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .kvdb(
+					eventType: privmx.endpoint.kvdb.ENTRY_DELETE,
+					selectorType: .Container,
+					selectorId: kvdbId),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when an entry is deleted in a particular kvdb
+				}))
+		
+		try? endpointSession?.registerCallback(
+			for: PMXEventCallbackRegistration(
+				request: .kvdbEntry(
+					eventType: privmx.endpoint.kvdb.ENTRY_DELETE,
+					kvdbId: kvdbId,
+					entryKey: entryKey),
+				group: "SOME_UNIQUE_IDENTIFIER",
+				cb:{ eventData in
+					// some actions when a particular entry is deleted
+				}))
+    }
 }

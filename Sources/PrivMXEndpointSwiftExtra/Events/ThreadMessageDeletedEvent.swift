@@ -15,16 +15,7 @@ import PrivMXEndpointSwiftNative
 /// A helper extension for `ThreadMessageDeletedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.thread.ThreadMessageDeletedEvent: PMXEvent, @unchecked  Sendable { 
-
-	/// Returns the event channel as a string.
-	///
-	/// This implementation returns the string in the format `"thread/{threadId}/messages"`,
-	/// where `threadId` is obtained from the `data.threadId` property.
-	/// - Returns: A `String` representing the event channel, in this case, `"thread/{threadId}/messages"`.
-	public func getChannel() -> String {
-		"thread/\(self.data.threadId)/messages"
-	}
+extension privmx.endpoint.thread.ThreadMessageDeletedEvent: PMXThreadEvent, @unchecked  Sendable { 
 
 	/// Handles the event by calling the provided callback with an optional argument.
 	///
@@ -46,5 +37,10 @@ extension privmx.endpoint.thread.ThreadMessageDeletedEvent: PMXEvent, @unchecked
 	/// - Returns: A `String` representing the event type, in this case, `"threadMessageDeleted"`.
 	public static func typeStr() -> String {
 		"threadMessageDeleted"
+	}
+	
+	public func getSubscriptionList(
+	) -> [String] {
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)})
 	}
 }

@@ -12,11 +12,13 @@
 import Foundation
 import PrivMXEndpointSwiftNative
 
+
+
 /// A helper extension for `ContextCustomEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.event.ContextCustomEvent: PMXEvent, @unchecked Sendable {
-
+extension privmx.endpoint.event.ContextCustomEvent: PMXCustomEvent, @unchecked Sendable {
+	
 	/// Handles the event by calling the provided callback with an optional argument.
 	///
 	/// This implementation passes the `data` property to the callback.
@@ -45,6 +47,11 @@ extension privmx.endpoint.event.ContextCustomEvent: PMXEvent, @unchecked Sendabl
 	/// - Returns: A `String` representing the event channel.
 	public func getChannel() -> String {
 		String(privmx.getChannelFrom(self))
+	}
+	
+	public func getSubscriptionList(
+	) -> [String] {
+		privmx.endpoint.wrapper._get_subIds_from(self).map({x in String(x)})
 	}
 }
 

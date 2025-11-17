@@ -150,11 +150,11 @@ public protocol PrivMXStore{
 	/// This method creates a new file handle, which can be used to write data to a new File in the Store. 
 	/// Once the file is created, data can be uploaded using `writeToFile()` and finalized with `closeFile()`.
 	///
-	/// - Parameters:
-	///   - storeId: The unique identifier of the Store in which the File will be created.
-	///   - publicMeta: Public metadata for the File, which will be unencrypted.
-	///   - privateMeta: Private metadata for the File, which will be encrypted.
-	///   - size: The size of the File in bytes.
+	/// - Parameter storeId: The unique identifier of the Store in which the File will be created.
+	/// - Parameter publicMeta: Public metadata for the File, which will be unencrypted.
+	/// - Parameter privateMeta: Private metadata for the File, which will be encrypted.
+	/// - Parameter size: The size of the File in bytes.
+	/// - Parameter randomWriteSupport: whether the file supports RandomWrite functionality
 	///
 	/// - Returns: A `privmx.StoreFileHandle` used for writing data to the File.
 	///
@@ -163,7 +163,8 @@ public protocol PrivMXStore{
 		in storeId: String,
 		withPublicMeta publicMeta: Data,
 		withPrivateMeta privateMeta: Data,
-		ofSize size: Int64
+		ofSize size: Int64,
+		randomWriteSupport: Bool
 	) throws -> privmx.StoreFileHandle
 	
 	/// Updates an existing File by overwriting its content and metadata.
@@ -233,14 +234,16 @@ public protocol PrivMXStore{
 	///
 	/// This method uploads a chunk of data to a file that has been opened for writing using a file handle.
 	///
-	/// - Parameters:
-	///   - handle: The handle of the opened File.
-	///   - dataChunk: The data to write to the File.
+	/// - Parameter handle: The handle of the opened File.
+	/// - Parameter dataChunk: The data to write to the File.
+	/// - Parameter truncate: wheteher this write should discard all data after this position in the File.
+	///
 	///
 	/// - Throws: An error if the write operation fails.
 	func writeToFile(
 		withHandle handle: privmx.StoreFileHandle,
-		uploading dataChunk: Data
+		uploading dataChunk: Data,
+		truncate: Bool
 	) throws -> Void
 	
 	/// Moves the read/write cursor within an open File.
@@ -283,52 +286,46 @@ public protocol PrivMXStore{
 		_ fileId: String
 	) throws -> Void
 	
-	/// Subscribes to events related to Stores.
+	/// Synchronize file handle data with the newest data on serwer.
 	///
-	/// This method allows the client to receive notifications about changes to Stores, such as updates 
-	/// or new Stores being created, by subscribing to Store-related events.
+	/// - Parameter handle: Store File handle to sync
 	///
-	/// - Throws: An error if the subscription fails.
-	func subscribeForStoreEvents(
+	/// - Throws: if the operation fails.
+	func syncFile(
+		withHandle handle: privmx.StoreFileHandle
 	) throws -> Void
 	
-	/// Subscribes to events related to Files in a specific Store.
+	/// Subscribes to receive events.
 	///
-	/// This method subscribes to file-related events for a specific Store, enabling the client to receive 
-	/// notifications about changes to Files, such as uploads or deletions.
+	/// - Parameter subscriptionQueries: listof properly formatted subscription query strings
 	///
-	/// - Parameter storeId: The unique identifier of the Store for which to subscribe to file events.
+	/// - Throws: `PrivMXEndpointError.failedSubscribing` if the subscription process fails.
+	func subscribeFor(
+		_ subscriptionQueries: [String]
+	) throws -> [String]
+	
+	/// Revokes selected Subscriptions.
 	///
-	/// - Throws: An error if the subscription fails.
-	func subscribeForFileEvents(
-		in storeId:String
-	) throws -> Void
-
-	/// Unsubscribes from events related to Stores.
+	/// - Parameter subscriptionIds: List of subscription identifiers to annul
 	///
-	/// This method stops the client from receiving notifications about Store-related events.
-	///
-	/// - Throws: An error if the unsubscribing fails.
-	func unsubscribeFromStoreEvents(
+	/// - Throws: `PrivMXEndpointError.failedUnsubscribing` if the unsubscribing process fails.
+	func unsubscribeFrom(
+		_ subscriptionIds: [String]
 	) throws -> Void
 	
-	/// Unsubscribes from events related to Files in a specific Store.
+	/// Generate subscription Query for KVDB-related events.
 	///
-	/// This method stops the client from receiving notifications about file-related events in a specific Store.
+	/// - Parameter eventType: type of the event you wish to receive
+	/// - Parameter selectorType: scope on which you listen for events
+	/// - Parameter selectorId: ID of the selector
 	///
-	/// - Parameter storeId: The unique identifier of the Store for which to unsubscribe from file events.
+	/// - Throws: When building the subscription Query fails.
 	///
-	/// - Throws: An error if the unsubscribing fails.
-	func unsubscribeFromFileEvents(
-		in storeId:String
-	) throws -> Void
+	/// - Returns: a properly formatted event subscription request.
+	func buildSubscriptionQuery(
+		forEventType eventType: privmx.endpoint.store.EventType,
+		selectorType: privmx.endpoint.store.EventSelectorType,
+		selectorId: String
+	) throws -> String
 }
 
-extension PrivMXStore{
-	@available(*, deprecated,renamed: "unsubscribeFromFileEvents(in:)")
-	public func unubscribeFromFileEvents(
-		in storeId: String
-	) throws -> Void {
-		try self.unsubscribeFromFileEvents(in: storeId)
-	}
-}

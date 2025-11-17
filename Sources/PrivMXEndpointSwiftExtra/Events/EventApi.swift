@@ -36,33 +36,56 @@ public extension EventApi{
 			eventData: eventData.asBuffer())
 	}
 	
-	/// Subscribes to Custom Events in a specific Context, that arrive on a specific, named Channel
+	/// Subscribe for the events on the given subscription queries. Use the `buildSubscriptionQuery(channelName:selectorType:selectorId:)` method to generate properly formatted subscription query.
 	///
-	/// - Parameter contextId: id of the Context
-	/// - Parameter channelName: arbitrary name of the channel
+	/// - Parameter subscriptionQueries: list of queries
 	///
-	/// - Throws: When subscribing fails
-	func subscribeForCustomEvents(
-		in contextId: String,
-		onChannel channelName: String
-	) throws -> Void {
-		try subscribeForCustomEvents(
-			contextId:std.string(contextId),
-			channelName:std.string(channelName))
+	/// - Throws: When subscribing for events fails.
+	///
+	/// - Returns: list of subscriptionIds in maching order to subscriptionQueries.
+	func subscribeFor(
+		_ subscriptionQueries: [String]
+	) throws -> [String] {
+		var sqv = privmx.SubscriptionQueryVector()
+		sqv.reserve(subscriptionQueries.count)
+		for q in subscriptionQueries{
+			sqv.push_back(std.string(q))
+		}
+		return try self.subscribeFor(subscriptionQueries:sqv).map({x in String(x)})
 	}
 	
-	/// Unsbscribes from Custom Events in a specific Context, that arrive on a specific, named Channel
+	/// Unsubscribe from events for the given subscriptionId.
 	///
-	/// - Parameter contextId: id of the Context
-	/// - Parameter channelName: arbitrary name of the channel
+	/// - Parameter subscriptionIds: list of subscriptionId
 	///
-	/// - Throws: When unsubscribing fails
-	func unsubscribeFromCustomEvents(
-		in contextId:String,
-		onChannel channelName: String
+	/// - Throws: When unsubscribing fails.
+	func unsubscribeFrom(
+		_ subscriptionIds: [String]
 	) throws -> Void {
-		try unsubscribeFromCustomEvents(
-			contextId: std.string(contextId),
-			channelName: std.string(channelName))
+		var sid = privmx.SubscriptionIdVector()
+		sid.reserve(subscriptionIds.count)
+		for i in subscriptionIds{
+			sid.push_back(std.string(i))
+		}
+		try self.unsubscribeFrom(subscriptionIds: sid)
+	}
+	
+	/// Generate subscription Query for the Custom events.
+	///
+	/// - Parameter channelName: name of the Custom event channel
+	/// - Parameter selectorType: scope on which you listen for events
+	/// - Parameter selectorId: ID of the selector
+	///
+	/// - Throws: When building the subscription Query fails.
+	///
+	/// - Returns: a properly formatted event subscription request.
+	func buildSubscriptionQuery(
+		forChannel channelName: String,
+		selectorType: privmx.endpoint.event.EventSelectorType,
+		selectorId: String
+	) throws -> String {
+		try String(self.buildSubscriptionQuery(channelName: std.string(channelName),
+											   selectorType: selectorType,
+											   selectorId: std.string(selectorId)))
 	}
 }

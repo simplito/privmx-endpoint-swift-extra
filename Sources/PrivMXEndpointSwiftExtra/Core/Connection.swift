@@ -98,13 +98,65 @@ extension Connection: PrivMXConnection {
 	/// Retrieves a list of Users from a particular Context.
 	///
 	/// - parameter contextId: Id of the Context.
+	/// - parameter query: object containing parameters of the Query
 	///
 	/// - throws: When the operation fails.
 	///
 	/// - returns: a list of UserInfo objects.
-	public func getContextUsers(
-		of contextId: String
-	) throws -> [privmx.endpoint.core.UserInfo] {
-		try self.getContextUsers(contextId:std.string(contextId)).map({ x in x})
+	public func listContextUsers(
+		of contextId: String,
+		basedOn query: privmx.endpoint.core.PagingQuery
+	) throws -> privmx.UserInfoList {
+		try self.listContextUsers(
+			contextId:std.string(contextId),
+			query:query)
+	}
+	
+	/// Subscribe for the events on the given subscription query.
+	///
+	/// - Parameter subscriptionQueries: list of queries
+	///
+	/// - Throws: When subscribing for events fails.
+	///
+	/// - Returns: list of subscriptionIds in maching order to subscriptionQueries.
+	public func subscribeFor(
+		_ subscriptionQueries: [String]
+	) throws -> [String] {
+		var sq = privmx.SubscriptionQueryVector()
+		sq.reserve(subscriptionQueries.count)
+		
+		for q in subscriptionQueries{
+			sq.push_back(std.string(q))
+		}
+		return try subscribeFor(subscriptionQueries: sq).map({x in String(x)})
+	}
+	
+	/// Unsubscribe from events for the given subscriptionId.
+	///
+	/// - Parameter subscriptionIds: list of subscriptionId
+	///
+	/// - Throws: When unsubscribing fails.
+	public func unsubscribeFrom(
+		_ subscriptionIds: [String]
+	) throws -> Void {
+		var sq = privmx.SubscriptionQueryVector()
+		sq.reserve(subscriptionIds.count)
+		
+		for q in subscriptionIds{
+			sq.push_back(std.string(q))
+		}
+		try unsubscribeFrom(subscriptionIds: sq)
+	}
+	
+	
+	public func buildSubscriptionQuery(
+		forEventType eventType: privmx.endpoint.core.EventType,
+		selectorType: PMXEventSelectorType,
+		selectorId: String
+	) throws -> String {
+		try String(buildSubscriptionQuery(
+			eventType: eventType,
+			selectorType: privmx.endpoint.core.EventSelectorType(selectorType.rawValue),
+			selectorId: std.string(selectorId)))
 	}
 }

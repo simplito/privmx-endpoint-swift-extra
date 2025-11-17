@@ -94,12 +94,14 @@ extension StoreApi : PrivMXStore{
 		in storeId: String,
 		withPublicMeta publicMeta: Data,
 		withPrivateMeta privateMeta: Data,
-		ofSize size: Int64
+		ofSize size: Int64,
+		randomWriteSupport: Bool = false
 	) throws -> privmx.StoreFileHandle {
 		try createFile(storeId: std.string(storeId),
 					   publicMeta: publicMeta.asBuffer(),
 					   privateMeta: privateMeta.asBuffer(),
-					   size: size)
+					   size: size,
+					   randomWriteSupport:randomWriteSupport)
 	}
 	
 	
@@ -151,15 +153,18 @@ extension StoreApi : PrivMXStore{
 	/// Writes a chunk of data to an opened file on the Platform.
 	///
 	/// - Parameter handle: the handle to an opened file
-	/// - Parameter dataChunk:  the data to be uploaded
+	/// - Parameter dataChunk: the data to be uploaded
+	/// - Parameter truncate: end the file on this write
 	///
 	/// - Throws: `PrivMXEndpointError.failedWritingToFile` if an exception was thrown in C++ code, or another error occurred.
 	public func writeToFile(
 		withHandle handle: privmx.StoreFileHandle,
-		uploading dataChunk: Data
+		uploading dataChunk: Data,
+		truncate: Bool = false
 	) throws -> Void {
 		try writeToFile(handle: handle,
-						dataChunk: dataChunk.asBuffer())
+						dataChunk: dataChunk.asBuffer(),
+						truncate: truncate)
 	}
 	
 	/// Closes an open File
@@ -194,23 +199,55 @@ extension StoreApi : PrivMXStore{
 					   position: position)
 	}
 	
+	/// Synchronize file handle data with the newest data on serwer.
 	///
-	@available(*, deprecated, renamed: "unsubscribeFromFileEvents(in:)")
-	public func unubscribeFromFileEvents(
-		in storeId: String
+	/// - Parameter handle: Store File handle to sync
+	///
+	/// - Throws: if the operation fails.
+	public func syncFile(
+		withHandle handle: privmx.StoreFileHandle
 	) throws -> Void {
-		try unsubscribeFromFileEvents(storeId: std.string(storeId))
+		try self.syncFile(fileHandle: handle)
 	}
 	
-	public func unsubscribeFromFileEvents(
-		in storeId: String
+	public func unsubscribeFrom(
+		_ subscriptionIds: [String]
 	) throws -> Void {
-		try unsubscribeFromFileEvents(storeId: std.string(storeId))
+		var sid = privmx.SubscriptionIdVector()
+		sid.reserve(subscriptionIds.count)
+		for i in subscriptionIds{
+			sid.push_back(std.string(i))
+		}
+		try self.unsubscribeFrom(subscriptionIds: sid)
 	}
 	
-	public func subscribeForFileEvents(
-		in storeId: String
-	) throws -> Void {
-		try subscribeForFileEvents(storeId: std.string(storeId))
+	public func subscribeFor(
+		_ subscriptionQueries: [String]
+	) throws -> [String] {
+		var sqv = privmx.SubscriptionQueryVector()
+		sqv.reserve(subscriptionQueries.count)
+		for q in subscriptionQueries{
+			sqv.push_back(std.string(q))
+		}
+		return try subscribeFor(subscriptionQueries: sqv).map({i in String(i)})
+	}
+	
+	/// Generate subscription Query for Store-related events.
+	///
+	/// - Parameter eventType: type of the event you wish to receive
+	/// - Parameter selectorType: scope on which you listen for events
+	/// - Parameter selectorId: ID of the selector
+	///
+	/// - Throws: When building the subscription Query fails.
+	///
+	/// - Returns: a properly formatted event subscription request.
+	public func buildSubscriptionQuery(
+		forEventType eventType: privmx.endpoint.store.EventType,
+		selectorType: privmx.endpoint.store.EventSelectorType,
+		selectorId: String
+	) throws -> String {
+		try String(self.buildSubscriptionQuery(eventType: eventType,
+											   selectorType: selectorType,
+											   selectorId: std.string(selectorId)))
 	}
 }
