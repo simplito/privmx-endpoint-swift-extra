@@ -207,7 +207,7 @@ extension StoreApi : PrivMXStore{
 	public func syncFile(
 		withHandle handle: privmx.StoreFileHandle
 	) throws -> Void {
-		try self.syncFile(handle: handle)
+		try self.syncFile(fileHandle: handle)
 	}
 	
 	public func unsubscribeFrom(
