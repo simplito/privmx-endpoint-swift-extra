@@ -118,7 +118,7 @@ extension Connection: PrivMXConnection {
 	///
 	/// - Throws: When subscribing for events fails.
 	///
-	/// - Returns: list of subscriptionIds in maching order to subscriptionQueries.
+	/// - Returns: list of subscriptionIds in order matching subscriptionQueries.
 	public func subscribeFor(
 		_ subscriptionQueries: [String]
 	) throws -> [String] {

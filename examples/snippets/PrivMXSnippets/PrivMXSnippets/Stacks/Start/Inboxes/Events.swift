@@ -43,7 +43,7 @@ extension PrivMXSnippetClass{
 						selectorId: CONTEXT_ID),
 					group: "SOME_UNIQUE_IDENTIFIER",
 					cb:{ eventData in
-						// some actions when a inbox is updated
+						// some actions when an inbox is updated
 					}),
 				PMXEventCallbackRegistration(
 					request: .inbox(
@@ -52,7 +52,7 @@ extension PrivMXSnippetClass{
 						selectorId: inboxId),
 					group: "SOME_UNIQUE_IDENTIFIER",
 					cb:{ eventData in
-						// some actions when a inbox is updated
+						// some actions when an inbox is updated
 					}),
 				PMXEventCallbackRegistration(
 					request: .inbox(
@@ -61,7 +61,7 @@ extension PrivMXSnippetClass{
 						selectorId: CONTEXT_ID),
 					group: "SOME_UNIQUE_IDENTIFIER",
 					cb:{ eventData in
-						// some actions when a inbox is deleted
+						// some actions when an inbox is deleted
 					}),
 				PMXEventCallbackRegistration(
 					request: .inbox(
@@ -70,7 +70,7 @@ extension PrivMXSnippetClass{
 						selectorId: inboxId),
 					group: "SOME_UNIQUE_IDENTIFIER",
 					cb:{ eventData in
-						// some actions when a inbox is deleted
+						// some actions when an inbox is deleted
 					}),
 				PMXEventCallbackRegistration(
 					request: .inbox(

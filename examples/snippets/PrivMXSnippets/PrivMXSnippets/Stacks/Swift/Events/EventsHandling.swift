@@ -383,7 +383,7 @@ extension PrivMXSnippetClass {
 					selectorId: CONTEXT_ID),
 				group: "SOME_UNIQUE_IDENTIFIER",
 				cb:{ eventData in
-					// some actions when a file is cerated
+					// some actions when a file is created
 				}))
 		
 		try? endpointSession?.registerCallback(
