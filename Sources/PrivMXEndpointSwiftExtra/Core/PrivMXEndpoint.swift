@@ -728,6 +728,12 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 							queryDict["inbox"]![sq]!.append(i)
 						}
 					case .kvdb(let event, let selector, let selectorId):
+						guard selector != .Item
+						else{
+							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Illegal selector type",
+																									  message: "Received .Item selector type when .Context or .Container were expected",
+																									  description: "To subscribe for a particular Entry use .kvdbEntry"))
+						}
 						guard let kvdbApi
 						else{
 							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Api not Initialised",
@@ -879,6 +885,32 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			}
 		}
 		if let kvdbQuery = queryDict["kvdb"], kvdbApi != nil{
+			do{
+				let reqv = kvdbQuery.map({x in x})
+				let resv = try kvdbApi!.subscribeFor(kvdbQuery.map({x in x.0}))
+				for res in resv{
+					for req in reqv{
+						for i in req.value{
+							let r = requests[i]
+							if callbacks[res] == nil {
+								callbacks[res] = (r.request,[:])
+							}
+							if callbacks[res]!.1[r.group] == nil {
+								callbacks[res]!.1[r.group] = []
+							}
+							callbacks[res]!.1[r.group]!.append(r.cb)
+						}
+					}
+				}
+			} catch {
+				for q in kvdbQuery{
+					for i in q.value {
+						results[i] = error
+					}
+				}
+			}
+		}
+		if let kvdbQuery = queryDict["kvdbEntry"], kvdbApi != nil{
 			do{
 				let reqv = kvdbQuery.map({x in x})
 				let resv = try kvdbApi!.subscribeFor(kvdbQuery.map({x in x.0}))
