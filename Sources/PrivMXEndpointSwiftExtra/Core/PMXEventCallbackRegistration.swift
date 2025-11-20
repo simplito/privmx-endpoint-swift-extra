@@ -156,7 +156,7 @@ public enum PMXEventSubscriptionRequest: Hashable, Sendable{
 	case store(eventType: privmx.endpoint.store.EventType,selectorType: PMXEventSelectorType, selectorId:String)
 	/// Inbox module Events on a corresponding selector
 	case inbox(eventType: privmx.endpoint.inbox.EventType,selectorType: PMXEventSelectorType, selectorId:String)
-	/// Events from the KVDB module on a corresponding selector
+	/// Events from the KVDB module on a corresponding selector. This request accepts only `Context` and `Container` selectors.
 	case kvdb(eventType: privmx.endpoint.kvdb.EventType,selectorType: PMXEventSelectorType, selectorId:String)
 	/// Events about particualr KVDB Entry
 	case kvdbEntry(eventType: privmx.endpoint.kvdb.EventType, kvdbId:String,entryKey:String)
