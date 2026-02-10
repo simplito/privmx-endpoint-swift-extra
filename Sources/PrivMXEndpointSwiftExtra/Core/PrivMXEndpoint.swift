@@ -37,6 +37,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	public private(set) var eventApi: EventApi?
 	/// API for handling KVDBs
 	public private(set) var kvdbApi: KvdbApi?
+	///
+	var streamApiLow: privmx.NativeStreamApiLowWrapper?
 	
 	fileprivate var callbacks : [String :(PMXEventSubscriptionRequest, [String :[(@Sendable @MainActor (Any?) -> Void)]])] = [:]
 	
@@ -671,6 +673,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		queryDict["event"] = [:]
 		queryDict["platform"] = [:]
 		queryDict["core"] = [:]
+		queryDict["stream"] = [:]
 		
 		// Maps requests to Apis
 		for i in 0..<requests.count{
@@ -792,6 +795,29 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 						} else {
 							queryDict["core"]![sq]!.append(i)
 						}
+					case .stream(eventType: let event, let selector,let selectorId):
+						guard var streamApiLow
+						else {
+							throw PrivMXEndpointError.failedSubscribingForEvents(privmx.InternalError(name: "Api not Initialised",
+																									  message: "StreamApiLow was nil",
+																									  description: "You need to enable Streams to register for Stream-related events"))
+						}
+						let res = streamApiLow.buildSubscriptionQuery(
+							event, privmx.endpoint.stream.EventSelectorType.init(selector.rawValue), std.string(selectorId))
+						if let err = res.error.value{
+							throw PrivMXEndpointError.failedSubscribingForEvents(err)
+						}
+						guard let qry = res.result.value
+						else {
+							throw PrivMXEndpointError.failedSubscribingForEvents(.init(name: "Value Error", message: "", description: ""))
+						}
+						let sq = String(qry)
+						if nil == queryDict["stream"]![sq]{
+							queryDict["stream"]![sq] = [i]
+						} else {
+							queryDict["stream"]![sq]!.append(i)
+						}
+						
 				}
 			} catch {
 				results[i] = error
@@ -800,6 +826,45 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		
 		
 		// actual subscriptions
+		if let streamQuery = queryDict["stream"], streamApiLow != nil{
+			do{
+				let reqv = streamQuery.map({x in x})
+				var creqv = privmx.SubscriptionQueryVector()
+				creqv.reserve(reqv.count)
+				for r in reqv{
+					creqv.push_back(std.string(r.key))
+				}
+				
+				let resvwe =  streamApiLow!.subscribeFor(creqv)
+				if let err = resvwe.error.value{
+					throw PrivMXEndpointError.failedSubscribingForEvents(err)
+				}
+				guard let cresv = resvwe.result.value else {
+					throw PrivMXEndpointError.failedSubscribingForEvents(.init(name: "Value Error", message: "", description: ""))
+				}
+				let resv = cresv.map({ x in String(x)})
+				for res in resv{
+					for req in reqv{
+						for i in req.value{
+							let r = requests[i]
+							if callbacks[res] == nil {
+								callbacks[res] = (r.request,[:])
+							}
+							if callbacks[res]!.1[r.group] == nil {
+								callbacks[res]!.1[r.group] = []
+							}
+							callbacks[res]!.1[r.group]!.append(r.cb)
+						}
+					}
+				}
+			} catch {
+				for q in streamQuery{
+					for i in q.value {
+						results[i] = error
+					}
+				}
+			}
+		}
 		if let threadQuery = queryDict["thread"], threadApi != nil{
 			do{
 				let reqv = threadQuery.map({x in x})
@@ -1070,6 +1135,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		var res = [(any Error)?](repeating: nil, count: calls.count)
 		var queryDict = [String:[(String,Int)]]()
 		let keyArr = calls.map({x in x.key})
+		queryDict["stream"] = []
 		queryDict["thread"] = []
 		queryDict["store"] = []
 		queryDict["kvdb"] = []
@@ -1080,6 +1146,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		queryDict["core"] = []
 		for i in 0..<calls.count{
 			switch calls[i].value.0{
+				case .stream:
+					queryDict["stream"]!.append((keyArr[i],i))
 				case .thread:
 					queryDict["thread"]!.append((keyArr[i],i))
 				case .store:
@@ -1097,6 +1165,26 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			}
 		}
 		
+		if let req = queryDict["stream"]?.map({x in std.string(x.0)}), var streamApiLow{
+			do{
+				var qv = privmx.SubscriptionQueryVector()
+				qv.reserve(req.count)
+				for r in req{
+					qv.push_back(r)
+				}
+				let res = streamApiLow.unsubscribeFrom(qv)
+				if let err = res.error.value{
+					throw PrivMXEndpointError.failedUnsubscribingFromEvents(err)
+				}
+				for r in req{
+					callbacks.removeValue(forKey: String(r))
+				}
+			} catch {
+				for q in queryDict["stream"] ?? []{
+					res[q.1] = error
+				}
+			}
+		}
 		if let req = queryDict["thread"]?.map({x in x.0}), let threadApi{
 			do{
 				try threadApi.unsubscribeFrom(req)

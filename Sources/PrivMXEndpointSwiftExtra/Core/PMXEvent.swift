@@ -45,6 +45,7 @@ public protocol PMXStoreEvent:PMXEvent{}
 public protocol PMXInboxEvent:PMXEvent{}
 public protocol PMXKvdbEvent:PMXEvent{}
 public protocol PMXCustomEvent:PMXEvent{}
+public protocol PMXStreamEvent:PMXEvent{}
 public protocol PMXCoreEvent:PMXEvent{}
 public protocol PMXLibraryEvent:PMXEvent{}
 
