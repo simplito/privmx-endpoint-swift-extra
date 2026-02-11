@@ -37,22 +37,22 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	public private(set) var eventApi: EventApi?
 	/// API for handling KVDBs
 	public private(set) var kvdbApi: KvdbApi?
-	///
+	/// Internal Api for Streams, used by separate Sterams Package
 	var streamApiLow: privmx.NativeStreamApiLowWrapper?
 	
 	fileprivate var callbacks : [String :(PMXEventSubscriptionRequest, [String :[(@Sendable @MainActor (Any?) -> Void)]])] = [:]
 	
 	/// Initializes a new instance of `PrivMXEndpoint` with a connection to PrivMX Bridge and optional modules.
-    ///
-    /// This method sets up the connection and, based on the provided modules, initializes the APIs for handling Threads, Stores, and Inboxes.
-    ///
-    /// - Parameters:
-    ///   - modules: A set of modules to initialize (of type `PrivMXModule`).
-    ///   - userPrivKey: The user's private key in WIF format.
-    ///   - solutionId: The unique identifier of PrivMX Solution.
-    ///   - platformUrl: The URL of PrivMX Bridge instance.
-    ///
-    /// - Throws: An error if the connection or module initialization fails.
+	///
+	/// This method sets up the connection and, based on the provided modules, initializes the APIs for handling Threads, Stores, and Inboxes.
+	///
+	/// - Parameters:
+	///   - modules: A set of modules to initialize (of type `PrivMXModule`).
+	///   - userPrivKey: The user's private key in WIF format.
+	///   - solutionId: The unique identifier of PrivMX Solution.
+	///   - platformUrl: The URL of PrivMX Bridge instance.
+	///
+	/// - Throws: An error if the connection or module initialization fails.
 	@available(*, deprecated)
 	public init(
 		modules:Set<PrivMXModule>,
@@ -79,8 +79,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			var s = try (sto ?? StoreApi.create(connection: &con))
 			var t = try (thr ?? ThreadApi.create(connection: &con))
 			self.inboxApi = try InboxApi.create(connection: &con,
-												  threadApi: &t,
-												  storeApi: &s)
+												threadApi: &t,
+												storeApi: &s)
 		}
 		if modules.contains(.event){
 			self.eventApi = try EventApi.create(connection: &con)
@@ -92,16 +92,16 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	}
 	
 	/// Initializes a new instance of `PrivMXEndpoint` with a connection to PrivMX Bridge and optional modules.
-    ///
-    /// This method sets up the connection and, based on the provided modules, initializes the APIs for handling Threads, Stores, and Inboxes.
-    ///
-    /// - Parameters:
-    ///   - modules: A set of modules to initialize (of type `PrivMXModule`).
-    ///   - userPrivKey: The user's private key in WIF format.
-    ///   - solutionId: The unique identifier of PrivMX Solution.
-    ///   - bridgeUrl: The URL of PrivMX Bridge instance.
-    ///
-    /// - Throws: An error if the connection or module initialization fails.
+	///
+	/// This method sets up the connection and, based on the provided modules, initializes the APIs for handling Threads, Stores, and Inboxes.
+	///
+	/// - Parameters:
+	///   - modules: A set of modules to initialize (of type `PrivMXModule`).
+	///   - userPrivKey: The user's private key in WIF format.
+	///   - solutionId: The unique identifier of PrivMX Solution.
+	///   - bridgeUrl: The URL of PrivMX Bridge instance.
+	///
+	/// - Throws: An error if the connection or module initialization fails.
 	public init(
 		modules:Set<PrivMXModule>,
 		userPrivKey:String,
@@ -127,8 +127,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			var s = try (sto ?? StoreApi.create(connection: &con))
 			var t = try (thr ?? ThreadApi.create(connection: &con))
 			self.inboxApi = try InboxApi.create(connection: &con,
-												  threadApi: &t,
-												  storeApi: &s)
+												threadApi: &t,
+												storeApi: &s)
 		}
 		if modules.contains(.event){
 			self.eventApi = try EventApi.create(connection: &con)
@@ -136,6 +136,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		if modules.contains(.kvdb){
 			self.kvdbApi = try KvdbApi.create(connection: &con)
 		}
+		
 		self.id = try! con.getConnectionId()
 	}
 	
@@ -174,8 +175,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			var s = try (sto ?? StoreApi.create(connection: &con))
 			var t = try (thr ?? ThreadApi.create(connection: &con))
 			self.inboxApi = try InboxApi.create(connection: &con,
-												  threadApi: &t,
-												  storeApi: &s)
+												threadApi: &t,
+												storeApi: &s)
 		}
 		if modules.contains(.event){
 			self.eventApi = try EventApi.create(connection: &con)
@@ -222,8 +223,8 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			var s = try (sto ?? StoreApi.create(connection: &con))
 			var t = try (thr ?? ThreadApi.create(connection: &con))
 			self.inboxApi = try InboxApi.create(connection: &con,
-												  threadApi: &t,
-												  storeApi: &s)
+												threadApi: &t,
+												storeApi: &s)
 		}
 		if modules.contains(.event){
 			self.eventApi = try EventApi.create(connection: &con)
@@ -259,10 +260,10 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		onChunkUploaded: (@escaping @Sendable (Int) -> Void) = {_ in}
 	) async throws -> String{
 		var isCancelled = false
-        
-        
+		
+		
 		if let api = self.storeApi{
-            
+			
 			let sfhandler = try PrivMXStoreFileHandler.getStoreFileCreator(inStore: store,
 																		   from: file,
 																		   using: api,
@@ -270,18 +271,17 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 																		   withPrivateMeta: privateMeta,
 																		   fileSize: size,
 																		   chunkSize: chunkSize)
-            
-            
-				while sfhandler.hasDataLeft && !isCancelled{
-					try sfhandler.writeChunk(onChunkUploaded: onChunkUploaded)
-					withUnsafeCurrentTask(){
-						task in
-						isCancelled = task?.isCancelled ?? false
-					}
+			
+			while sfhandler.hasDataLeft && !isCancelled{
+				try sfhandler.writeChunk(onChunkUploaded: onChunkUploaded)
+				withUnsafeCurrentTask(){
+					task in
+					isCancelled = task?.isCancelled ?? false
 				}
-            
-                return try sfhandler.close()
-             
+			}
+			
+			return try sfhandler.close()
+			
 		} else {
 			var err = privmx.InternalError()
 			err.message = "StoresApi not initialized"
@@ -291,22 +291,22 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	}
 	
 	/// Begins uploading a new file from an in-memory buffer using `PrivMXStoreFileHandler`.
-    ///
-    /// This method uploads file content from a `Data` buffer to a specified Store. It supports chunked uploads and provides a callback for progress tracking.
-    ///
-    /// - Parameters:
-    ///   - buffer: The in-memory file content as `Data`.
-    ///   - store: The identifier of the destination store.
-    ///   - publicMeta: Public, unencrypted metadata for the file.
-    ///   - privateMeta: Encrypted metadata for the file.
-    ///   - size: The size of the file in bytes.
-    ///   - chunkSize: The size of each chunk to be uploaded.
-    ///   - onChunkUploaded: A callback that is called after each chunk upload is completed.
-    ///
-    /// - Returns: The identifier of the uploaded file as a `String`.
-    ///
-    /// - Throws: An error if the upload process fails.
-    public func startUploadingNewFileFromBuffer(
+	///
+	/// This method uploads file content from a `Data` buffer to a specified Store. It supports chunked uploads and provides a callback for progress tracking.
+	///
+	/// - Parameters:
+	///   - buffer: The in-memory file content as `Data`.
+	///   - store: The identifier of the destination store.
+	///   - publicMeta: Public, unencrypted metadata for the file.
+	///   - privateMeta: Encrypted metadata for the file.
+	///   - size: The size of the file in bytes.
+	///   - chunkSize: The size of each chunk to be uploaded.
+	///   - onChunkUploaded: A callback that is called after each chunk upload is completed.
+	///
+	/// - Returns: The identifier of the uploaded file as a `String`.
+	///
+	/// - Throws: An error if the upload process fails.
+	public func startUploadingNewFileFromBuffer(
 		_ buffer:Data,
 		to store:String,
 		withPublicMeta publicMeta: Data,
@@ -316,10 +316,10 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		onChunkUploaded: (@escaping @Sendable (Int) -> Void) = {_ in}
 	) async throws -> String{
 		var isCancelled = false
-        
-        
+		
+		
 		if let api = self.storeApi{
-            
+			
 			let sfhandler = try PrivMXStoreFileHandler.getStoreFileCreator(inStore: store,
 																		   fromBuffer: buffer,
 																		   using: api,
@@ -327,18 +327,18 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 																		   withPrivateMeta: privateMeta,
 																		   fileSize: size,
 																		   chunkSize: chunkSize)
-            
-            
-				while sfhandler.hasDataLeft && !isCancelled{
-					try sfhandler.writeChunk(onChunkUploaded: onChunkUploaded)
-					withUnsafeCurrentTask(){
-						task in
-						isCancelled = task?.isCancelled ?? false
-					}
+			
+			
+			while sfhandler.hasDataLeft && !isCancelled{
+				try sfhandler.writeChunk(onChunkUploaded: onChunkUploaded)
+				withUnsafeCurrentTask(){
+					task in
+					isCancelled = task?.isCancelled ?? false
 				}
-            
-                return try sfhandler.close()
-             
+			}
+			
+			return try sfhandler.close()
+			
 		} else {
 			var err = privmx.InternalError()
 			err.message = "StoresApi not initialized"
@@ -348,21 +348,21 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	}
 	
 	//// Begins uploading an updated file using `PrivMXStoreFileHandler`.
-    ///
-    /// This method updates an existing file in a store with new content and metadata, supporting chunked uploads for large files.
-    ///
-    /// - Parameter file: A local `FileHandle` representing the updated file.
-    /// - Parameter storeFile: The identifier of the file in the store to be updated.
-    /// - Parameter publicMeta: Public metadata to overwrite the existing metadata.
-    /// - Parameter privateMeta: Encrypted metadata to overwrite the existing metadata.
-    /// - Parameter size: The size of the updated file in bytes.
+	///
+	/// This method updates an existing file in a store with new content and metadata, supporting chunked uploads for large files.
+	///
+	/// - Parameter file: A local `FileHandle` representing the updated file.
+	/// - Parameter storeFile: The identifier of the file in the store to be updated.
+	/// - Parameter publicMeta: Public metadata to overwrite the existing metadata.
+	/// - Parameter privateMeta: Encrypted metadata to overwrite the existing metadata.
+	/// - Parameter size: The size of the updated file in bytes.
 	/// - Parameter chunkSize: The size of individual chunks, by default set to `PrivMXStoreFileHandler.RecommendedChunkSize`
-    /// - Parameter onChunkUploaded: A callback that is called after each chunk upload is completed.
-    ///
-    /// - Returns: The identifier of the updated file as a `String`.
-    ///
-    /// - Throws: An error if the update process fails.
-   public func startUploadingUpdatedFile(
+	/// - Parameter onChunkUploaded: A callback that is called after each chunk upload is completed.
+	///
+	/// - Returns: The identifier of the updated file as a `String`.
+	///
+	/// - Throws: An error if the update process fails.
+	public func startUploadingUpdatedFile(
 		_ file:FileHandle,
 		as storeFile:String,
 		replacingPublicMeta publicMeta: Data,
@@ -398,22 +398,22 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	}
 	
 	/// Begins uploading an updated file from an in-memory buffer using `PrivMXStoreFileHandler`.
-    ///
-    /// This method updates an existing file in a store with new content and metadata, supporting chunked uploads for large files.
-    ///
-    /// - Parameters:
-    ///   - buffer: The in-memory content of the updated file as `Data`.
-    ///   - storeFile: The identifier of the file in the store to be updated.
-    ///   - publicMeta: Public metadata to overwrite the existing metadata.
-    ///   - privateMeta: Encrypted metadata to overwrite the existing metadata.
-    ///   - size: The size of the updated file in bytes.
-    ///   - chunkSize: The size of each chunk to be uploaded.
-    ///   - onChunkUploaded: A callback that is called after each chunk upload is completed.
-    ///
-    /// - Returns: The identifier of the updated file as a `String`.
-    ///
-    /// - Throws: An error if the update process fails.
-   public func startUploadingUpdatedFileFromBuffer(
+	///
+	/// This method updates an existing file in a store with new content and metadata, supporting chunked uploads for large files.
+	///
+	/// - Parameters:
+	///   - buffer: The in-memory content of the updated file as `Data`.
+	///   - storeFile: The identifier of the file in the store to be updated.
+	///   - publicMeta: Public metadata to overwrite the existing metadata.
+	///   - privateMeta: Encrypted metadata to overwrite the existing metadata.
+	///   - size: The size of the updated file in bytes.
+	///   - chunkSize: The size of each chunk to be uploaded.
+	///   - onChunkUploaded: A callback that is called after each chunk upload is completed.
+	///
+	/// - Returns: The identifier of the updated file as a `String`.
+	///
+	/// - Throws: An error if the update process fails.
+	public func startUploadingUpdatedFileFromBuffer(
 		_ buffer:Data,
 		as storeFile:String,
 		replacingPublicMeta publicMeta: Data,
@@ -449,18 +449,18 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	}
 	
 	/// Begins downloading a file to the local filesystem using `PrivMXStoreFileHandler`.
-    ///
-    /// This method downloads a file from a Store to the local filesystem using a `FileHandle`. It supports downloading files in chunks and provides a callback for progress tracking.
-    ///
-    /// - Parameter file: A local `FileHandle` representing the destination file.
-    /// - Parameter fileId: The identifier of the file to be downloaded.
+	///
+	/// This method downloads a file from a Store to the local filesystem using a `FileHandle`. It supports downloading files in chunks and provides a callback for progress tracking.
+	///
+	/// - Parameter file: A local `FileHandle` representing the destination file.
+	/// - Parameter fileId: The identifier of the file to be downloaded.
 	/// - Parameter chunkSize: The size of individual chunks, by default set to `PrivMXStoreFileHandler.RecommendedChunkSize`
 	/// - Parameter onChunkDownloaded: A callback that is called after each chunk download is completed.
-    ///
-    /// - Returns: The identifier of the downloaded file as a `String`.
-    ///
-    /// - Throws: An error if the download process fails.
-    public func startDownloadingToFile(
+	///
+	/// - Returns: The identifier of the downloaded file as a `String`.
+	///
+	/// - Throws: An error if the download process fails.
+	public func startDownloadingToFile(
 		_ file:FileHandle,
 		from fileId:String,
 		withChunksOf chunkSize: Int64 = PrivMXStoreFileHandler.RecommendedChunkSize,
@@ -490,18 +490,18 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	}
 	
 	/// Begins downloading a file to the local filesystem using `InboxFileHandler`.
-    ///
-    /// This method downloads a file from an Inbox to the local filesystem using a `FileHandle`. It supports downloading files in chunks and provides a callback for progress tracking.
-    ///
-    /// - Parameter file: A local `FileHandle` representing the destination file.
-    /// - Parameter fileId: The identifier of the file to be downloaded.
+	///
+	/// This method downloads a file from an Inbox to the local filesystem using a `FileHandle`. It supports downloading files in chunks and provides a callback for progress tracking.
+	///
+	/// - Parameter file: A local `FileHandle` representing the destination file.
+	/// - Parameter fileId: The identifier of the file to be downloaded.
 	/// - Parameter chunkSize: The size of a chunk to be used.
 	/// - Parameter onChunkDownloaded: A callback that is called after each chunk download is completed.
-    ///
+	///
 	/// - Returns: The identifier of the downloaded file as a `String`.
-    ///
-    /// - Throws: An error if the download process fails.
-    public func startDownloadingToFileFromInbox(
+	///
+	/// - Throws: An error if the download process fails.
+	public func startDownloadingToFileFromInbox(
 		_ file:FileHandle,
 		from fileId:String,
 		withChunksOf chunkSize: Int64 = InboxFileHandler.RecommendedChunkSize,
@@ -532,17 +532,17 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	}
 	
 	/// Begins downloading a file to in-memory buffer.
-    ///
-    /// This method downloads a file from a store to the local in-memory buffer. It supports downloading files in chunks and provides a callback for progress tracking.
-    ///
-    /// - Parameter fileId: The identifier of the file to be downloaded.
+	///
+	/// This method downloads a file from a store to the local in-memory buffer. It supports downloading files in chunks and provides a callback for progress tracking.
+	///
+	/// - Parameter fileId: The identifier of the file to be downloaded.
 	/// - Parameter chunkSize: The size of individual chunks, by default set to `PrivMXStoreFileHandler.RecommendedChunkSize`
 	/// - Parameter onChunkDownloaded: A callback that is called after each chunk download is completed.
-    ///
+	///
 	/// - Returns: The identifier of the downloaded file as a `String`.
-    ///
+	///
 	/// - Throws: An error if the download process fails.
-    public func startDownloadingToBufferFromInbox(
+	public func startDownloadingToBufferFromInbox(
 		from fileId:String,
 		withChunksOf chunkSize: Int64 = PrivMXStoreFileHandler.RecommendedChunkSize,
 		onChunkDownloaded: (@escaping @Sendable (Int) -> Void) = {_ in}
@@ -594,17 +594,17 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	
 	
 	/// Begins downloading a file to in-memory buffer.
-    ///
-    /// This method downloads a file from a store to the local in-memory buffer. It supports downloading files in chunks and provides a callback for progress tracking.
-    ///
-    /// - Parameter fileId: The identifier of the file to be downloaded.
+	///
+	/// This method downloads a file from a store to the local in-memory buffer. It supports downloading files in chunks and provides a callback for progress tracking.
+	///
+	/// - Parameter fileId: The identifier of the file to be downloaded.
 	/// - Parameter chunkSize: The size of individual chunks, by default set to `PrivMXStoreFileHandler.RecommendedChunkSize`
-    /// - Parameter onChunkDownloaded: A callback that is called after each chunk download is completed.
-    ///
-    /// - Returns: The identifier of the downloaded file as a `String`.
-    ///
-    /// - Throws: An error if the download process fails.
-    public func startDownloadingToBuffer(
+	/// - Parameter onChunkDownloaded: A callback that is called after each chunk download is completed.
+	///
+	/// - Returns: The identifier of the downloaded file as a `String`.
+	///
+	/// - Throws: An error if the download process fails.
+	public func startDownloadingToBuffer(
 		from fileId:String,
 		withChunksOf chunkSize: Int64 = PrivMXStoreFileHandler.RecommendedChunkSize,
 		onChunkDownloaded: (@escaping @Sendable (Int) -> Void) = {_ in}
@@ -832,7 +832,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		
 		
 		// actual subscriptions
-		if let streamQuery = queryDict["stream"], streamApiLow != nil{
+		if let streamQuery = queryDict["stream"], nil != streamApiLow{
 			do{
 				let reqv = streamQuery.map({x in x})
 				var creqv = privmx.SubscriptionQueryVector()
@@ -841,7 +841,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 					creqv.push_back(std.string(r.key))
 				}
 				
-				let resvwe =  streamApiLow!.subscribeFor(creqv)
+				let resvwe =  self.streamApiLow!.subscribeFor(creqv)
 				if let err = resvwe.error.value{
 					throw PrivMXEndpointError.failedSubscribingForEvents(err)
 				}
@@ -1279,9 +1279,9 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 			}
 		}
 		if let req = queryDict["platform"]?.map({x in x.0}) {
-				for r in req{
-					callbacks.removeValue(forKey: r)
-				}
+			for r in req{
+				callbacks.removeValue(forKey: r)
+			}
 		}
 		if let req = queryDict["core"]?.map({x in x.0}){
 			do{
@@ -1306,10 +1306,35 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 		for id in subscriptionList{
 			for r in callbacks[id]?.1 ?? [:] {
 				for cb in r.value{
-						event.handleWith(cb: cb)
+					event.handleWith(cb: cb)
 				}
 			}
 		}
+	}
+	
+	/// Returns an instance of `privmx.NativeStreamApiLowWrapper` built on the Connection and EventApi for use in `StreamApi` creation.
+	///
+	/// Note that StreamApiLow is a component for StreamApi and on it's own doesn't offer full functionality. It is exposed here for the ability to handle Events using the Event Loop provided by the PrivMXEndpointContainer.
+	///
+	///  - Returns:
+	func getOrCreateStreamApiLow(
+	) throws -> privmx.NativeStreamApiLowWrapper? {
+		if var connection = (connection as? Connection), var eventApi = eventApi, nil == streamApiLow{
+			let res = privmx.NativeStreamApiLowWrapper.create(connection.api, &eventApi.api)
+			if let err = res.error.value{
+				throw PrivMXEndpointError.otherFailure(err)
+			}
+			guard let result = res.result.value else {
+				var err = privmx.InternalError()
+				err.name = "Value error"
+				err.description = "Unexpectedly received nil result"
+				throw PrivMXEndpointError.failedCreatingStore(err)
+			}
+			self.streamApiLow = result
+		} else {
+			throw PrivMXEndpointError.otherFailure(privmx.InternalError(name: "Misconfigured PrivMXEndpoint", message: "StreamApiLow requires Connection and EventApi to be present", description: ""))
+		}
+		return streamApiLow
 	}
 }
 
