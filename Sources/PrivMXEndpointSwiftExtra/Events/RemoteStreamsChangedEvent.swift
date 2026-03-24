@@ -12,18 +12,18 @@
 import Foundation
 import PrivMXEndpointSwiftNative
 
-/// A helper extension for `StreamNewStreamsEvent` to conform to the `PMXEvent` protocol.
+/// A helper extension for `RemoteStreamsChangedEvent` to conform to the `PMXEvent` protocol.
 /// This extension is designed to assist with event channels type conversions,
 /// as channels are identified by strings in the Low-Level Endpoint.
-extension privmx.endpoint.stream.StreamNewStreamsEvent: PMXStreamEvent, @unchecked  Sendable {
+extension privmx.endpoint.stream.RemoteStreamsChangedEvent: PMXStreamEvent, @unchecked  Sendable {
 
 	/// Returns the event type as a string.
 	///
-	/// This method returns the constant string `"StreamNewStreams"`, identifying the type
-	/// of this event as `StreamNewStreams`.
-	/// - Returns: A `String` representing the event type, in this case, `"StreamNewStreams"`.
+	/// This method returns the constant string `"RemoteStreamsChanged"`, identifying the type
+	/// of this event as `RemoteStreamsChanged`.
+	/// - Returns: A `String` representing the event type, in this case, `"RemoteStreamsChanged"`.
 	public static func typeStr() -> String {
-		"StreamNewStreams"
+		"RemoteStreamsChanged"
 	}
 
 	/// Handles the event by calling the provided callback with an optional argument.

@@ -186,8 +186,8 @@ final class PrivMXEventLoop: @unchecked Sendable{
 			x = try EventHandler.extractStreamLeftEvent(eventHolder: eh)
 		}else if try EventHandler.isStreamUpdatedEvent(eventHolder: eh){
 			x = try EventHandler.extractStreamUpdatedEvent(eventHolder: eh)
-		}else if try EventHandler.isStreamNewStreamsEvent(eventHolder: eh){
-			x = try EventHandler.extractStreamNewStreamsEvent(eventHolder: eh)
+		}else if try EventHandler.isRemoteStreamsChangedEvent(eventHolder: eh){
+			x = try EventHandler.extractRemoteStreamsChangedEvent(eventHolder: eh)
 		}else if try EventHandler.isStreamsUpdatedEvent(eventHolder: eh){
 			x = try EventHandler.extractStreamsUpdatedEvent(eventHolder: eh)
 		} else {

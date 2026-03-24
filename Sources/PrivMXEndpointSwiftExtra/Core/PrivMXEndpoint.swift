@@ -37,7 +37,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	public private(set) var eventApi: EventApi?
 	/// API for handling KVDBs
 	public private(set) var kvdbApi: KvdbApi?
-	/// Internal Api for Streams, used by separate Sterams Package
+	/// Internal Api for Streams, used by separate Streams Package
 	var streamApiLow: privmx.NativeStreamApiLowWrapper?
 	
 	fileprivate var callbacks : [String :(PMXEventSubscriptionRequest, [String :[(@Sendable @MainActor (Any?) -> Void)]])] = [:]
