@@ -35,7 +35,7 @@ extension privmx.endpoint.stream.RemoteStreamsChangedEvent: PMXStreamEvent, @unc
 		cb: @escaping (@MainActor @Sendable (_ data: Any?) async  -> Void)
 	) -> Void {
 		Task{
-			await cb(data)
+			await cb(StreamRoomUpdatedSubscriptionPayload.remoteStreamsChanged(data: data))
 		}
 	}
 	

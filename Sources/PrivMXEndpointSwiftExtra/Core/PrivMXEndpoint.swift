@@ -1316,7 +1316,7 @@ public class PrivMXEndpoint: Identifiable, @unchecked Sendable{
 	///
 	/// Note that StreamApiLow is a component for StreamApi and on it's own doesn't offer full functionality. It is exposed here for the ability to handle Events using the Event Loop provided by the PrivMXEndpointContainer.
 	///
-	///  - Returns:
+	///  - Returns: an instance of StreamApiLow, created using this Connection instance.
 	func getOrCreateStreamApiLow(
 	) throws -> privmx.NativeStreamApiLowWrapper? {
 		if var connection = (connection as? Connection), var eventApi = eventApi, nil == streamApiLow{

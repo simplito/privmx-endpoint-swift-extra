@@ -35,7 +35,7 @@ extension privmx.endpoint.stream.StreamsUpdatedEvent: PMXStreamEvent, @unchecked
 		cb: @escaping (@MainActor @Sendable (_ data: Any?) async  -> Void)
 	) -> Void {
 		Task{
-			await cb(data)
+			await cb(StreamRoomUpdatedSubscriptionPayload.streamsUpdated(data: data))
 		}
 	}
 	
