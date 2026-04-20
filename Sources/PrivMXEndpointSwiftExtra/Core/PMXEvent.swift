@@ -45,6 +45,13 @@ public protocol PMXStoreEvent:PMXEvent{}
 public protocol PMXInboxEvent:PMXEvent{}
 public protocol PMXKvdbEvent:PMXEvent{}
 public protocol PMXCustomEvent:PMXEvent{}
+public protocol PMXStreamEvent:PMXEvent{}
 public protocol PMXCoreEvent:PMXEvent{}
 public protocol PMXLibraryEvent:PMXEvent{}
 
+public enum StreamRoomUpdatedSubscriptionPayload{
+	case streamRoomUpdated(data:privmx.endpoint.stream.StreamRoom)
+	case remoteStreamsChanged(data: privmx.endpoint.stream.NewStreams)
+	case streamsUpdated(data:privmx.endpoint.stream.StreamsUpdatedData)
+	case streamUpdated(data: privmx.endpoint.stream.StreamUpdatedEventData)
+}

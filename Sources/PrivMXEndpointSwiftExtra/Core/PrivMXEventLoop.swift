@@ -170,6 +170,26 @@ final class PrivMXEventLoop: @unchecked Sendable{
 			x = try EventHandler.extractContextUsersStatusChangedEvent(eventHolder: eh)
 		}else if try EventHandler.isCollectionChangedEvent(eventHolder: eh){
 			x = try EventHandler.extractCollectionChangedEvent(eventHolder: eh)
+		}else if try EventHandler.isStreamRoomCreatedEvent(eventHolder: eh){
+			x = try EventHandler.extractStreamRoomCreatedEvent(eventHolder: eh)
+		}else if try EventHandler.isStreamRoomUpdatedEvent(eventHolder: eh){
+			x = try EventHandler.extractStreamRoomUpdatedEvent(eventHolder: eh)
+		}else if try EventHandler.isStreamRoomDeletedEvent(eventHolder: eh){
+			x = try EventHandler.extractStreamRoomDeletedEvent(eventHolder: eh)
+		}else if try EventHandler.isStreamJoinedEvent(eventHolder: eh){
+			x = try EventHandler.extractStreamJoinedEvent(eventHolder: eh)
+		}else if try EventHandler.isStreamPublishedEvent(eventHolder: eh){
+			x = try EventHandler.extractStreamPublishedEvent(eventHolder: eh)
+		}else if try EventHandler.isStreamUnpublishedEvent(eventHolder: eh){
+			x = try EventHandler.extractStreamUnpublishedEvent(eventHolder: eh)
+		}else if try EventHandler.isStreamLeftEvent(eventHolder: eh){
+			x = try EventHandler.extractStreamLeftEvent(eventHolder: eh)
+		}else if try EventHandler.isStreamUpdatedEvent(eventHolder: eh){
+			x = try EventHandler.extractStreamUpdatedEvent(eventHolder: eh)
+		}else if try EventHandler.isRemoteStreamsChangedEvent(eventHolder: eh){
+			x = try EventHandler.extractRemoteStreamsChangedEvent(eventHolder: eh)
+		}else if try EventHandler.isStreamsUpdatedEvent(eventHolder: eh){
+			x = try EventHandler.extractStreamsUpdatedEvent(eventHolder: eh)
 		} else {
 			return nil
 		}

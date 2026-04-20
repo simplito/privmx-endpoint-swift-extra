@@ -105,6 +105,10 @@ public enum PMXEventSubscriptionRequest: Hashable, Sendable{
 			case (.custom(let ln,let lc),.custom(let rn, let rc)):
 				ln == rn &&
 				rc == lc
+			case (.stream(let le,let ls, let li), .stream(let re, let rs,let ri)):
+				le == re &&
+				ls == rs &&
+				li == ri
 			default: false
 		}
 }
@@ -146,6 +150,11 @@ public enum PMXEventSubscriptionRequest: Hashable, Sendable{
 				hasher.combine(7)
 				hasher.combine(ln)
 				hasher.combine(lc)
+			case .stream(let re, let rs, let ri):
+				hasher.combine(8)
+				hasher.combine(re)
+				hasher.combine(rs.rawValue)
+				hasher.combine(ri)
 				
 		}
 	}
@@ -166,4 +175,6 @@ public enum PMXEventSubscriptionRequest: Hashable, Sendable{
 	case library(eventType: LibEventType)
 	/// Events about Users
 	case core(eventType: privmx.endpoint.core.EventType, contextId:String)
+	/// Events about Streams
+	case stream(eventType: privmx.endpoint.stream.EventType, selectorType: PMXEventSelectorType, selectorId: String)
 	}
